@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circle & Triangle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-light: #f7f5f2;
+    --text: #1a1816;
+    --text-mid: #4a4540;
+    --text-dim: #8a8480;
+    --rule: #c8c0b4;
+    --rule-dark: #2a2520;
+    --accent: #c8000a;
+    --amber: #b8860b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'Source Serif 4', serif; font-size: 15px; line-height: 1.5; }
+  a { color: inherit; text-decoration: none; }
+
+  /* TICKER */
+  .ticker-bar { background: var(--text); overflow: hidden; height: 26px; display: flex; align-items: center; position: sticky; top: 0; z-index: 100; }
+  .ticker-label { background: var(--accent); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; padding: 0 12px; height: 100%; display: flex; align-items: center; white-space: nowrap; flex-shrink: 0; }
+  .ticker-track { overflow: hidden; flex: 1; }
+  .ticker-inner { display: flex; animation: ticker 45s linear infinite; white-space: nowrap; }
+  .ticker-inner:hover { animation-play-state: paused; }
+  .ticker-item { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: #c8c0b4; padding: 0 28px; letter-spacing: 0.04em; }
+  .ticker-item .hi { color: #e8d090; }
+  .ticker-item .up { color: #6abf6a; }
+  .ticker-item .sep { color: #555; margin: 0 6px; }
+  @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+  /* TOP BAR */
+  .top-bar { border-bottom: 1px solid var(--rule); padding: 5px 20px; display: flex; align-items: center; justify-content: space-between; }
+  .top-bar-left { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; }
+  .ccs-pill { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-mid); letter-spacing: 0.05em; padding: 2px 8px; border: 1px solid var(--rule); background: var(--bg-light); }
+  .ccs-pill .score { color: var(--amber); font-weight: 600; }
+  .ccs-pill .up { color: #3a7a3a; }
+
+  /* MASTHEAD */
+  .masthead { border-bottom: 3px solid var(--rule-dark); padding: 0 20px; }
+  .masthead-inner { display: flex; align-items: center; justify-content: space-between; padding: 12px 0 8px; gap: 16px; }
+  .logo-img { width: 52px; height: 52px; object-fit: contain; flex-shrink: 0; filter: brightness(0.15); }
+  .masthead-center { text-align: center; flex: 1; }
+  .masthead-title { font-family: 'Playfair Display', serif; font-size: clamp(34px, 5.5vw, 66px); font-weight: 900; color: var(--text); letter-spacing: -0.01em; line-height: 1; text-transform: uppercase; }
+  .masthead-title .amp { color: var(--accent); font-style: italic; font-weight: 700; }
+  .masthead-rule { width: 100%; height: 1px; background: var(--rule); margin: 5px 0; }
+  .masthead-tagline { font-family: 'Source Serif 4', serif; font-style: italic; font-size: 12px; color: var(--text-dim); letter-spacing: 0.04em; }
+  .masthead-right { text-align: right; flex-shrink: 0; min-width: 110px; }
+  .edition-label { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 600; color: var(--text-dim); letter-spacing: 0.1em; text-transform: uppercase; display: block; }
+  .edition-date { font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; color: var(--text-mid); letter-spacing: 0.04em; text-transform: uppercase; display: block; margin-top: 2px; line-height: 1.25; }
+
+  /* NAV */
+  .primary-nav { border-top: 1px solid var(--rule); display: flex; justify-content: center; flex-wrap: wrap; }
+  .nav-item { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; color: var(--text-mid); letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 14px; border-right: 1px solid var(--rule); cursor: pointer; transition: color 0.12s, background 0.12s; }
+  .nav-item:first-child { border-left: 1px solid var(--rule); }
+  .nav-item:hover { color: var(--accent); background: var(--bg-light); }
+  .nav-item.active { color: var(--accent); border-bottom: 2px solid var(--accent); margin-bottom: -1px; }
+
+  /* BREAKING */
+  .breaking-bar { background: var(--accent); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 20px; display: flex; align-items: center; gap: 14px; }
+  .breaking-kicker { background: #fff; color: var(--accent); font-size: 9px; padding: 1px 5px; font-weight: 800; letter-spacing: 0.1em; flex-shrink: 0; }
+
+  /* CONTENT */
+  .content-wrap { max-width: 1300px; margin: 0 auto; padding: 0 20px; }
+
+  /* LEAD */
+  .lead-grid { display: grid; grid-template-columns: 1fr 310px; gap: 0; border-bottom: 1px solid var(--rule); margin-top: 20px; }
+  .lead-main { padding-right: 24px; border-right: 1px solid var(--rule); }
+  .lead-sidebar { padding-left: 20px; display: flex; flex-direction: column; }
+
+  /* TAGS */
+  .tag { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 2px 6px; display: inline-block; margin-bottom: 6px; }
+  .tag-fiction { background: #1a1816; color: #fff; }
+  .tag-real { background: #e8f0e8; color: #2d5a2d; border: 1px solid #b0d0b0; }
+  .tag-classified { background: #f0e8f0; color: #5a2d7a; border: 1px solid #c0a0d0; }
+  .tag-ccs { background: #e8eef8; color: #1a3a6a; border: 1px solid #a0b8d8; }
+  .tag-god { background: #fef0e0; color: #7a4000; border: 1px solid #d4a060; }
+  .tag-bill { background: #e8f4e8; color: #2d4a1a; border: 1px solid #90b870; }
+
+  /* HEADLINES */
+  .hl-lead { font-family: 'Playfair Display', serif; font-size: clamp(22px, 3vw, 38px); font-weight: 700; line-height: 1.12; color: var(--text); margin-bottom: 10px; }
+  .hl-sub { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; line-height: 1.2; color: var(--text); margin-bottom: 6px; }
+  .hl-small { font-family: 'Playfair Display', serif; font-size: 14.5px; font-weight: 700; line-height: 1.2; color: var(--text); margin-bottom: 5px; }
+  .dek { font-size: 13.5px; color: var(--text-mid); line-height: 1.55; margin-bottom: 10px; }
+  .byline { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 600; color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase; border-top: 1px solid var(--rule); padding-top: 8px; margin-top: 10px; }
+
+  .pull-quote { border-left: 3px solid var(--accent); padding: 8px 14px; margin: 12px 0; font-family: 'Playfair Display', serif; font-style: italic; font-size: 16px; color: var(--text-mid); line-height: 1.4; background: var(--bg-light); }
+
+  .sidebar-story { padding: 14px 0; border-bottom: 1px solid var(--rule); }
+  .sidebar-story:last-child { border-bottom: none; }
+
+  /* GRIDS */
+  .section-header { display: flex; align-items: center; gap: 12px; padding: 10px 0 8px; border-top: 2px solid var(--rule-dark); border-bottom: 1px solid var(--rule); margin-top: 24px; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; color: var(--text); letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
+  .section-line { flex: 1; height: 1px; background: var(--rule); }
+
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 2px solid var(--rule-dark); border-bottom: 1px solid var(--rule); }
+  .three-col.no-top { border-top: none; }
+  .col-story { padding: 20px; border-right: 1px solid var(--rule); }
+  .col-story:last-child { border-right: none; }
+
+  .lower-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 0; border-bottom: 2px solid var(--rule-dark); }
+  .lower-story { padding: 20px; border-right: 1px solid var(--rule); }
+  .lower-story:last-child { border-right: none; }
+
+  /* FOOTER */
+  footer { background: var(--text); color: #aaa; padding: 20px; margin-top: 40px; display: flex; align-items: center; justify-content: space-between; }
+  .footer-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 900; color: #fff; text-transform: uppercase; }
+  .footer-logo .amp { color: var(--accent); font-style: italic; }
+  .footer-info { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #666; letter-spacing: 0.06em; text-align: right; line-height: 1.6; }
+
+  @media (max-width: 860px) {
+    .lead-grid { grid-template-columns: 1fr; }
+    .lead-main { padding-right: 0; border-right: none; border-bottom: 1px solid var(--rule); padding-bottom: 20px; }
+    .lead-sidebar { padding-left: 0; padding-top: 16px; }
+    .three-col, .lower-grid { grid-template-columns: 1fr; }
+    .col-story, .lower-story { border-right: none; border-bottom: 1px solid var(--rule); }
+  }
+</style>
+</head>
+<body>
+
+<div class="ticker-bar">
+  <div class="ticker-label">LIVE</div>
+  <div class="ticker-track">
+    <div class="ticker-inner" id="ticker"></div>
+  </div>
+</div>
+
+<div class="top-bar">
+  <div class="top-bar-left"><span id="live-date"></span> &nbsp;·&nbsp; circleandtriangle.co.uk</div>
+  <div class="ccs-pill">CCS AVG: <span class="score" id="ccs-number">847</span> <span class="up">↑2</span> &nbsp;·&nbsp; COMPLIANCE: 94.7% &nbsp;·&nbsp; NEXT REVIEW: 14 DAYS</div>
+</div>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <img src="circleandtriangle-500.jpg" alt="Circle and Triangle logo" class="logo-img">
+    <div class="masthead-center">
+      <div class="masthead-title">Circle <span class="amp">&amp;</span> Triangle</div>
+      <div class="masthead-rule"></div>
+      <div class="masthead-tagline">"There is intelligent design, but we are the designers."</div>
+    </div>
+    <div class="masthead-right">
+      <span class="edition-label">Edition</span>
+      <span class="edition-date" id="edition-date"></span>
+    </div>
+  </div>
+  <nav class="primary-nav">
+    <a class="nav-item active" href="#">Feed</a>
+    <a class="nav-item" href="#">The Book</a>
+    <a class="nav-item" href="#">Phil Davidson</a>
+    <a class="nav-item" href="#">CCS Updates</a>
+    <a class="nav-item" href="#">Bill's Corner</a>
+    <a class="nav-item" href="#">God of Money</a>
+    <a class="nav-item" href="#">About</a>
+    <a class="nav-item" href="#">Download</a>
+  </nav>
+</header>
+
+<div class="breaking-bar">
+  <span class="breaking-kicker">Classified</span>
+  Pilot Algorithm Update 4.7 — Sector compliance thresholds revised upward for third consecutive quarter. Citizens advised to adjust outlook accordingly.
+</div>
+
+<div class="content-wrap">
+
+  <div class="lead-grid">
+    <div class="lead-main">
+      <span class="tag tag-fiction">Fiction</span>
+      <h1 class="hl-lead">Phil Davidson Cited for Unlicensed Assembly After Viral Performance at the Goat &amp; Compasses</h1>
+      <div class="pull-quote">"I was just playing the set," Davidson told officers. Pilot is not satisfied with this explanation.</div>
+      <p class="dek">A routine Thursday evening at the North London pub ended with forty-seven compliance flags, a noise abatement notice, and what three separate witnesses described as a minor miracle. Davidson denies any messianic intent. His manager Des was unavailable for comment, though sources confirm he was seen making a phone call shortly before the evening's events took a turn.</p>
+      <div class="byline">Fiction &nbsp;·&nbsp; Phil Davidson &nbsp;·&nbsp; CCS Sector 4 &nbsp;·&nbsp; 14 min read</div>
+    </div>
+    <div class="lead-sidebar">
+      <div class="sidebar-story">
+        <span class="tag tag-real">Real</span>
+        <h3 class="hl-small">UK Government Trials AI Welfare Assessment System. Officials Insist It Is Not a Credit Score.</h3>
+        <p class="dek" style="font-size:12.5px">The Department for Work and Pensions has denied that its new algorithmic eligibility tool constitutes a civil credit score in any meaningful sense. Critics are unconvinced.</p>
+        <div class="byline">Real &nbsp;·&nbsp; CCS Parallel &nbsp;·&nbsp; 6 min read</div>
+      </div>
+      <div class="sidebar-story">
+        <span class="tag tag-classified">Classified</span>
+        <h3 class="hl-small">Jo and Bill Reach Settlement in Contested Cosmology Dispute. Terms Undisclosed.</h3>
+        <div class="byline">Classified &nbsp;·&nbsp; Theological &nbsp;·&nbsp; Source Unknown</div>
+      </div>
+      <div class="sidebar-story">
+        <span class="tag tag-ccs">CCS Update</span>
+        <h3 class="hl-small">New Emotional Compliance Metrics Will Include "Sufficient Gratitude" as Measurable Category From Q2</h3>
+        <div class="byline">CCS Update &nbsp;·&nbsp; Pilot Dispatch &nbsp;·&nbsp; 3 min read</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <span class="section-title">Latest</span>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="three-col">
+    <div class="col-story">
+      <span class="tag tag-real">Real</span>
+      <h3 class="hl-sub">Wall Street Bull Vandalized for Sixth Time This Year. Attacker Described as "Druidic in Appearance."</h3>
+      <p class="dek">Financial district authorities have escalated the investigation. Witnesses report the individual was accompanied by what appeared to be a very large dog and was singing something in a language nobody could identify.</p>
+      <div class="byline">Real &nbsp;·&nbsp; God of Money &nbsp;·&nbsp; 5 min read</div>
+    </div>
+    <div class="col-story">
+      <span class="tag tag-fiction">Fiction</span>
+      <h3 class="hl-sub">Madeleine Speaks: "I Never Said He Was the Messiah. I Said He Was Impossible to Live With."</h3>
+      <p class="dek">An exclusive interview with Phil Davidson's former partner, who insists she is not Magdalene, has never been Magdalene, and would like everyone to stop calling her flat The Upper Room.</p>
+      <div class="byline">Fiction &nbsp;·&nbsp; Exclusive &nbsp;·&nbsp; 9 min read</div>
+    </div>
+    <div class="col-story">
+      <span class="tag tag-god">God of Money</span>
+      <h3 class="hl-sub">The God of Money Has Been Spotted Outside Three Major Religious Institutions This Week</h3>
+      <p class="dek">Reports from Rome, Canterbury, and Salt Lake City describe an oily, purring presence near donation processing centres. No official comment has been forthcoming.</p>
+      <div class="byline">Classified &nbsp;·&nbsp; God of Money &nbsp;·&nbsp; 7 min read</div>
+    </div>
+  </div>
+
+  <div class="lower-grid">
+    <div class="lower-story">
+      <span class="tag tag-ccs">CCS Update</span>
+      <h3 class="hl-sub">Pilot Announces "Compassion Audit" for Public Sector Workers. Participation is Voluntary. Scores Will Be Recorded.</h3>
+      <p class="dek">The latest directive marks the first time emotional responses to news events will be factored into quarterly assessments. Union representatives have described the scheme as "Orwellian." Their scores have been noted.</p>
+      <div class="byline">CCS Update &nbsp;·&nbsp; 8 min read</div>
+    </div>
+    <div class="lower-story">
+      <span class="tag tag-fiction">Fiction</span>
+      <h3 class="hl-small">Kai Fassard, Director of Compliance, Issues Statement Calling Phil Davidson "A Person of No Particular Concern"</h3>
+      <div class="byline">Fiction &nbsp;·&nbsp; 4 min read</div>
+    </div>
+    <div class="lower-story">
+      <span class="tag tag-classified">Classified</span>
+      <h3 class="hl-small">The Plastic Panda Has Moved. Nobody Knows Where. This Is the Third Time This Month.</h3>
+      <div class="byline">Classified &nbsp;·&nbsp; God of Money &nbsp;·&nbsp; Developing</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <span class="section-title">Bill's Corner</span>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="three-col no-top">
+    <div class="col-story">
+      <span class="tag tag-bill">Bill's Corner</span>
+      <h3 class="hl-sub">On the Devil as Structural Problem: Why Western Civilisation Built Its Own Shadow and Cannot Stop Feeding It</h3>
+      <p class="dek">Bill argues that the real dysfunction of the West is not moral but architectural — you cannot build a God without building a Devil, and you cannot build a Devil without eventually letting it win.</p>
+      <div class="byline">Essay &nbsp;·&nbsp; 18 min read</div>
+    </div>
+    <div class="col-story">
+      <span class="tag tag-bill">Bill's Corner</span>
+      <h3 class="hl-sub">"The Eastern Traditions Did Not Make This Mistake." An Interview with Bill.</h3>
+      <p class="dek">We sat down with the druid-adjacent figure at the edge of the story. He brought elderflower wine and stayed for four hours.</p>
+      <div class="byline">Interview &nbsp;·&nbsp; 12 min read</div>
+    </div>
+    <div class="col-story">
+      <span class="tag tag-real">Real</span>
+      <h3 class="hl-sub">Blake's Marriage of Heaven and Hell — What He Was Actually Saying, and Why We Still Haven't Listened</h3>
+      <p class="dek">The epigraphs throughout The Crossroads are drawn from William Blake. This is not a coincidence. This is the entire argument.</p>
+      <div class="byline">Context &nbsp;·&nbsp; 10 min read</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div>
+    <div class="footer-logo">Circle <span class="amp">&amp;</span> Triangle</div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#555;margin-top:6px;letter-spacing:0.06em;">circleandtriangle.co.uk &nbsp;·&nbsp; promotional site for The Crossroads by [the author]</div>
+  </div>
+  <div class="footer-info">
+    FICTION = from the world of the novel &nbsp;·&nbsp; REAL = from ours<br>
+    CLASSIFIED = could be either. You decide.<br>
+    CCS score updates every 24 hours. Compliance is not optional.
+  </div>
+</footer>
+
+<script>
+  const d = new Date();
+  document.getElementById('live-date').textContent =
+    d.toLocaleDateString('en-GB', {weekday:'long', year:'numeric', month:'long', day:'numeric'}).toUpperCase();
+  document.getElementById('edition-date').textContent =
+    d.toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric'}).toUpperCase();
+
+  const items = [
+    'CCS DAILY AVERAGE: <span class="hi">847</span> <span class="up">↑2</span>',
+    'PHIL DAVIDSON TRENDING<span class="sep">·</span>SECTOR 4<span class="sep">·</span>UNVERIFIED',
+    'GOD OF MONEY INDEX: <span class="up">+3.1%</span>',
+    'COMPLIANCE RATE: <span class="hi">94.7%</span>',
+    'NEXT REVIEW CYCLE: <span class="hi">14 DAYS</span>',
+    'PILOT ALGORITHM: <span class="hi">OPERATIONAL</span>',
+    'DAVIDSON SIGHTING CONFIRMED<span class="sep">·</span>NORTH LONDON',
+    'JO DECLINES COMMENT ON RECENT EVENTS',
+    "BILL'S CORNER: NEW DISPATCH FILED",
+    'PLASTIC PANDA ALERT<span class="sep">·</span>LOCATION UNKNOWN',
+    'EMOTIONAL COMPLIANCE METRICS ACTIVE FROM Q2',
+  ];
+  const inner = document.getElementById('ticker');
+  const html = items.map(t => `<span class="ticker-item">${t}</span>`).join('');
+  inner.innerHTML = html + html;
+
+  let ccs = 847;
+  setInterval(() => {
+    ccs = Math.max(820, Math.min(980, ccs + (Math.random() > 0.65 ? (Math.random() > 0.5 ? 1 : -1) : 0)));
+    document.getElementById('ccs-number').textContent = ccs;
+  }, 4000);
+</script>
+</body>
+</html>
