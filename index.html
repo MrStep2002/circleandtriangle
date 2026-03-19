@@ -70,6 +70,50 @@
     /* CONTENT */
     .content-wrap { max-width: 1300px; margin: 0 auto; padding: 0 20px; }
 
+     /* SLIDESHOW */
+.lead-slideshow {
+  position: relative;
+  overflow: hidden;
+  width: 420px;
+  flex-shrink: 0;
+}
+.slide-track {
+  display: flex;
+  transition: transform 0.4s ease;
+}
+.slide-track .lead-top-img {
+  flex-shrink: 0;
+  width: 420px;
+}
+.slide-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  border: none;
+  font-size: 24px;
+  padding: 6px 10px;
+  cursor: pointer;
+  z-index: 2;
+  line-height: 1;
+}
+.slide-btn:hover { background: var(--accent); }
+.slide-prev { left: 6px; }
+.slide-next { right: 6px; }
+.slide-counter {
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: #fff;
+  background: rgba(0,0,0,0.5);
+  padding: 2px 6px;
+  letter-spacing: 0.06em;
+}
+
+    
     /* TAGS */
     .tag { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 2px 6px; display: inline-block; margin-bottom: 6px; }
     .tag-fiction { background: #1a1816; color: #fff; }
@@ -442,20 +486,27 @@
     <!-- LEFT: lead story + two secondaries -->
     <div class="lead-main">
 
-      <!-- COMPACT LEAD: image left, text right -->
-      <div class="lead-top">
-        <img src="images/Phil-being-hounded.jpg"
-             alt="Phil Davidson"
-             class="lead-top-img"
-             onerror="this.style.minHeight='200px';">
-        <div class="lead-top-text">
-          <span class="tag tag-fiction">Fiction</span>
-          <h1 class="hl-lead">Phil Davidson rockets to success: so what is haunting him?</h1>
-          <div class="pull-quote">"I've never even played guitar before!" claims the musician. Rumours of a Satanic pact continue to grow...</div>
-          <p class="dek">A month ago, Phil Davidson burst onto the scene with a series of albums that have seen him rocket to the kind of success that hasn't been seen in years. Despite this, the singer claims never to have played guitar before and, some claim, his talent was a "gift from the Devil."</p>
-          <div class="byline">Fiction &nbsp;·&nbsp; Phil Davidson &nbsp;·&nbsp; CCS Sector 4 &nbsp;·&nbsp; 14 min read</div>
-        </div>
-      </div>
+      <!-- COMPACT LEAD: slideshow left, text right -->
+<div class="lead-top">
+  <div class="lead-slideshow">
+    <div class="slide-track" id="slideTrack">
+      <img src="images/Phil-being-hounded.jpg"  class="lead-top-img" alt="Phil Davidson">
+      <img src="images/ai-crash.jpg"   class="lead-top-img" alt="Caption two">
+      <img src="images/Jo-and-Bill.jpg"    class="lead-top-img" alt="Caption three">
+    </div>
+    <button class="slide-btn slide-prev" onclick="moveSlide(-1)">&#8249;</button>
+    <button class="slide-btn slide-next" onclick="moveSlide(1)">&#8250;</button>
+    <div class="slide-counter" id="slideCounter">1 / 3</div>
+  </div>
+
+  <div class="lead-top-text">
+    <span class="tag tag-fiction">Fiction</span>
+    <h1 class="hl-lead">Phil Davidson rockets to success: so what is haunting him?</h1>
+    <div class="pull-quote">"I've never even played guitar before!" claims the musician. Rumours of a Satanic pact continue to grow...</div>
+    <p class="dek">A month ago, Phil Davidson burst onto the scene with a series of albums that have seen him rocket to the kind of success that hasn't been seen in years. Despite this, the singer claims never to have played guitar before and, some claim, his talent was a "gift from the Devil."</p>
+    <div class="byline">Fiction &nbsp;·&nbsp; Phil Davidson &nbsp;·&nbsp; CCS Sector 4 &nbsp;·&nbsp; 14 min read</div>
+  </div>
+</div>
 
       <!-- TWO SECONDARY STORIES -->
       <div class="lead-secondary">
@@ -638,6 +689,19 @@
   const html = items.map(t => `<span class="ticker-item">${t}</span>`).join('');
   inner.innerHTML = html + html;
 
+let currentSlide = 0;
+const slides = document.querySelectorAll('.slide-track .lead-top-img');
+const total = slides.length;
+
+function moveSlide(dir) {
+  currentSlide = (currentSlide + dir + total) % total;
+  document.getElementById('slideTrack').style.transform = `translateX(-${currentSlide * 420}px)`;
+  document.getElementById('slideCounter').textContent = `${currentSlide + 1} / ${total}`;
+}
+
+// Auto-advance every 5 seconds
+setInterval(() => moveSlide(1), 5000);
+  
   // sync CCS numbers
   let ccs = 847;
   setInterval(() => {
