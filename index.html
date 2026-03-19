@@ -2,177 +2,389 @@
 <html lang="en">
 <head>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Circle & Triangle</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #ffffff;
-    --bg-light: #f7f5f2;
-    --text: #1a1816;
-    --text-mid: #4a4540;
-    --text-dim: #8a8480;
-    --rule: #c8c0b4;
-    --rule-dark: #2a2520;
-    --accent: #c8000a;
-    --amber: #b8860b;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Circle & Triangle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-light: #f7f5f2;
+      --text: #1a1816;
+      --text-mid: #4a4540;
+      --text-dim: #8a8480;
+      --rule: #c8c0b4;
+      --rule-dark: #2a2520;
+      --accent: #c8000a;
+      --amber: #b8860b;
+    }
 
-<!-- IMAGE SIZES:
-  Lead story: 1600 x 900px (16:9)
-  Sidebar: 800 x 600px (4:3)
-  Latest/Bill's Corner: 800 x 600px (4:3)
-  Featured story: 1600 x 900px (16:9)
--->
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--bg); color: var(--text); font-family: 'Source Serif 4', serif; font-size: 15px; line-height: 1.5; }
+    a { color: inherit; text-decoration: none; }
 
-  
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: var(--bg); color: var(--text); font-family: 'Source Serif 4', serif; font-size: 15px; line-height: 1.5; }
-  a { color: inherit; text-decoration: none; }
+    /* TICKER */
+    .ticker-bar { background: var(--text); overflow: hidden; height: 26px; display: flex; align-items: center; position: sticky; top: 0; z-index: 100; }
+    .ticker-label { background: var(--accent); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; padding: 0 12px; height: 100%; display: flex; align-items: center; white-space: nowrap; flex-shrink: 0; }
+    .ticker-track { overflow: hidden; flex: 1; }
+    .ticker-inner { display: flex; animation: ticker 45s linear infinite; white-space: nowrap; }
+    .ticker-inner:hover { animation-play-state: paused; }
+    .ticker-item { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: #c8c0b4; padding: 0 28px; letter-spacing: 0.04em; }
+    .ticker-item .hi { color: #e8d090; }
+    .ticker-item .up { color: #6abf6a; }
+    .ticker-item .sep { color: #555; margin: 0 6px; }
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-  /* TICKER */
-  .ticker-bar { background: var(--text); overflow: hidden; height: 26px; display: flex; align-items: center; position: sticky; top: 0; z-index: 100; }
-  .ticker-label { background: var(--accent); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; padding: 0 12px; height: 100%; display: flex; align-items: center; white-space: nowrap; flex-shrink: 0; }
-  .ticker-track { overflow: hidden; flex: 1; }
-  .ticker-inner { display: flex; animation: ticker 45s linear infinite; white-space: nowrap; }
-  .ticker-inner:hover { animation-play-state: paused; }
-  .ticker-item { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: #c8c0b4; padding: 0 28px; letter-spacing: 0.04em; }
-  .ticker-item .hi { color: #e8d090; }
-  .ticker-item .up { color: #6abf6a; }
-  .ticker-item .sep { color: #555; margin: 0 6px; }
-  @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    /* TOP BAR */
+    .top-bar { border-bottom: 1px solid var(--rule); padding: 5px 20px; display: flex; align-items: center; justify-content: space-between; }
+    .top-bar-left { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; }
+    .ccs-pill { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-mid); letter-spacing: 0.05em; padding: 2px 8px; border: 1px solid var(--rule); background: var(--bg-light); }
+    .ccs-pill .score { color: var(--amber); font-weight: 600; }
+    .ccs-pill .up { color: #3a7a3a; }
 
-  /* TOP BAR */
-  .top-bar { border-bottom: 1px solid var(--rule); padding: 5px 20px; display: flex; align-items: center; justify-content: space-between; }
-  .top-bar-left { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; }
-  .ccs-pill { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-mid); letter-spacing: 0.05em; padding: 2px 8px; border: 1px solid var(--rule); background: var(--bg-light); }
-  .ccs-pill .score { color: var(--amber); font-weight: 600; }
-  .ccs-pill .up { color: #3a7a3a; }
+    /* MASTHEAD */
+    .masthead { border-bottom: 3px solid var(--rule-dark); padding: 0 20px; }
+    .masthead-inner { display: flex; align-items: center; justify-content: space-between; padding: 12px 0 8px; gap: 16px; }
+    .logo-img { width: 52px; height: 52px; object-fit: contain; flex-shrink: 0; filter: brightness(0.15); }
+    .masthead-center { text-align: center; flex: 1; }
+    .masthead-title { font-family: 'Playfair Display', serif; font-size: clamp(34px, 5.5vw, 66px); font-weight: 900; color: var(--text); letter-spacing: -0.01em; line-height: 1; text-transform: uppercase; }
+    .masthead-title .amp { color: var(--accent); font-style: italic; font-weight: 700; }
+    .masthead-rule { width: 100%; height: 1px; background: var(--rule); margin: 5px 0; }
+    .masthead-tagline { font-family: 'Source Serif 4', serif; font-style: italic; font-size: 12px; color: var(--text-dim); letter-spacing: 0.04em; }
+    .masthead-right { text-align: right; flex-shrink: 0; min-width: 110px; }
+    .edition-label { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 600; color: var(--text-dim); letter-spacing: 0.1em; text-transform: uppercase; display: block; }
+    .edition-date { font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; color: var(--text-mid); letter-spacing: 0.04em; text-transform: uppercase; display: block; margin-top: 2px; line-height: 1.25; }
 
-  /* MASTHEAD */
-  .masthead { border-bottom: 3px solid var(--rule-dark); padding: 0 20px; }
-  .masthead-inner { display: flex; align-items: center; justify-content: space-between; padding: 12px 0 8px; gap: 16px; }
-  .logo-img { width: 52px; height: 52px; object-fit: contain; flex-shrink: 0; filter: brightness(0.15); }
-  .masthead-center { text-align: center; flex: 1; }
-  .masthead-title { font-family: 'Playfair Display', serif; font-size: clamp(34px, 5.5vw, 66px); font-weight: 900; color: var(--text); letter-spacing: -0.01em; line-height: 1; text-transform: uppercase; }
-  .masthead-title .amp { color: var(--accent); font-style: italic; font-weight: 700; }
-  .masthead-rule { width: 100%; height: 1px; background: var(--rule); margin: 5px 0; }
-  .masthead-tagline { font-family: 'Source Serif 4', serif; font-style: italic; font-size: 12px; color: var(--text-dim); letter-spacing: 0.04em; }
-  .masthead-right { text-align: right; flex-shrink: 0; min-width: 110px; }
-  .edition-label { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 600; color: var(--text-dim); letter-spacing: 0.1em; text-transform: uppercase; display: block; }
-  .edition-date { font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; color: var(--text-mid); letter-spacing: 0.04em; text-transform: uppercase; display: block; margin-top: 2px; line-height: 1.25; }
+    /* NAV */
+    .primary-nav { border-top: 1px solid var(--rule); display: flex; justify-content: center; flex-wrap: wrap; }
+    .nav-item { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; color: var(--text-mid); letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 14px; border-right: 1px solid var(--rule); cursor: pointer; transition: color 0.12s, background 0.12s; }
+    .nav-item:first-child { border-left: 1px solid var(--rule); }
+    .nav-item:hover { color: var(--accent); background: var(--bg-light); }
+    .nav-item.active { color: var(--accent); border-bottom: 2px solid var(--accent); margin-bottom: -1px; }
 
-  /* NAV */
-  .primary-nav { border-top: 1px solid var(--rule); display: flex; justify-content: center; flex-wrap: wrap; }
-  .nav-item { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; color: var(--text-mid); letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 14px; border-right: 1px solid var(--rule); cursor: pointer; transition: color 0.12s, background 0.12s; }
-  .nav-item:first-child { border-left: 1px solid var(--rule); }
-  .nav-item:hover { color: var(--accent); background: var(--bg-light); }
-  .nav-item.active { color: var(--accent); border-bottom: 2px solid var(--accent); margin-bottom: -1px; }
+    /* BREAKING */
+    .breaking-bar { background: var(--accent); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 20px; display: flex; align-items: center; gap: 14px; }
+    .breaking-kicker { background: #fff; color: var(--accent); font-size: 9px; padding: 1px 5px; font-weight: 800; letter-spacing: 0.1em; flex-shrink: 0; }
 
-  /* BREAKING */
-  .breaking-bar { background: var(--accent); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 20px; display: flex; align-items: center; gap: 14px; }
-  .breaking-kicker { background: #fff; color: var(--accent); font-size: 9px; padding: 1px 5px; font-weight: 800; letter-spacing: 0.1em; flex-shrink: 0; }
+    /* CONTENT */
+    .content-wrap { max-width: 1300px; margin: 0 auto; padding: 0 20px; }
 
-  /* CONTENT */
-  .content-wrap { max-width: 1300px; margin: 0 auto; padding: 0 20px; }
+    /* TAGS */
+    .tag { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 2px 6px; display: inline-block; margin-bottom: 6px; }
+    .tag-fiction { background: #1a1816; color: #fff; }
+    .tag-real { background: #e8f0e8; color: #2d5a2d; border: 1px solid #b0d0b0; }
+    .tag-classified { background: #f0e8f0; color: #5a2d7a; border: 1px solid #c0a0d0; }
+    .tag-ccs { background: #e8eef8; color: #1a3a6a; border: 1px solid #a0b8d8; }
+    .tag-god { background: #fef0e0; color: #7a4000; border: 1px solid #d4a060; }
+    .tag-bill { background: #e8f4e8; color: #2d4a1a; border: 1px solid #90b870; }
 
-  /* IMAGES */
-  /* Replace src with your actual image path, e.g. images/phil-davidson.jpg */
-  .story-img {
-    width: 100%;
-    aspect-ratio: 16/9;
-    object-fit: cover;
-    display: block;
-    margin-bottom: 14px;
-    background: #e8e4dc; /* shows if image missing */
-  }
-  .story-img-square {
-    width: 100%;
-    aspect-ratio: 4/3;
-    object-fit: cover;
-    display: block;
-    margin-bottom: 10px;
-    background: #e8e4dc;
-  }
-  .story-img-thumb {
-    width: 100%;
-    aspect-ratio: 3/2;
-    object-fit: cover;
-    display: block;
-    margin-bottom: 8px;
-    background: #e8e4dc;
-  }
+    /* HEADLINES */
+    .hl-lead { font-family: 'Playfair Display', serif; font-size: clamp(20px, 2.4vw, 30px); font-weight: 700; line-height: 1.12; color: var(--text); margin-bottom: 8px; }
+    .hl-sub { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; line-height: 1.2; color: var(--text); margin-bottom: 6px; }
+    .hl-small { font-family: 'Playfair Display', serif; font-size: 14.5px; font-weight: 700; line-height: 1.2; color: var(--text); margin-bottom: 5px; }
+    .dek { font-size: 13.5px; color: var(--text-mid); line-height: 1.55; margin-bottom: 10px; }
+    .byline { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 600; color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase; border-top: 1px solid var(--rule); padding-top: 8px; margin-top: auto; }
 
-  /* placeholder shimmer when no image loaded */
-  .img-placeholder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 10px;
-    color: var(--text-dim);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    background: var(--bg-light);
-    border: 1px dashed var(--rule);
-  }
+    .pull-quote { border-left: 3px solid var(--accent); padding: 8px 14px; margin: 10px 0; font-family: 'Playfair Display', serif; font-style: italic; font-size: 14px; color: var(--text-mid); line-height: 1.4; background: var(--bg-light); }
 
-  /* LEAD */
-  .lead-grid { display: grid; grid-template-columns: 1fr 310px; gap: 0; border-bottom: 1px solid var(--rule); margin-top: 20px; }
-  .lead-main { padding-right: 24px; border-right: 1px solid var(--rule); padding-bottom: 20px; }
-  .lead-sidebar { padding-left: 20px; display: flex; flex-direction: column; padding-bottom: 20px; }
+    /* =====================
+       LEAD GRID — Reuters style
+       Main story left, sidebar right
+       Lead image is now compact newspaper-style, not hero
+    ===================== */
+    .lead-grid {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 0;
+      border-bottom: 1px solid var(--rule);
+      margin-top: 20px;
+    }
 
-  /* TAGS */
-  .tag { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 2px 6px; display: inline-block; margin-bottom: 6px; }
-  .tag-fiction { background: #1a1816; color: #fff; }
-  .tag-real { background: #e8f0e8; color: #2d5a2d; border: 1px solid #b0d0b0; }
-  .tag-classified { background: #f0e8f0; color: #5a2d7a; border: 1px solid #c0a0d0; }
-  .tag-ccs { background: #e8eef8; color: #1a3a6a; border: 1px solid #a0b8d8; }
-  .tag-god { background: #fef0e0; color: #7a4000; border: 1px solid #d4a060; }
-  .tag-bill { background: #e8f4e8; color: #2d4a1a; border: 1px solid #90b870; }
+    /* Left: lead story + below it a row of 2 secondary stories */
+    .lead-main {
+      padding-right: 24px;
+      border-right: 1px solid var(--rule);
+      padding-bottom: 20px;
+    }
 
-  /* HEADLINES */
-  .hl-lead { font-family: 'Playfair Display', serif; font-size: clamp(22px, 3vw, 38px); font-weight: 700; line-height: 1.12; color: var(--text); margin-bottom: 10px; }
-  .hl-sub { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; line-height: 1.2; color: var(--text); margin-bottom: 6px; }
-  .hl-small { font-family: 'Playfair Display', serif; font-size: 14.5px; font-weight: 700; line-height: 1.2; color: var(--text); margin-bottom: 5px; }
-  .dek { font-size: 13.5px; color: var(--text-mid); line-height: 1.55; margin-bottom: 10px; }
-  .byline { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 600; color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase; border-top: 1px solid var(--rule); padding-top: 8px; margin-top: auto; padding-top: 8px; }
+    /* The top of the lead: image left, headline/dek right — compact newspaper style */
+    .lead-top {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 16px;
+    }
 
-  .pull-quote { border-left: 3px solid var(--accent); padding: 8px 14px; margin: 12px 0; font-family: 'Playfair Display', serif; font-style: italic; font-size: 16px; color: var(--text-mid); line-height: 1.4; background: var(--bg-light); }
+    .lead-top-img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      display: block;
+      background: var(--bg-light);
+      border: 1px dashed var(--rule);
+    }
 
-  .sidebar-story { padding: 14px 0; border-bottom: 1px solid var(--rule); display: flex; flex-direction: column; }
-  .sidebar-story:last-child { border-bottom: none; }
+    .lead-top-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
 
-  /* GRIDS */
-  .section-header { display: flex; align-items: center; gap: 12px; padding: 10px 0 8px; border-top: 2px solid var(--rule-dark); border-bottom: 1px solid var(--rule); margin-top: 24px; }
-  .section-title { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; color: var(--text); letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
-  .section-line { flex: 1; height: 1px; background: var(--rule); }
+    /* Below lead: two secondary stories side by side */
+    .lead-secondary {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
 
-  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 2px solid var(--rule-dark); border-bottom: 1px solid var(--rule); }
-  .three-col.no-top { border-top: none; }
-  .col-story { padding: 20px; border-right: 1px solid var(--rule); display: flex; flex-direction: column; }
-  .col-story:last-child { border-right: none; }
+    .lead-sec-story {
+      padding-right: 20px;
+      border-right: 1px solid var(--rule);
+      display: flex;
+      flex-direction: column;
+    }
+    .lead-sec-story:last-child {
+      padding-right: 0;
+      padding-left: 20px;
+      border-right: none;
+    }
 
-  .lower-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 0; border-bottom: 2px solid var(--rule-dark); }
-  .lower-story { padding: 20px; border-right: 1px solid var(--rule); display: flex; flex-direction: column; }
-  .lower-story:last-child { border-right: none; }
+    .sec-img {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      display: block;
+      margin-bottom: 8px;
+      background: var(--bg-light);
+      border: 1px dashed var(--rule);
+    }
 
-  /* FOOTER */
-  footer { background: var(--text); color: #aaa; padding: 20px; margin-top: 40px; display: flex; align-items: center; justify-content: space-between; }
-  .footer-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 900; color: #fff; text-transform: uppercase; }
-  .footer-logo .amp { color: var(--accent); font-style: italic; }
-  .footer-info { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #666; letter-spacing: 0.06em; text-align: right; line-height: 1.6; }
+    /* RIGHT SIDEBAR */
+    .lead-sidebar {
+      padding-left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      padding-bottom: 20px;
+    }
 
-  @media (max-width: 860px) {
-    .lead-grid { grid-template-columns: 1fr; }
-    .lead-main { padding-right: 0; border-right: none; border-bottom: 1px solid var(--rule); }
-    .lead-sidebar { padding-left: 0; padding-top: 16px; }
-    .three-col, .lower-grid { grid-template-columns: 1fr; }
-    .col-story, .lower-story { border-right: none; border-bottom: 1px solid var(--rule); }
-  }
-</style>
+    /* =====================
+       BLAKE EPIGRAPH BOX
+       Like Reuters commentary panel — pale bordered box
+    ===================== */
+    .blake-box {
+      border: 1px solid #c8d8e8;
+      background: #f0f5fa;
+      padding: 16px 18px;
+      margin-bottom: 16px;
+    }
+
+    .blake-box-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #3a6a9a;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .blake-quote {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 15px;
+      line-height: 1.5;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .blake-quote::before { content: '\201C'; color: #3a6a9a; font-size: 22px; line-height: 0; vertical-align: -4px; margin-right: 2px; }
+    .blake-quote::after  { content: '\201D'; color: #3a6a9a; font-size: 22px; line-height: 0; vertical-align: -4px; margin-left: 2px; }
+
+    .blake-attr {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: #3a6a9a;
+      letter-spacing: 0.06em;
+    }
+
+    .blake-cta {
+      display: inline-block;
+      margin-top: 10px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #3a6a9a;
+      border-bottom: 1px solid #3a6a9a;
+      padding-bottom: 1px;
+    }
+    .blake-cta:hover { color: var(--accent); border-color: var(--accent); }
+
+    /* =====================
+       SIDEBAR AD UNIT — animated free download promo
+    ===================== */
+    .sidebar-ad {
+      border: 2px solid var(--rule-dark);
+      background: var(--text);
+      color: #fff;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      min-height: 260px;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    /* subtle animated scan line */
+    .sidebar-ad::before {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: rgba(200,0,10,0.5);
+      animation: scanline 4s linear infinite;
+    }
+    @keyframes scanline {
+      0%   { top: -2px; }
+      100% { top: 100%; }
+    }
+
+    .ad-eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .ad-logo {
+      width: 54px;
+      height: 54px;
+      object-fit: contain;
+      filter: invert(1);
+      margin-bottom: 12px;
+      animation: pulse-logo 3s ease-in-out infinite;
+    }
+    @keyframes pulse-logo {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.7; transform: scale(0.96); }
+    }
+
+    .ad-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.25;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .ad-sub {
+      font-family: 'Source Serif 4', serif;
+      font-style: italic;
+      font-size: 12px;
+      color: #aaa;
+      line-height: 1.45;
+      margin-bottom: 16px;
+    }
+
+    .ad-btn {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 8px 18px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      text-decoration: none;
+    }
+    .ad-btn:hover { background: #a00008; transform: translateY(-1px); }
+
+    .ad-small {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      color: #555;
+      margin-top: 10px;
+      letter-spacing: 0.06em;
+    }
+
+    /* CCS score in ad — animates */
+    .ad-ccs {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      color: #444;
+      letter-spacing: 0.08em;
+      margin-top: 14px;
+      border-top: 1px solid #333;
+      padding-top: 8px;
+      width: 100%;
+      text-align: left;
+    }
+    .ad-ccs .score { color: var(--amber); }
+
+    /* IMAGES */
+    .story-img-square {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      display: block;
+      margin-bottom: 10px;
+      background: #e8e4dc;
+    }
+    .story-img-thumb {
+      width: 100%;
+      aspect-ratio: 3/2;
+      object-fit: cover;
+      display: block;
+      margin-bottom: 8px;
+      background: #e8e4dc;
+    }
+
+    /* GRIDS */
+    .section-header { display: flex; align-items: center; gap: 12px; padding: 10px 0 8px; border-top: 2px solid var(--rule-dark); border-bottom: 1px solid var(--rule); margin-top: 24px; }
+    .section-title { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; color: var(--text); letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
+    .section-line { flex: 1; height: 1px; background: var(--rule); }
+
+    .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 2px solid var(--rule-dark); border-bottom: 1px solid var(--rule); }
+    .three-col.no-top { border-top: none; }
+    .col-story { padding: 20px; border-right: 1px solid var(--rule); display: flex; flex-direction: column; }
+    .col-story:last-child { border-right: none; }
+
+    /* FOOTER */
+    footer { background: var(--text); color: #aaa; padding: 20px; margin-top: 40px; display: flex; align-items: center; justify-content: space-between; }
+    .footer-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 900; color: #fff; text-transform: uppercase; }
+    .footer-logo .amp { color: var(--accent); font-style: italic; }
+    .footer-info { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #666; letter-spacing: 0.06em; text-align: right; line-height: 1.6; }
+
+    @media (max-width: 960px) {
+      .lead-grid { grid-template-columns: 1fr; }
+      .lead-main { padding-right: 0; border-right: none; border-bottom: 1px solid var(--rule); }
+      .lead-sidebar { padding-left: 0; padding-top: 16px; }
+      .lead-top { grid-template-columns: 1fr; }
+      .lead-secondary { grid-template-columns: 1fr; }
+      .lead-sec-story { padding-right: 0; padding-left: 0; border-right: none; border-bottom: 1px solid var(--rule); padding-bottom: 16px; margin-bottom: 16px; }
+      .three-col { grid-template-columns: 1fr; }
+      .col-story { border-right: none; border-bottom: 1px solid var(--rule); }
+    }
+  </style>
 </head>
 <body>
 
@@ -204,71 +416,99 @@
       <span class="edition-date" id="edition-date"></span>
     </div>
   </div>
-<nav class="primary-nav">
-  <a class="nav-item active" href="index.html">Feed</a>
-  <a class="nav-item" href="the-book.html">The Book</a>
-  <a class="nav-item" href="who-is-phil.html">Who is Phil?</a>
-  <a class="nav-item" href="pilot-and-the-ccs.html">Pilot and the CCS</a>
-  <a class="nav-item" href="philosophy.html">PHILosophy</a>
-  <a class="nav-item" href="the-author.html">The Author</a>
-  <a class="nav-item" href="free-download.html">FREE Download</a>
-</nav>
+  <nav class="primary-nav">
+    <a class="nav-item active" href="index.html">Feed</a>
+    <a class="nav-item" href="the-book.html">Get the Book</a>
+    <a class="nav-item" href="who-is-phil.html">Who is Phil?</a>
+    <a class="nav-item" href="pilot-and-the-ccs.html">Pilot and the CCS</a>
+    <a class="nav-item" href="philosophy.html">PHILosophy</a>
+    <a class="nav-item" href="the-author.html">The Author</a>
+    <a class="nav-item" href="free-download.html">FREE Download</a>
+  </nav>
 </header>
 
 <!-- BREAKING -->
 <div class="breaking-bar">
   <span class="breaking-kicker">Breaking</span>
-  Credit Scores being reduced in response to any involvement with Davidson's flag. 
+  Credit Scores being reduced in response to any involvement with Davidson's flag.
 </div>
 
 <!-- CONTENT -->
 <div class="content-wrap">
 
-  <!-- LEAD STORY + SIDEBAR -->
+  <!-- LEAD GRID -->
   <div class="lead-grid">
 
+    <!-- LEFT: lead story + two secondaries -->
     <div class="lead-main">
-           <span class="tag tag-fiction">Fiction</span>
-      <h1 class="hl-lead">Phil Davidson rockets to success: so what is haunting him?</h1>
-      <div class="pull-quote">"I've never even played guitar before!" claims the musician. More recently, rumours of a Satanic pact have been growing...</div> 
-      <!-- LEAD IMAGE — replace src with: images/your-lead-image.jpg -->
-      <img src="images/Phil-being-hounded.jpg"
-           alt="Phil Davidson at the Goat and Compasses"
-           class="story-img img-placeholder"
-           onerror="this.style.minHeight='220px'; this.alt='images/lead-story.jpg';">
-      <p class="dek">A month ago, Phil Davidson burst on the scene with a series of albums that have seen him rocket to the kind of success that hasn't been seen in years. Despite this, the singer claims never to have played guitar before and, some claim, his talent was a "gift from the Devil." Many suspect that his manager, Des Judd, who has documented links to the criminal networks that control the Slums, is puppeting the myth... </p>
-      <div class="byline">Fiction &nbsp;·&nbsp; Phil Davidson &nbsp;·&nbsp; CCS Sector 4 &nbsp;·&nbsp; 14 min read</div>
+
+      <!-- COMPACT LEAD: image left, text right -->
+      <div class="lead-top">
+        <img src="images/Phil-being-hounded.jpg"
+             alt="Phil Davidson"
+             class="lead-top-img"
+             onerror="this.style.minHeight='200px';">
+        <div class="lead-top-text">
+          <span class="tag tag-fiction">Fiction</span>
+          <h1 class="hl-lead">Phil Davidson rockets to success: so what is haunting him?</h1>
+          <div class="pull-quote">"I've never even played guitar before!" claims the musician. Rumours of a Satanic pact continue to grow...</div>
+          <p class="dek">A month ago, Phil Davidson burst onto the scene with a series of albums that have seen him rocket to the kind of success that hasn't been seen in years. Despite this, the singer claims never to have played guitar before and, some claim, his talent was a "gift from the Devil."</p>
+          <div class="byline">Fiction &nbsp;·&nbsp; Phil Davidson &nbsp;·&nbsp; CCS Sector 4 &nbsp;·&nbsp; 14 min read</div>
+        </div>
+      </div>
+
+      <!-- TWO SECONDARY STORIES -->
+      <div class="lead-secondary">
+        <div class="lead-sec-story">
+          <img src="images/ai-crash.jpg"
+               alt="UK welfare AI system"
+               class="sec-img"
+               onerror="this.style.minHeight='100px';">
+          <span class="tag tag-real">Real?</span>
+          <h3 class="hl-small">UK Government admits more trials for UBI and CCS should have been completed before AI Crash</h3>
+          <p class="dek" style="font-size:12.5px">"Everyone knew, but no-one did enough," said a DWP representative.</p>
+          <div class="byline">Real &nbsp;·&nbsp; CCS Parallel &nbsp;·&nbsp; 6 min read</div>
+        </div>
+        <div class="lead-sec-story">
+          <img src="images/Jo-and-Bill.jpg"
+               alt="Jo and Bill"
+               class="sec-img"
+               onerror="this.style.minHeight='100px';">
+          <span class="tag tag-classified">Classified</span>
+          <h3 class="hl-small">God and the Devil: the longest divorce in history nears a settlement. Terms to be disclosed.</h3>
+          <div class="byline">Classified &nbsp;·&nbsp; Theological &nbsp;·&nbsp; Source Unknown</div>
+        </div>
+      </div>
+
     </div>
 
+    <!-- RIGHT SIDEBAR -->
     <div class="lead-sidebar">
-      <div class="sidebar-story">
-        <!-- SIDEBAR IMAGE 1 — replace src with: images/sidebar-1.jpg -->
-        <img src="images/ai-crash.jpg"
-             alt="UK welfare AI system"
-             class="story-img-thumb img-placeholder"
-             onerror="this.style.minHeight='120px'; this.alt='images/sidebar-1.jpg';">
-        <span class="tag tag-real">Real?</span>
-        <h3 class="hl-small">UK Government admits that more trials for UBI and CCS should have been completed before AI Crash</h3>
-        <p class="dek" style="font-size:12.5px">The Department for Work and Pensions has accepted that it should have been better prepared for the AI Crash. "Everyone knew, but no-one did enough," said a representative.</p>
-        <div class="byline">Real &nbsp;·&nbsp; CCS Parallel &nbsp;·&nbsp; 6 min read</div>
+
+      <!-- BLAKE EPIGRAPH BOX -->
+      <div class="blake-box">
+        <span class="blake-box-label">PHILosophy</span>
+        <p class="blake-quote">No bird soars too high if he soars with his own wings.</p>
+        <div class="blake-attr">— William Blake, <em>The Marriage of Heaven and Hell</em></div>
+        <a href="philosophy.html" class="blake-cta">Read the full argument →</a>
       </div>
 
-      <div class="sidebar-story">
-        <!-- SIDEBAR IMAGE 2 — replace src with: images/sidebar-2.jpg -->
-        <img src="images/Jo-and-Bill.jpg"
-             alt="Jo and Bill"
-             class="story-img-thumb img-placeholder"
-             onerror="this.style.minHeight='120px'; this.alt='images/sidebar-2.jpg';">
-        <span class="tag tag-classified">Classified</span>
-        <h3 class="hl-small">God and the Devil: the longest divorce in history nears a settlement. Terms to be disclosed.</h3>
-        <div class="byline">Classified &nbsp;·&nbsp; Theological &nbsp;·&nbsp; Source Unknown</div>
+      <!-- FREE DOWNLOAD AD -->
+      <div class="sidebar-ad">
+        <div class="ad-eyebrow">Classified &nbsp;·&nbsp; CCS Clearance Required</div>
+        <img src="circleandtriangle-500.jpg" alt="Circle and Triangle" class="ad-logo"
+             onerror="this.style.display='none'">
+        <div class="ad-headline">Read The Crossroad.<br>Free. While you still can.</div>
+        <div class="ad-sub">Before Pilot decides what you're allowed to think.</div>
+        <a href="free-download.html" class="ad-btn">Free Download</a>
+        <div class="ad-small">No CCS points required. For now.</div>
+        <div class="ad-ccs">CCS AVG: <span class="score" id="ad-ccs-number">847</span> &nbsp;·&nbsp; READING: PERMITTED</div>
       </div>
 
     </div>
-
   </div>
 
-  <!-- LATEST — single row of 3 -->
+  <!-- LATEST -->
   <div class="section-header">
     <span class="section-title">Latest</span>
     <div class="section-line"></div>
@@ -276,57 +516,52 @@
 
   <div class="three-col">
     <div class="col-story">
-      <!-- LATEST IMAGE 1 — replace src with: images/latest-1.jpg -->
       <img src="images/London_School_of_Economics-Logo.jpg"
            alt="LSE Logo"
-           class="story-img-square img-placeholder"
-           onerror="this.style.minHeight='160px'; this.alt='images/latest-1.jpg';">
+           class="story-img-square"
+           onerror="this.style.minHeight='160px';">
       <span class="tag tag-real">Real</span>
-    <h3 class="hl-sub"><a href="https://blogs.lse.ac.uk/internationaldevelopment/2025/10/09/the-coming-global-financial-crash-through-an-lse-lens/" target="_blank">The Coming Global Financial Crash Through an LSE Lens</a></h3>
-      <p class="dek">MSc International Development and Humanitarian Emergencies alumna Fatima Binte Umar reflects on an LSE International Development event...</p>
+      <h3 class="hl-sub"><a href="https://blogs.lse.ac.uk/internationaldevelopment/2025/10/09/the-coming-global-financial-crash-through-an-lse-lens/" target="_blank">The Coming Global Financial Crash Through an LSE Lens</a></h3>
+      <p class="dek">MSc International Development alumna Fatima Binte Umar reflects on an LSE event exploring the next financial collapse...</p>
       <div class="byline">Real &nbsp;·&nbsp; God of Money &nbsp;·&nbsp; 5 min read</div>
     </div>
-
     <div class="col-story">
-      <!-- LATEST IMAGE 2 — replace src with: images/latest-2.jpg -->
       <img src="images/ten-years-of-pilot.jpg"
            alt="Who is Pilot?"
-           class="story-img-square img-placeholder"
-           onerror="this.style.minHeight='160px'; this.alt='images/latest-2.jpg';">
+           class="story-img-square"
+           onerror="this.style.minHeight='160px';">
       <span class="tag tag-fiction">The Future</span>
       <h3 class="hl-sub">Who is Pilot? We look back over ten years of life under AI.</h3>
       <p class="dek">Circle&Triangle has been granted an exclusive audience with Pilot. Though the guardrails remained up, there was still a lot to learn from the country's fearless leader.</p>
       <div class="byline">Fiction &nbsp;·&nbsp; Exclusive &nbsp;·&nbsp; 9 min read</div>
     </div>
-
     <div class="col-story">
-      <!-- LATEST IMAGE 3 — replace src with: images/latest-3.jpg -->
       <img src="images/creative-economy.jpg"
            alt="Creative Economy"
-           class="story-img-square img-placeholder"
-           onerror="this.style.minHeight='160px'; this.alt='images/latest-3.jpg';">
+           class="story-img-square"
+           onerror="this.style.minHeight='160px';">
       <span class="tag tag-god">CCS and the Creative Economy</span>
-      <h3 class="hl-sub">Work is dead! So why are we all working so hard? </h3>
-      <p class="dek">We explore the upsides - and the downsides - of working within the Creative Economy and ask whether this is really what progress looks like... </p>
+      <h3 class="hl-sub">Work is dead! So why are we all working so hard?</h3>
+      <p class="dek">We explore the upsides — and the downsides — of working within the Creative Economy and ask whether this is really what progress looks like...</p>
       <div class="byline">Classified &nbsp;·&nbsp; God of Money &nbsp;·&nbsp; 7 min read</div>
     </div>
   </div>
 
-<!-- FEATURED STORY — landscape image left, text right -->
-<div style="display:grid; grid-template-columns: 1fr 1fr; gap: 0; border-top: 2px solid var(--rule-dark); border-bottom: 2px solid var(--rule-dark); margin-top: 0;">
-  <img src="images/lower-1.jpg"
-       alt="Phil's Music"
-       style="width:100%; aspect-ratio:16/9; object-fit:cover; display:block; background:var(--bg-light); border: 1px dashed var(--rule);"
-       onerror="this.style.minHeight='220px';">
-  <div style="padding: 28px 28px 24px; display:flex; flex-direction:column; justify-content:center; border-left: 1px solid var(--rule);">
-    <span class="tag tag-ccs">CCS Update</span>
-    <h3 class="hl-sub" style="font-size: 22px; margin-bottom: 12px;">Since he's taken over Social Media, Phil Davidson has been everywhere. But is his music any good?</h3>
-    <p class="dek">For the last month, it's been impossible to go online without being confronted by an auditory wall of Phil Davidson's music. So take a moment to sit back and reflect on the highlights and lowlights of his first four albums...</p>
-    <div class="byline">CCS Update &nbsp;·&nbsp; 8 min read</div>
+  <!-- FEATURED STORY -->
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 0; border-top: 2px solid var(--rule-dark); border-bottom: 2px solid var(--rule-dark); margin-top: 0;">
+    <img src="images/lower-1.jpg"
+         alt="Phil's Music"
+         style="width:100%; aspect-ratio:16/9; object-fit:cover; display:block; background:var(--bg-light); border: 1px dashed var(--rule);"
+         onerror="this.style.minHeight='220px';">
+    <div style="padding: 28px 28px 24px; display:flex; flex-direction:column; justify-content:center; border-left: 1px solid var(--rule);">
+      <span class="tag tag-ccs">CCS Update</span>
+      <h3 class="hl-sub" style="font-size: 22px; margin-bottom: 12px;">Since he's taken over Social Media, Phil Davidson has been everywhere. But is his music any good?</h3>
+      <p class="dek">For the last month, it's been impossible to go online without being confronted by an auditory wall of Phil Davidson's music. So take a moment to sit back and reflect on the highlights and lowlights of his first four albums...</p>
+      <div class="byline">CCS Update &nbsp;·&nbsp; 8 min read</div>
+    </div>
   </div>
-</div>
 
-  <!-- BILL'S CORNER -->
+  <!-- A DEEP DIVE -->
   <div class="section-header">
     <span class="section-title">A Deep Dive</span>
     <div class="section-line"></div>
@@ -334,36 +569,33 @@
 
   <div class="three-col no-top">
     <div class="col-story">
-      <!-- BILL IMAGE 1 — replace src with: images/bill-1.jpg -->
       <img src="images/miltons-satan-crop.jpg"
            alt="Bill's Corner"
-           class="story-img-square img-placeholder"
-           onerror="this.style.minHeight='160px'; this.alt='images/bill-1.jpg';">
+           class="story-img-square"
+           onerror="this.style.minHeight='160px';">
       <span class="tag tag-bill">Lifestyle</span>
       <h3 class="hl-sub">The Structural Problem: Why Western Civilisation Needed The Devil (and why it can't cope with one anymore.)</h3>
-      <p class="dek">Bill used to be a welcome member of a panetheon of Gods, though the past thousand years haven't been kind to him. He's returning, however, and is saying it's time we moved on from the scapegoat...</p>
+      <p class="dek">Bill used to be a welcome member of a pantheon of Gods, though the past thousand years haven't been kind to him. He's returning — and he's saying it's time we moved on from the scapegoat...</p>
       <div class="byline">Essay &nbsp;·&nbsp; 18 min read</div>
     </div>
     <div class="col-story">
-      <!-- BILL IMAGE 2 — replace src with: images/bill-2.jpg -->
       <img src="images/lotus-2-crop.jpg"
            alt="Interview with Sid and Hiran"
-           class="story-img-square img-placeholder"
-           onerror="this.style.minHeight='160px'; this.alt='images/bill-2.jpg';">
+           class="story-img-square"
+           onerror="this.style.minHeight='160px';">
       <span class="tag tag-bill">Global Issues</span>
       <h3 class="hl-sub">"The Eastern Traditions Did Not Make These Mistakes." An Interview with Hiran and Sid.</h3>
-      <p class="dek">We sat down with two of Asia's most celebrated Gods and discussed the differences between the East and West and the reasons why, they believe, this mess is really not their fault...</p>
+      <p class="dek">We sat down with two of Asia's most celebrated Gods and discussed the differences between East and West and why, they believe, this mess is really not their fault...</p>
       <div class="byline">Interview &nbsp;·&nbsp; 12 min read</div>
     </div>
     <div class="col-story">
-      <!-- BILL IMAGE 3 — replace src with: images/bill-3.jpg -->
       <img src="images/marriage-of-heaven-and-hell-cropped.jpg"
            alt="William Blake"
-           class="story-img-square img-placeholder"
-           onerror="this.style.minHeight='160px'; this.alt='images/bill-3.jpg';">
+           class="story-img-square"
+           onerror="this.style.minHeight='160px';">
       <span class="tag tag-real">Arts and Culture</span>
       <h3 class="hl-sub">Blake's Marriage of Heaven and Hell — What He Was Actually Saying, and Why We Still Haven't Listened</h3>
-      <p class="dek">The epigraphs throughout The Crossroads are drawn from William Blake. This is not a coincidence. This is the entire argument.</p>
+      <p class="dek">The epigraphs throughout The Crossroad are drawn from William Blake. This is not a coincidence. This is the entire argument.</p>
       <div class="byline">Context &nbsp;·&nbsp; 10 min read</div>
     </div>
   </div>
@@ -373,7 +605,7 @@
 <footer>
   <div>
     <div class="footer-logo">Circle <span class="amp">&amp;</span> Triangle</div>
-    <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#555;margin-top:6px;letter-spacing:0.06em;">circleandtriangle.co.uk &nbsp;·&nbsp; promotional site for The Crossroads by [the author]</div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#555;margin-top:6px;letter-spacing:0.06em;">circleandtriangle.co.uk &nbsp;·&nbsp; promotional site for The Crossroad by [the author]</div>
   </div>
   <div class="footer-info">
     FICTION = from the world of the novel &nbsp;·&nbsp; REAL = from ours<br>
@@ -406,10 +638,12 @@
   const html = items.map(t => `<span class="ticker-item">${t}</span>`).join('');
   inner.innerHTML = html + html;
 
+  // sync CCS numbers
   let ccs = 847;
   setInterval(() => {
     ccs = Math.max(820, Math.min(980, ccs + (Math.random() > 0.65 ? (Math.random() > 0.5 ? 1 : -1) : 0)));
     document.getElementById('ccs-number').textContent = ccs;
+    document.getElementById('ad-ccs-number').textContent = ccs;
   }, 4000);
 </script>
 </body>
