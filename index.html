@@ -71,47 +71,16 @@
     .content-wrap { max-width: 1300px; margin: 0 auto; padding: 0 20px; }
 
      /* SLIDESHOW */
-.lead-slideshow {
-  position: relative;
-  overflow: hidden;
-  width: 420px;
-  flex-shrink: 0;
-}
-.slide-track {
-  display: flex;
-  transition: transform 0.4s ease;
-}
-.slide-track .lead-top-img {
-  flex-shrink: 0;
-  width: 420px;
-}
-.slide-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0,0,0,0.5);
-  color: #fff;
-  border: none;
-  font-size: 24px;
-  padding: 6px 10px;
-  cursor: pointer;
-  z-index: 2;
-  line-height: 1;
-}
+    .lead-slideshow { position: relative; overflow: hidden; width: 420px; flex-shrink: 0; }
+.slide-track { display: flex; transition: transform 0.4s ease; }
+.slide-item { flex-shrink: 0; width: 420px; position: relative; }
+.slide-item .lead-top-img { width: 100%; }
+.slide-caption { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.6); color: #fff; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.04em; padding: 6px 10px; line-height: 1.4; }
+.slide-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: #fff; border: none; font-size: 24px; padding: 6px 10px; cursor: pointer; z-index: 2; line-height: 1; }
 .slide-btn:hover { background: var(--accent); }
 .slide-prev { left: 6px; }
 .slide-next { right: 6px; }
-.slide-counter {
-  position: absolute;
-  bottom: 8px;
-  right: 10px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  color: #fff;
-  background: rgba(0,0,0,0.5);
-  padding: 2px 6px;
-  letter-spacing: 0.06em;
-}
+.slide-counter { position: absolute; bottom: 8px; right: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #fff; background: rgba(0,0,0,0.5); padding: 2px 6px; letter-spacing: 0.06em; }
 
     
     /* TAGS */
@@ -486,29 +455,31 @@
     <!-- LEFT: lead story + two secondaries -->
     <div class="lead-main">
 
-      <!-- COMPACT LEAD: slideshow left, text right -->
+<!-- COMPACT LEAD: slideshow left, text right -->
 <div class="lead-top">
   <div class="lead-slideshow">
+    <div class="slide-track" id="slideTrack">
 
-<div class="slide-track" id="slideTrack">
-  <div class="slide-item">
-    <img src="images/Phil-being-hounded.jpg" class="lead-top-img" alt="Phil Davidson">
-    <div class="slide-caption">Despite success, Davidson has not found peace</div>
-  </div>
-  <div class="slide-item">
-    <img src="images/ai-crash.jpg" class="lead-top-img" alt="Second image">
-    <div class="slide-caption">Your caption for the second image here.</div>
-  </div>
-</div>
-  <div class="slide-item">
-    <img src="images/Jo-and-Bill.jpg" class="lead-top-img" alt="God and the Devil">
-    <div class="slide-caption">The world's longest divorce.</div>
-  </div>
-</div>
+      <div class="slide-item">
+        <img src="images/Phil-being-hounded.jpg" class="lead-top-img" alt="Phil Davidson">
+        <div class="slide-caption">Despite success, Davidson has not found peace.</div>
+      </div>
+
+      <div class="slide-item">
+        <img src="images/ai-crash.jpg" class="lead-top-img" alt="AI Crash">
+        <div class="slide-caption">Your caption for the second image here.</div>
+      </div>
+
+      <div class="slide-item">
+        <img src="images/Jo-and-Bill.jpg" class="lead-top-img" alt="God and the Devil">
+        <div class="slide-caption">The world's longest divorce.</div>
+      </div>
+
+    </div><!-- /slide-track -->
     <button class="slide-btn slide-prev" onclick="moveSlide(-1)">&#8249;</button>
     <button class="slide-btn slide-next" onclick="moveSlide(1)">&#8250;</button>
     <div class="slide-counter" id="slideCounter">1 / 3</div>
-  </div>
+  </div><!-- /lead-slideshow -->
 
   <div class="lead-top-text">
     <span class="tag tag-fiction">Fiction</span>
@@ -517,7 +488,8 @@
     <p class="dek">A month ago, Phil Davidson burst onto the scene with a series of albums that have seen him rocket to the kind of success that hasn't been seen in years. Despite this, the singer claims never to have played guitar before and, some claim, his talent was a "gift from the Devil."</p>
     <div class="byline">Fiction &nbsp;·&nbsp; Phil Davidson &nbsp;·&nbsp; CCS Sector 4 &nbsp;·&nbsp; 14 min read</div>
   </div>
-</div>
+
+</div><!-- /lead-top -->
 
       <!-- TWO SECONDARY STORIES -->
       <div class="lead-secondary">
