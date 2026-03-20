@@ -82,6 +82,21 @@
 .slide-next { right: 6px; }
 .slide-counter { position: absolute; bottom: 8px; right: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #fff; background: rgba(0,0,0,0.5); padding: 2px 6px; letter-spacing: 0.06em; }
 
+ /* BLAKE QUOTES */
+const blakeQuotes = [
+  "No bird soars too high if he soars with his own wings.",
+  "The road of excess leads to the palace of wisdom.",
+  "Energy is eternal delight.",
+  "You never know what is enough unless you know what is more than enough.",
+  "The tigers of wrath are wiser than the horses of instruction.",
+  "Eternity is in love with the productions of time.",
+  "No bird soars too high if he soars with his own wings.",
+    "If the fool would persist in his folly, he would become wise.",
+  // add as many as you like here
+];
+
+const randomQuote = blakeQuotes[Math.floor(Math.random() * blakeQuotes.length)];
+document.getElementById('blake-quote').textContent = randomQuote;
     
     /* TAGS */
     .tag { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 2px 6px; display: inline-block !important; margin-bottom: 6px; width: auto; }    .three-col .tag { display: inline-block; }
@@ -534,13 +549,13 @@
         <div class="ad-ccs">CCS AVG: <span class="score" id="ad-ccs-number">847</span> &nbsp;·&nbsp; READING: PERMITTED</div>
       </div>
 
-      <!-- BLAKE EPIGRAPH BOX -->
-      <div class="blake-box">
-        <span class="blake-box-label">PHILosophy</span>
-        <p class="blake-quote">No bird soars too high if he soars with his own wings.</p>
-        <div class="blake-attr">— William Blake, <em>The Marriage of Heaven and Hell</em></div>
-        <a href="philosophy.html" class="blake-cta">Read the full argument →</a>
-      </div>
+     <!-- BLAKE EPIGRAPH BOX -->
+<div class="blake-box">
+  <span class="blake-box-label">PHILosophy</span>
+  <p class="blake-quote" id="blake-quote">No bird soars too high if he soars with his own wings.</p>
+  <div class="blake-attr">— William Blake, <em>The Proverbs of Hell</em></div>
+  <a href="philosophy.html" class="blake-cta">Read the full argument →</a>
+</div>
     
     </div>
   </div>
