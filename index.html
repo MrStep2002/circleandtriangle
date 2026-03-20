@@ -378,8 +378,10 @@
 
     .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 2px solid var(--rule-dark); border-bottom: 1px solid var(--rule); }
     .three-col.no-top { border-top: none; }
-    .col-story { padding: 20px 20px 20px 0; border-right: 1px solid var(--rule); display: flex; flex-direction: column; }
-    .col-story:last-child { border-right: none; }
+    .col-story { border-right: 1px solid var(--rule); display: flex; flex-direction: column; }
+    .col-story:first-child { padding: 20px 20px 20px 0; }
+    .col-story:nth-child(2) { padding: 20px; }
+    .col-story:last-child { padding: 20px 0 20px 20px; border-right: none; }
 
     /* FOOTER */
     footer { background: var(--text); color: #aaa; padding: 20px; margin-top: 40px; display: flex; align-items: center; justify-content: space-between; }
@@ -556,6 +558,8 @@
     <p class="dek">"Everyone knew what was coming," a spokesperson said. "We were all just too busy making cat videos to do anything about the impending crash."</p>
     <div class="byline">Real &nbsp;·&nbsp; Politics &nbsp;·&nbsp; 5 min read</div>
   </div>
+ 
+  
   <div class="col-story">
     <span class="tag tag-god">Coming Soon...</span>
     <h3 class="hl-sub">They said work was dead! So why are we still doing so much of it?</h3>
