@@ -82,26 +82,7 @@
 .slide-next { right: 6px; }
 .slide-counter { position: absolute; bottom: 8px; right: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #fff; background: rgba(0,0,0,0.5); padding: 2px 6px; letter-spacing: 0.06em; }
 
- /* BLAKE QUOTES */
-const blakeQuotes = [
-  "No bird soars too high if he soars with his own wings.",
-  "The road of excess leads to the palace of wisdom.",
-  "Energy is eternal delight.",
-  "You never know what is enough unless you know what is more than enough.",
-  "The tigers of wrath are wiser than the horses of instruction.",
-  "Eternity is in love with the productions of time.",
-  "No bird soars too high if he soars with his own wings.",
-    "If the fool would persist in his folly, he would become wise.",
-"The road of excess leads to the palace of wisdom.",
-"The pride of the peacock is the Glory of God.",
-"Always be ready to speak your mind and a base man will avoid you.",
-"Everything possible to be believed is an image of truth.",
-"Sooner murder an infant in its cradle than nurse unacted desires.",
-  // add as many as you like here
-];
-
-const randomQuote = blakeQuotes[Math.floor(Math.random() * blakeQuotes.length)];
-document.getElementById('blake-quote').textContent = randomQuote;
+ 
     
     /* TAGS */
     .tag { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 2px 6px; display: inline-block !important; margin-bottom: 6px; width: auto; }    .three-col .tag { display: inline-block; }
@@ -376,7 +357,7 @@ document.getElementById('blake-quote').textContent = randomQuote;
     /* IMAGES */
     .story-img-square {
       width: 100%;
-      aspect-ratio: 4/3;
+      aspect-ratio: 16/9;
       object-fit: cover;
       display: block;
       margin-bottom: 10px;
@@ -492,15 +473,10 @@ document.getElementById('blake-quote').textContent = randomQuote;
         <div class="slide-caption">His songs have changed lives - but who is Graham Hall?</div>
       </div>
 
-      <div class="slide-item">
-        <img src="images/the-gospels-cropped.jpg" class="lead-top-img" alt="The Band">
-        <div class="slide-caption">The men who spread the word...</div>
-      </div>
-
     </div><!-- /slide-track -->
     <button class="slide-btn slide-prev" onclick="moveSlide(-1)">&#8249;</button>
     <button class="slide-btn slide-next" onclick="moveSlide(1)">&#8250;</button>
-    <div class="slide-counter" id="slideCounter">1 / 3</div>
+    <div class="slide-counter" id="slideCounter">1 / 2</div>
   </div><!-- /lead-slideshow -->
 
   <div class="lead-top-text">
@@ -587,7 +563,7 @@ document.getElementById('blake-quote').textContent = randomQuote;
     <div class="byline">Classified &nbsp;·&nbsp; God of Money &nbsp;·&nbsp; 7 min read</div>
   </div>
   <div class="col-story">
-    <span class="tag tag-fiction">The Future?</span>
+    <span class="tag tag-ccs">The Future?</span>
     <h3 class="hl-sub">Who is Pilot? We look back over ten years of life under an AI Overlord.</h3>
     <p class="dek">Circle&Triangle has been granted an exclusive audience with Pilot. Though the guardrails remained up, there was still a lot to learn from the country's fearless leader.</p>
     <div class="byline">Fiction &nbsp;·&nbsp; Exclusive &nbsp;·&nbsp; 9 min read</div>
@@ -611,7 +587,7 @@ document.getElementById('blake-quote').textContent = randomQuote;
   </div>
   <div style="display:flex; flex-direction:column;">
     <div style="padding: 0 0px 20px 20px;">
-      <span class="tag tag-fiction">Fiction</span>
+      <span class="tag tag-classified">Fiction</span>
       <h3 class="hl-sub" style="font-size: 20px; margin-bottom: 10px;">Some say he's just misunderstood. But with that much power, misunderstanding is a luxury we can't afford.</h3>
       <p class="dek">Desmond Judd discovered Phil, homeless and wandering the streets of London. But he's a man with a dangerous past...</p>
     </div>
@@ -638,7 +614,7 @@ document.getElementById('blake-quote').textContent = randomQuote;
            class="story-img-square"
            onerror="this.style.minHeight='160px';">
       <span class="tag tag-bill">Lifestyle</span>
-      <h3 class="hl-sub">The Structural Problem: Why Western Civilisation Needed The Devil (and why it can't cope with one anymore.)</h3>
+      <h3 class="hl-sub">Why Western Civilisation Needed The Devil (and why it can't cope with one anymore.)</h3>
       <p class="dek">Bill used to be a welcome member of a pantheon of Gods, though the past few thousand years haven't been kind to him. He's returning — and he's saying it's time we moved on from blaming the scapegoat...</p>
       <div class="byline">Essay &nbsp;·&nbsp; 18 min read</div>
     </div>
@@ -684,6 +660,25 @@ document.getElementById('blake-quote').textContent = randomQuote;
     d.toLocaleDateString('en-GB', {weekday:'long', year:'numeric', month:'long', day:'numeric'}).toUpperCase();
   document.getElementById('edition-date').textContent =
     d.toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric'}).toUpperCase();
+
+// BLAKE QUOTES
+const blakeQuotes = [
+  "No bird soars too high if he soars with his own wings.",
+  "The road of excess leads to the palace of wisdom.",
+  "Energy is eternal delight.",
+  "You never know what is enough unless you know what is more than enough.",
+  "The tigers of wrath are wiser than the horses of instruction.",
+  "Eternity is in love with the productions of time.",
+  "If the fool would persist in his folly, he would become wise.",
+  "The pride of the peacock is the Glory of God.",
+  "Always be ready to speak your mind and a base man will avoid you.",
+  "Everything possible to be believed is an image of truth.",
+  "Sooner murder an infant in its cradle than nurse unacted desires.",
+];
+
+const randomQuote = blakeQuotes[Math.floor(Math.random() * blakeQuotes.length)];
+document.getElementById('blake-quote').textContent = randomQuote;
+
 
   const items = [
     'CCS DAILY AVERAGE: <span class="hi">847</span> <span class="up">↑2</span>',
