@@ -233,7 +233,7 @@
 
 <!-- TOP BAR -->
 <div class="top-bar">
-  <div class="top-bar-left"><span id="live-date"></span> &nbsp;·&nbsp; circleandtriangle.co.uk</div>
+  <div class="top-bar-left"><span id="live-date"></span> &nbsp;·&nbsp; theauthor@circleandtriangle.co.uk</div>
 </div>
 
 <!-- MASTHEAD -->
@@ -340,12 +340,7 @@
 <footer>
   <div>
     <div class="footer-logo">Circle <span class="amp">&amp;</span> Triangle</div>
-    <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#555;margin-top:6px;letter-spacing:0.06em;">circleandtriangle.co.uk &nbsp;·&nbsp; promotional site for The Crossroad by [the author]</div>
-  </div>
-  <div class="footer-info">
-    FICTION = from the world of the novel &nbsp;·&nbsp; REAL = from ours<br>
-    CLASSIFIED = could be either. You decide.<br>
-    CCS score updates every 24 hours. Compliance is not optional.
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#555;margin-top:6px;letter-spacing:0.06em;">theauthor@circleandtriangle.co.uk <br> Promotional site for The Crossroads<br>&copy; is a minefield</div>
   </div>
 </footer>
 
