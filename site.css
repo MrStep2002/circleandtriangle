@@ -145,7 +145,7 @@ a { color: inherit; text-decoration: none; }
 /* ============================================
    PULL QUOTE — used on both homepage and articles
    ============================================ */
-.pull-quote { border-left: 3px solid var(--accent); padding: 8px 14px; margin: 10px 0; font-family: 'Playfair Display', serif; font-style: italic; font-size: 14px; color: var(--text-mid); line-height: 1.4; background: var(--bg-light); }
+.pull-quote { border-left: 3px solid var(--accent); padding: 8px 14px; margin: 10px 0; margin-left: 20%; font-family: 'Playfair Display', serif; font-style: italic; font-size: 18px; color: var(--text-mid); line-height: 1.4; background: var(--bg-light); }
 
 /* ============================================
    ARTICLE PAGES — LAYOUT
