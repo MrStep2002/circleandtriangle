@@ -4,308 +4,10 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Article Title — Circle & Triangle</title>
+  <title>Article Title — Circle &amp; Triangle</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #ffffff;
-      --bg-light: #f7f5f2;
-      --text: #1a1816;
-      --text-mid: #4a4540;
-      --text-dim: #8a8480;
-      --rule: #c8c0b4;
-      --rule-dark: #2a2520;
-      --accent: #c8000a;
-      --amber: #b8860b;
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: var(--bg); color: var(--text); font-family: 'Source Serif 4', serif; font-size: 15px; line-height: 1.5; }
-    a { color: inherit; text-decoration: none; }
-
-    /* TICKER */
-    .ticker-bar { background: var(--text); overflow: hidden; height: 26px; display: flex; align-items: center; position: sticky; top: 0; z-index: 100; }
-    .ticker-label { background: var(--accent); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; padding: 0 12px; height: 100%; display: flex; align-items: center; white-space: nowrap; flex-shrink: 0; }
-    .ticker-track { overflow: hidden; flex: 1; }
-    .ticker-inner { display: flex; animation: ticker 45s linear infinite; white-space: nowrap; }
-    .ticker-inner:hover { animation-play-state: paused; }
-    .ticker-item { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: #c8c0b4; padding: 0 28px; letter-spacing: 0.04em; }
-    .ticker-item .hi { color: #e8d090; }
-    .ticker-item .up { color: #6abf6a; }
-    .ticker-item .sep { color: #555; margin: 0 6px; }
-    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-
-    /* TOP BAR */
-    .top-bar { border-bottom: 1px solid var(--rule); padding: 5px 20px; display: flex; align-items: center; justify-content: space-between; }
-    .top-bar-left { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; }
-
-    /* MASTHEAD */
-    .masthead { border-bottom: 3px solid var(--rule-dark); padding: 0 20px; }
-    .masthead-inner { display: flex; align-items: center; justify-content: space-between; padding: 12px 0 8px; gap: 16px; }
-    .logo-img { width: 100px; height: 100px; object-fit: contain; flex-shrink: 0; }
-    .masthead-center { text-align: center; flex: 1; }
-    .masthead-title { font-family: 'Playfair Display', serif; font-size: clamp(34px, 5.5vw, 66px); font-weight: 900; color: var(--text); letter-spacing: -0.01em; line-height: 1; text-transform: uppercase; }
-    .masthead-title .amp { color: var(--accent); font-style: italic; font-weight: 700; }
-    .masthead-rule { width: 100%; height: 1px; background: var(--rule); margin: 5px 0; }
-    .masthead-tagline { font-family: 'Source Serif 4', serif; font-style: italic; font-size: 14px; color: var(--text-dim); letter-spacing: 0.04em; }
-
-    /* NAV */
-    .primary-nav { border-top: 1px solid var(--rule); display: flex; justify-content: center; flex-wrap: wrap; }
-    .nav-item { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; color: var(--text-mid); letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 14px; border-right: 1px solid var(--rule); cursor: pointer; transition: color 0.12s, background 0.12s; }
-    .nav-item:first-child { border-left: 1px solid var(--rule); }
-    .nav-item:hover { color: var(--accent); background: var(--bg-light); }
-    .nav-item.active { color: var(--accent); border-bottom: 2px solid var(--accent); margin-bottom: -1px; }
-
-    /* BREAKING */
-    .breaking-bar { background: var(--accent); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 20px; display: flex; align-items: center; gap: 14px; }
-    .breaking-kicker { background: #fff; color: var(--accent); font-size: 9px; padding: 1px 5px; font-weight: 800; letter-spacing: 0.1em; flex-shrink: 0; }
-
-    /* CONTENT */
-    .content-wrap { max-width: 1300px; margin: 0 auto; padding: 0 20px; }
-
-    /* TAGS */
-    .tag { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 2px 6px; display: inline-block; margin-bottom: 6px; }
-    .tag-fiction { background: #1a1816; color: #fff; }
-    .tag-real { background: #e8f0e8; color: #2d5a2d; border: 1px solid #b0d0b0; }
-    .tag-classified { background: #f0e8f0; color: #5a2d7a; border: 1px solid #c0a0d0; }
-    .tag-ccs { background: #e8eef8; color: #1a3a6a; border: 1px solid #a0b8d8; }
-    .tag-god { background: #fef0e0; color: #7a4000; border: 1px solid #d4a060; }
-    .tag-bill { background: #e8f4e8; color: #2d4a1a; border: 1px solid #90b870; }
-
-    /* ARTICLE LAYOUT */
-    .article-wrap {
-      display: grid;
-      grid-template-columns: 1fr 300px;
-      gap: 0;
-      margin-top: 32px;
-      border-bottom: 1px solid var(--rule);
-      padding-bottom: 40px;
-    }
-
-    .article-body {
-      padding-right: 40px;
-      border-right: 1px solid var(--rule);
-      min-width: 0;
-    }
-
-    .article-header {
-      border-bottom: 1px solid var(--rule);
-      padding-bottom: 20px;
-      margin-bottom: 24px;
-    }
-
-    .article-title {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(26px, 4vw, 46px);
-      font-weight: 900;
-      line-height: 1.08;
-      color: var(--text);
-      margin-bottom: 14px;
-    }
-
-    .article-dek {
-      font-family: 'Source Serif 4', serif;
-      font-style: italic;
-      font-size: 18px;
-      color: var(--text-mid);
-      line-height: 1.5;
-      margin-bottom: 16px;
-    }
-
-    .article-byline {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-dim);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .article-hero {
-      width: 100%;
-      aspect-ratio: 16/9;
-      object-fit: cover;
-      display: block;
-      margin-bottom: 10px;
-      background: var(--bg-light);
-    }
-
-    .article-hero-caption {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 10px;
-      color: var(--text-dim);
-      letter-spacing: 0.04em;
-      margin-bottom: 24px;
-      border-bottom: 1px solid var(--rule);
-      padding-bottom: 16px;
-    }
-
-    .article-text p {
-      font-size: 16px;
-      line-height: 1.75;
-      color: var(--text);
-      margin-bottom: 20px;
-    }
-
-    .article-text h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--text);
-      margin: 32px 0 12px;
-      border-top: 1px solid var(--rule);
-      padding-top: 20px;
-    }
-
-    .pull-quote {
-      border-left: 3px solid var(--accent);
-      padding: 12px 20px;
-      margin: 24px 0;
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-size: 20px;
-      color: var(--text-mid);
-      line-height: 1.4;
-      background: var(--bg-light);
-    }
-
-    /* INLINE BANNER AD */
-    .inline-banner {
-      display: block;
-      text-decoration: none;
-      margin: 28px 0;
-    }
-
-    .inline-banner-inner {
-      background: #1a1816;
-      border: 1px solid #2a2520;
-      padding: 24px 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 24px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .inline-banner-inner::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 3px; height: 100%;
-      background: #c8000a;
-    }
-
-    .inline-banner-text { flex: 1; min-width: 0; }
-
-    .inline-banner-eyebrow {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 9px;
-      color: #c8000a;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-
-    .inline-banner-headline {
-      font-family: 'Playfair Display', serif;
-      font-size: 22px;
-      font-weight: 900;
-      color: #ffffff;
-      line-height: 1.1;
-      margin-bottom: 6px;
-    }
-
-    .inline-banner-headline em { color: #c8000a; }
-
-    .inline-banner-sub {
-      font-family: 'Source Serif 4', serif;
-      font-style: italic;
-      font-size: 13px;
-      color: #8a8480;
-      line-height: 1.5;
-    }
-
-    .inline-banner-cta { flex-shrink: 0; text-align: center; }
-
-    .inline-banner-btn {
-      display: inline-block;
-      background: #c8000a;
-      color: #fff;
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 14px;
-      font-weight: 800;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 12px 24px;
-      white-space: nowrap;
-    }
-
-    .inline-banner-note {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 9px;
-      color: #444;
-      margin-top: 6px;
-      letter-spacing: 0.06em;
-    }
-
-    /* SIDEBAR */
-    .article-sidebar { padding-left: 24px; }
-
-    .sidebar-ad {
-      border: 2px solid var(--rule-dark);
-      background: var(--text);
-      color: #fff;
-      padding: 20px 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      min-height: 260px;
-      justify-content: center;
-      margin-bottom: 24px;
-    }
-    .sidebar-ad::before { content: ''; position: absolute; top: -100%; left: 0; width: 100%; height: 2px; background: rgba(200,0,10,0.5); animation: scanline 4s linear infinite; }
-    @keyframes scanline { 0% { top: -2px; } 100% { top: 100%; } }
-    .ad-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.14em; color: var(--accent); text-transform: uppercase; margin-bottom: 10px; }
-    .ad-logo { width: 54px; height: 54px; object-fit: contain; filter: invert(1); margin-bottom: 12px; animation: pulse-logo 3s ease-in-out infinite; }
-    @keyframes pulse-logo { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(0.96); } }
-    .ad-headline { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; line-height: 1.25; color: #fff; margin-bottom: 8px; }
-    .ad-sub { font-family: 'Source Serif 4', serif; font-style: italic; font-size: 12px; color: #aaa; line-height: 1.45; margin-bottom: 16px; }
-    .ad-btn { display: inline-block; background: var(--accent); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; padding: 8px 18px; border: none; cursor: pointer; transition: background 0.15s, transform 0.1s; text-decoration: none; }
-    .ad-btn:hover { background: #a00008; transform: translateY(-1px); }
-    .ad-small { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: #555; margin-top: 10px; letter-spacing: 0.06em; }
-
-    /* RELATED STORIES */
-    .related-header { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); border-top: 2px solid var(--rule-dark); border-bottom: 1px solid var(--rule); padding: 8px 0; margin-bottom: 16px; }
-    .related-story { border-bottom: 1px solid var(--rule); padding-bottom: 14px; margin-bottom: 14px; }
-    .related-story:last-child { border-bottom: none; }
-    .related-story h4 { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 700; line-height: 1.3; color: var(--text); margin-bottom: 4px; }
-    .related-story h4:hover { color: var(--accent); }
-    .related-story .meta { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; }
-
-    /* FOOTER */
-    footer { background: var(--text); color: #aaa; padding: 20px; margin-top: 40px; display: flex; align-items: center; justify-content: space-between; }
-    .footer-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 900; color: #fff; text-transform: uppercase; }
-    .footer-logo .amp { color: var(--accent); font-style: italic; }
-    .footer-info { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #666; letter-spacing: 0.06em; text-align: right; line-height: 1.6; }
-
-    /* MOBILE */
-    @media (max-width: 960px) {
-      .article-wrap { grid-template-columns: 1fr; }
-      .article-body { padding-right: 0; border-right: none; border-bottom: 1px solid var(--rule); padding-bottom: 32px; margin-bottom: 32px; }
-      .article-sidebar { padding-left: 0; }
-      .masthead-title { font-size: clamp(28px, 8vw, 48px); }
-      .breaking-bar { font-size: 11px; }
-      .inline-banner-inner { flex-direction: column; align-items: flex-start; padding: 20px; }
-      .inline-banner-headline { font-size: 18px; }
-      .inline-banner-cta { width: 100%; }
-      .inline-banner-btn { display: block; text-align: center; }
-    }
-  </style>
+  <link rel="stylesheet" href="site.css">
 </head>
 <body>
 
@@ -319,21 +21,24 @@
 
 <!-- TOP BAR -->
 <div class="top-bar">
-  <div class="top-bar-left"><span id="live-date"></span> &nbsp;·&nbsp; theauthor@circleandtriangle.co.uk</div>
+  <div class="top-bar-left">
+    <span id="live-date"></span> &nbsp;·&nbsp;
+    <a href="mailto:theauthor@circleandtriangle.co.uk">theauthor@circleandtriangle.co.uk</a>
+  </div>
 </div>
 
 <!-- MASTHEAD -->
 <header class="masthead">
   <div class="masthead-inner">
-    <img src="circleandtriangle-500.jpg" alt="Circle and Triangle logo" class="logo-img">
+    <a href="index.html"><img src="circleandtriangle-500.jpg" alt="Circle and Triangle logo" class="logo-img"></a>
     <div class="masthead-center">
-      <div class="masthead-title">Circle <span class="amp">&amp;</span> Triangle</div>
+      <a href="index.html"><div class="masthead-title">Circle <span class="amp">&amp;</span> Triangle</div></a>
       <div class="masthead-rule"></div>
       <div class="masthead-tagline">"There is intelligent design, but we are the designers."</div>
     </div>
   </div>
   <nav class="primary-nav">
-    <a class="nav-item" href="index.html">Feed</a>
+    <a class="nav-item active" href="index.html">Headlines</a>
     <a class="nav-item" href="free-download.html">Download the Book for Free</a>
   </nav>
 </header>
@@ -353,62 +58,34 @@
     <div class="article-body">
 
       <div class="article-header">
+        <!-- CHANGE TAG CLASS: tag-fiction / tag-real / tag-classified / tag-ccs / tag-god / tag-bill -->
         <span class="tag tag-fiction">Fiction</span>
-        <h1 class="article-title">Phil's logo became the symbol of a revolution. But what's the deal?</h1>
-        <p class="article-dek">In the world of the book, the circle and triangle symbol came to represent Phil's revolution. But what's the story behind it? We sit down with The Author to discuss the shape of things...</p>
+        <h1 class="article-title">Article Title Goes Here</h1>
+        <p class="article-dek">Article standfirst / subheading goes here. A sentence or two that draws the reader in.</p>
         <div class="article-byline">Category &nbsp;·&nbsp; Subcategory &nbsp;·&nbsp; 8 min read</div>
       </div>
 
-      <img src="images/circle-and-triangle-600x340.jpg"
-           alt="Circle and Triangle"
+      <!-- HERO IMAGE — replace src and alt -->
+      <img src="images/placeholder.jpg"
+           alt="Image description"
            class="article-hero"
            onerror="this.style.minHeight='200px';">
-      <div class="article-hero-caption">What is the deal with this odd-ball shape?</div>
+      <div class="article-hero-caption">Image caption goes here</div>
 
+      <!-- ARTICLE TEXT — replace with content -->
       <div class="article-text">
 
-        <p><em>So… before we start, it's worth clarifying that this is a transcript of you interviewing yourself… or me doing it I suppose.</em></p>
+        <p>Article body text goes here.</p>
 
-        <p>Yes, that's right. It's just an opportunity to explore some of the ideas in the book in a… fun way I guess.</p>
+        <!-- PULL QUOTE EXAMPLE -->
+        <div class="pull-quote">Pull quote text goes here — a key line from the article.</div>
 
-        <p><em>Feels a little schizophrenic?</em></p>
+        <h2>Section Heading</h2>
 
-        <p>Well… I'm a writer and if that isn't a socially acceptable form of schizophrenia then I don't know what is.</p>
+        <p>More article text goes here.</p>
 
-        <p><em>Prayer?</em></p>
-
-        <p>Haha... yeah. I guess that'd be another one. But maybe we can come to that later. Anyway, I'm ready so… I guess you can start.</p>
-
-        <p><em>You will! Now… circles and triangles. They're everywhere! On the covers of Phil's albums, on the top of this website, you've made them into t-shirts, hats and even had one or two tattooed on you. Bit weird, isn't it… Where'd it all start?</em></p>
-
-        <p>Haha… yeah I guess. I've had them for years. The truth about how it all started was kinda weird. I was walking home from a pal of mine's house when I was about fifteen, stoned out of my box, and thinking about the world and how it seemed like all these big ideas appear in threes: art, science, religion; beginnings, middles, ends; past, present, future; one extreme, the other extreme, the middle… just bullshit stuff really. But I was fifteen remember.</p>
-
-        <p>Anyway, I walked around a corner and in front of me was a mini-roundabout with three traffic cones on it and I literally stopped in my tracks: it was fucking sign from God! Haha... I was very stoned. But I remember stopping in the street for… I now know how long and running it over. And the one that really got me - the one I took home - was the art, science and religion thing. That idea that human civilisation could be broken down into these three areas: what is: science; what could be: art; and what should be: religion. At the time I felt - the same as I do now - that we need to build a society on those three pillars, but that one of them, in particular, is failing terribly.</p>
-
-        <p><em>Which one?</em></p>
-
-        <p>Religion. Religion is a disaster area. One of my favourite ways of musing about things is to reduce them to their evolutionary purposes. What's the point of this thing? Sports, for example, a great way to manage aggression and conflict and improve your health in a way that isn't socially destructive. Sports are really valuable - especially if you play them and don't just pretend you're into sports because you watch it every Sunday with a six-pack. But when you ask that same question of religion - what is the point of religion - you appreciate things a little differently. I believe that at its most basic level religion should ask and answer questions about what is right. Not what could be or what is, but what should be. But it's been stuck on the same track for thousands of years while the world has evolved around it and honestly… it's become a liability.</p>
-
-        <p><em>How do you see its role? What should it do?</em></p>
-
-        <p>If art provides ideas and options and explores potential; and then science deals with what is real in the world and then takes that understanding to create new tools and…</p>
-
-        <p><em>Actually could you just take a minute to explain the other two: art and science. What are their roles?</em></p>
-
-        <p>Science I think we know - we're good at science. It explores what's real and then invents wonderful ways to combine things to increase opportunities. Anything from flying to the moon to microwaving some popcorn has come about because science is very good at what it does.</p>
-
-        <p>Art is more interesting, for me anyway. But it's important to understand that when I talk about art I'm not just talking about the art we hang on our walls or go to see at the cinema or at a gig - and all of that is art, by the way. But art for me is more about the things that our imaginations have made real. I'm a big fan of Nuval's Sapiens book and his understanding of stories. Money is a story, law is a story, culture, nationalism, politics… they're all the creations of art. Art can turn something that doesn't exist - an idea - and make it real. Not make it appear in material form, but create an idea that's so strong, so persuasive, that we make it real - or act as if it's real anyway.</p>
-
-        <p>Our society is held together by ties that largely don't exist except that we believe in them; and because we do, we make them real.</p>
-
-        <p>But art is also a way of realising emotional responses to things. Novels and films help us understand and organise our emotional responses to events and people and in that respect - by utilising our empathy and allowing us to experience things without having to actually experience them - we choose what we fear and what we dream of and this helps to guide us on our way. Who do we want to become? We decide this through our choice of heroes. Who do we fear? We decide this, based on the way we choose our enemies.</p>
-
-        <p><em>So art is a form of propaganda?</em></p>
-
-        <p>Well… maybe. I mean kind of. But it shouldn't be. Art's role is just to present us with options… look, the separation between art science and religion is artificial, really. They overlap so much and so often that they're often almost impossible to see at work individually. Imagine that everything is a molecule and I'm trying to define the atoms. But yes, art can change how we feel about things… so yes, to an extent, all art is propaganda. You look at something like A Christmas Carol and it's clear. By going on Scrooge's journey we change our view on wealth. Look at the way that music throughout the 60s played such a crucial role in the civil rights movement… But, in my model, that's art functioning as religion. Religion should be making that distinction. Art can throw everything out there - and it does, really; you can find art that expresses just about a billion different viewpoints - but there needs to be some kind of filtration process. Some kind of real discussion about the many different moralities that it explores.</p>
-
-        <!-- INLINE BANNER -->
-        <a href="the-book.html" class="inline-banner">
+        <!-- INLINE BANNER AD — keep this at the end of the article -->
+        <a href="free-download.html" class="inline-banner">
           <div class="inline-banner-inner">
             <div class="inline-banner-text">
               <div class="inline-banner-eyebrow">CCS Clearance: Permitted · For Now</div>
@@ -422,94 +99,66 @@
           </div>
         </a>
 
-        <p><em>So you think that should be religion's role?</em></p>
-
-        <p>Religion should be constantly asking what we should do. What is the right course of action? What is healthy, what is progressive, what's culturally developmental, what's… good… what is right. And like Bill says in the book, I don't mean right in a kinda happy-clappy kum-bye-yah kinda way, I mean what's the right answer. There are, I believe, right and wrong answers with morality. They're just a lot more complicated than we think.</p>
-
-        <p><em>Isn't that what the Bible does though? Provide moral guidance?</em></p>
-
-        <p>The Bible was written for a different world. Maybe that was what we needed then, but I didn't live then so I can't comment… but those rules are absolutely not for this world. Our world is too different for most of that to have anything other than a passing relevance. What does the Bible say about public ownership of essential services? What does it say about taxing assets instead of income? What does it say about tax havens, or the benefits and pitfalls of working within a democracy? What does it say about an adult's right to change gender? Nothing, because the tech didn't exist back then. And even if you take the things that are in there, like gay marriage, what it does say is so outdated that it's clearly criminal - you can't stone people to death for that anymore. That is wrong. Half of what that book says is outdated nonsense but people are still obsessed with trying to pretend it's got something to say.</p>
-
-        <p><em>What about tradition? Isn't there a danger in just dropping old laws that have served us well before?</em></p>
-
-        <p>Of course! And that's why evolving religion has been so hard. The truth is that Jesus and Mohammad and Buddha and the rest needed to present their truths as being timeless and final in order to be listened to. So all of them, in some way, say 'don't change this or you'll be fucked forever.' Which kinda worked at the time, but it made it very hard to change. Imagine if Plato or Aristotle or Socrates - any scientist - imagine if they'd said: 'anyone who writes about this differently to me will go to Hell and be tortured forever!' You'd get no more science, and the world would be a lesser place. That's kinda what all the prophets did and it's made it very hard to move on from them. We're basically roasted unless we're a Messiah, but no-one is that so religion stops evolving and its influence falls apart and… you get what we've got which is that religion is dying.</p>
-
-        <p><em>What do you think will happen if it fails completely? What kind of a world would that be?</em></p>
-
-        <p>The one we're in! Or we're heading there anyway. Science has lots of ideas about what's happening and what things are made of and where they come from, but it can't tell you why. It can say how your brain works but there's no formula to prove that your existence is worthwhile. Left to its own devices, science would turn us all into nihilists. There's no meaning in the world, so why try and find it? You're born, then you die, and the sun carries on shining. There's no point in trying because the universe will all explode in one giant heat death and so what's the fucking point? Follow science too hard, and that's where you get.</p>
-
-        <p>Art brings a different kind of destruction - the hedonism of creation is such a joy. Why not experience your dreams and push the boundaries endlessly - write, sing, dance, express your joy! You're amazing! Fuck off… Again, you can make anything you want but what's the point of it? It can make life beautiful or terrible - both of which can be enjoyable experiences when you're only living it through some fictional character - but it can't tell you why you should bother trying to make something more meaningful or more important or more valuable.</p>
-
-        <p><em>What about things like children, or society as a whole, aren't they reasons enough to do what's right?</em></p>
-
-        <p>Yes! And that's the fertile ground where religion should live. Why do we do what's right? Why do we care about the future? Why should we make sacrifices now so that things can be better in the future? These are the levers that should be spoken about in every sermon or monastery in the world. Why is it important to be honest? Because without honesty reality itself starts to crumble - like we're seeing today with the news. Why should the rich share their wealth? Because a stable society is one that can last, while a society of narcissists will always eat itself in the end. Religion needs to explore two things: what is right; and how can we persuade society to believe it's worth being right. At the moment, it can't do the first one because it's too entrenched in ancient manuscripts and, as a result, it's never going to do the second. The net result is that religion is failing and our society is drifting into nihilism and hedonism. And you carry on down that path, and Hell is round the corner.</p>
-
-        <p><em>So what's Phil's role in this? Is he supposed to promote religion?</em></p>
-
-        <p>He's all about art and religion I guess. It's not about science, I have no problems with science. Science just explores what is and there's kinda no point in arguing with it. Art is complex and religion's a mess, and Phil uses the former to try to change the latter. Art is the tool, after all. Religion and art have always gone hand-in-hand and they should. The trouble with religion, as I said earlier, is that you can only change it if you're a Messiah and… that's just not a role that you get many applicants for. I can see why as well. You get hounded, abused, tortured, murdered and then stuck on a pedestal for all time. Not a great life. No fun. I'm just glad it's him doing it and not me! But that's the power of fiction. That we can send these people out there and do things that aren't real but have effects. Fiction allows us to create people, who have effects, but have never lived. We need this opportunity, and I guess that was the drive that kept me writing this book over all these years. We need people like Phil. I'm really sorry for what I've had to put him through!</p>
-
-        <p><em>Thank you for your time.</em></p>
-
-        <p>Your pleasure.</p>
-
       </div>
 
-      <!-- INLINE BANNER — end of article -->
-      <a href="the-book.html" class="inline-banner">
-        <div class="inline-banner-inner">
-          <div class="inline-banner-text">
-            <div class="inline-banner-eyebrow">CCS Clearance: Permitted · For Now</div>
-            <div class="inline-banner-headline">Read <em>The Crossroads</em><br>before Pilot shuts it down.</div>
-            <div class="inline-banner-sub">The novel that could get this website banned. Free. While it lasts.</div>
-          </div>
-          <div class="inline-banner-cta">
-            <div class="inline-banner-btn">Free Download →</div>
-            <div class="inline-banner-note">No CCS points required</div>
-          </div>
-        </div>
-      </a>
+    </div><!-- END article-body -->
 
-    </div>
-
-    <!-- SIDEBAR -->
+    <!-- SIDEBAR — sticky on desktop, static on mobile -->
     <div class="article-sidebar">
+      <div class="sidebar-sticky">
 
-      <div class="sidebar-ad">
-        <div class="ad-eyebrow">Classified &nbsp;·&nbsp; CCS Clearance Required</div>
-        <img src="circleandtriangle-500.jpg" alt="Circle and Triangle" class="ad-logo" onerror="this.style.display='none'">
-        <div class="ad-headline">Read The Crossroads.<br>Free. While you still can.</div>
-        <div class="ad-sub">Before Pilot shuts it all down.</div>
-        <a href="free-download.html" class="ad-btn">Free Download</a>
-        <div class="ad-small">No CCS points required. For now.</div>
-      </div>
+        <!-- SIDEBAR AD — swap image src as needed -->
+        <a href="free-download.html" style="display:block; text-decoration:none;">
+          <div class="sidebar-ad" style="padding:0; min-height:545px; position:relative; overflow:hidden; border:2px solid var(--rule-dark); cursor:pointer;">
+            <div class="sidebar-ad-bg" style="position:absolute; top:0; left:0; width:100%; height:100%; background-image:url('phil-ad-390x545.jpg'); background-size:cover; background-position:center top;"></div>
+            <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(to bottom, rgba(26,24,22,0.7) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.2) 60%, rgba(26,24,22,0.95) 100%);"></div>
+            <div style="position:relative; z-index:2; display:flex; flex-direction:column; justify-content:space-between; height:100%; min-height:545px; padding:20px 16px; text-align:center;">
+              <div>
+                <div class="ad-eyebrow">Classified &nbsp;·&nbsp; CCS Clearance Required</div>
+                <div class="ad-headline" style="margin-top:8px;">Read The Crossroads.<br>Free. While you still can.</div>
+                <div class="ad-sub">Before Pilot shuts it all down.</div>
+              </div>
+              <div>
+                <div class="ad-btn" style="display:inline-block; margin-bottom:10px;">Free Download</div>
+                <div class="ad-small">No CCS points required. For now.</div>
+              </div>
+            </div>
+          </div>
+        </a>
 
-      <div class="related-header">Related</div>
+        <!-- RELATED STORIES -->
+        <div class="related-header">Related</div>
 
-      <div class="related-story">
-        <a href="#"><h4>Related article headline one — update this</h4></a>
-        <div class="meta">Fiction &nbsp;·&nbsp; 6 min read</div>
-      </div>
+        <div class="related-story">
+          <a href="#"><h4>Related article headline one — update this</h4></a>
+          <div class="meta">Fiction &nbsp;·&nbsp; 6 min read</div>
+        </div>
 
-      <div class="related-story">
-        <a href="#"><h4>Related article headline two — update this</h4></a>
-        <div class="meta">Real &nbsp;·&nbsp; 4 min read</div>
-      </div>
+        <div class="related-story">
+          <a href="#"><h4>Related article headline two — update this</h4></a>
+          <div class="meta">Real &nbsp;·&nbsp; 4 min read</div>
+        </div>
 
-      <div class="related-story">
-        <a href="#"><h4>Related article headline three — update this</h4></a>
-        <div class="meta">Classified &nbsp;·&nbsp; 9 min read</div>
-      </div>
+        <div class="related-story">
+          <a href="#"><h4>Related article headline three — update this</h4></a>
+          <div class="meta">Classified &nbsp;·&nbsp; 9 min read</div>
+        </div>
 
-    </div>
+      </div><!-- END sidebar-sticky -->
+    </div><!-- END article-sidebar -->
 
-  </div>
+  </div><!-- END article-wrap -->
 
-</div><!-- /content-wrap -->
+</div><!-- END content-wrap -->
 
 <footer>
   <div>
     <div class="footer-logo">Circle <span class="amp">&amp;</span> Triangle</div>
-    <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#555;margin-top:6px;letter-spacing:0.06em;">theauthor@circleandtriangle.co.uk<br>Promotional site for The Crossroads<br>&copy; is a minefield</div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#555;margin-top:6px;letter-spacing:0.06em;">
+      <a href="mailto:theauthor@circleandtriangle.co.uk">theauthor@circleandtriangle.co.uk</a><br>
+      Promotional site for The Crossroads<br>
+      &copy; is a minefield
+    </div>
   </div>
 </footer>
 
