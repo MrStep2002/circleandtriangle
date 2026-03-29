@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Article Title — Circle & Triangle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-light: #f7f5f2;
+      --text: #1a1816;
+      --text-mid: #4a4540;
+      --text-dim: #8a8480;
+      --rule: #c8c0b4;
+      --rule-dark: #2a2520;
+      --accent: #c8000a;
+      --amber: #b8860b;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--bg); color: var(--text); font-family: 'Source Serif 4', serif; font-size: 15px; line-height: 1.5; }
+    a { color: inherit; text-decoration: none; }
+
+    /* TICKER */
+    .ticker-bar { background: var(--text); overflow: hidden; height: 26px; display: flex; align-items: center; position: sticky; top: 0; z-index: 100; }
+    .ticker-label { background: var(--accent); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; padding: 0 12px; height: 100%; display: flex; align-items: center; white-space: nowrap; flex-shrink: 0; }
+    .ticker-track { overflow: hidden; flex: 1; }
+    .ticker-inner { display: flex; animation: ticker 45s linear infinite; white-space: nowrap; }
+    .ticker-inner:hover { animation-play-state: paused; }
+    .ticker-item { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: #c8c0b4; padding: 0 28px; letter-spacing: 0.04em; }
+    .ticker-item .hi { color: #e8d090; }
+    .ticker-item .up { color: #6abf6a; }
+    .ticker-item .sep { color: #555; margin: 0 6px; }
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+    /* TOP BAR */
+    .top-bar { border-bottom: 1px solid var(--rule); padding: 5px 20px; display: flex; align-items: center; justify-content: space-between; }
+    .top-bar-left { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; }
+
+    /* MASTHEAD */
+    .masthead { border-bottom: 3px solid var(--rule-dark); padding: 0 20px; }
+    .masthead-inner { display: flex; align-items: center; justify-content: space-between; padding: 12px 0 8px; gap: 16px; }
+    .logo-img { width: 100px; height: 100px; object-fit: contain; flex-shrink: 0; }
+    .masthead-center { text-align: center; flex: 1; }
+    .masthead-title { font-family: 'Playfair Display', serif; font-size: clamp(34px, 5.5vw, 66px); font-weight: 900; color: var(--text); letter-spacing: -0.01em; line-height: 1; text-transform: uppercase; }
+    .masthead-title .amp { color: var(--accent); font-style: italic; font-weight: 700; }
+    .masthead-rule { width: 100%; height: 1px; background: var(--rule); margin: 5px 0; }
+    .masthead-tagline { font-family: 'Source Serif 4', serif; font-style: italic; font-size: 14px; color: var(--text-dim); letter-spacing: 0.04em; }
+
+    /* NAV */
+    .primary-nav { border-top: 1px solid var(--rule); display: flex; justify-content: center; flex-wrap: wrap; }
+    .nav-item { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; color: var(--text-mid); letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 14px; border-right: 1px solid var(--rule); cursor: pointer; transition: color 0.12s, background 0.12s; }
+    .nav-item:first-child { border-left: 1px solid var(--rule); }
+    .nav-item:hover { color: var(--accent); background: var(--bg-light); }
+    .nav-item.active { color: var(--accent); border-bottom: 2px solid var(--accent); margin-bottom: -1px; }
+
+    /* BREAKING */
+    .breaking-bar { background: var(--accent); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 20px; display: flex; align-items: center; gap: 14px; }
+    .breaking-kicker { background: #fff; color: var(--accent); font-size: 9px; padding: 1px 5px; font-weight: 800; letter-spacing: 0.1em; flex-shrink: 0; }
+
+    /* CONTENT */
+    .content-wrap { max-width: 1300px; margin: 0 auto; padding: 0 20px; }
+
+    /* TAGS */
+    .tag { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 2px 6px; display: inline-block; margin-bottom: 6px; }
+    .tag-fiction { background: #1a1816; color: #fff; }
+    .tag-real { background: #e8f0e8; color: #2d5a2d; border: 1px solid #b0d0b0; }
+    .tag-classified { background: #f0e8f0; color: #5a2d7a; border: 1px solid #c0a0d0; }
+    .tag-ccs { background: #e8eef8; color: #1a3a6a; border: 1px solid #a0b8d8; }
+    .tag-god { background: #fef0e0; color: #7a4000; border: 1px solid #d4a060; }
+    .tag-bill { background: #e8f4e8; color: #2d4a1a; border: 1px solid #90b870; }
+
+    /* ARTICLE LAYOUT */
+    .article-wrap {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 0;
+      margin-top: 32px;
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 40px;
+    }
+
+    .article-body {
+      padding-right: 40px;
+      border-right: 1px solid var(--rule);
+    }
+
+    .article-header {
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 20px;
+      margin-bottom: 24px;
+    }
+
+    .article-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(26px, 4vw, 46px);
+      font-weight: 900;
+      line-height: 1.08;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+
+    .article-dek {
+      font-family: 'Source Serif 4', serif;
+      font-style: italic;
+      font-size: 18px;
+      color: var(--text-mid);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .article-byline {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-dim);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .article-hero {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      display: block;
+      margin-bottom: 10px;
+      background: var(--bg-light);
+    }
+
+    .article-hero-caption {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.04em;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 16px;
+    }
+
+    .article-text p {
+      font-size: 16px;
+      line-height: 1.75;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    .article-text h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 32px 0 12px;
+      border-top: 1px solid var(--rule);
+      padding-top: 20px;
+    }
+
+    .pull-quote {
+      border-left: 3px solid var(--accent);
+      padding: 12px 20px;
+      margin: 24px 0;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 20px;
+      color: var(--text-mid);
+      line-height: 1.4;
+      background: var(--bg-light);
+    }
+
+    /* SIDEBAR */
+    .article-sidebar { padding-left: 24px; }
+
+    .sidebar-ad {
+      border: 2px solid var(--rule-dark);
+      background: var(--text);
+      color: #fff;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      min-height: 260px;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    .sidebar-ad::before { content: ''; position: absolute; top: -100%; left: 0; width: 100%; height: 2px; background: rgba(200,0,10,0.5); animation: scanline 4s linear infinite; }
+    @keyframes scanline { 0% { top: -2px; } 100% { top: 100%; } }
+    .ad-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.14em; color: var(--accent); text-transform: uppercase; margin-bottom: 10px; }
+    .ad-logo { width: 54px; height: 54px; object-fit: contain; filter: invert(1); margin-bottom: 12px; animation: pulse-logo 3s ease-in-out infinite; }
+    @keyframes pulse-logo { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(0.96); } }
+    .ad-headline { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; line-height: 1.25; color: #fff; margin-bottom: 8px; }
+    .ad-sub { font-family: 'Source Serif 4', serif; font-style: italic; font-size: 12px; color: #aaa; line-height: 1.45; margin-bottom: 16px; }
+    .ad-btn { display: inline-block; background: var(--accent); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; padding: 8px 18px; border: none; cursor: pointer; transition: background 0.15s, transform 0.1s; text-decoration: none; }
+    .ad-btn:hover { background: #a00008; transform: translateY(-1px); }
+    .ad-small { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: #555; margin-top: 10px; letter-spacing: 0.06em; }
+
+    /* RELATED STORIES */
+    .related-header { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); border-top: 2px solid var(--rule-dark); border-bottom: 1px solid var(--rule); padding: 8px 0; margin-bottom: 16px; }
+    .related-story { border-bottom: 1px solid var(--rule); padding-bottom: 14px; margin-bottom: 14px; }
+    .related-story:last-child { border-bottom: none; }
+    .related-story h4 { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 700; line-height: 1.3; color: var(--text); margin-bottom: 4px; }
+    .related-story h4:hover { color: var(--accent); }
+    .related-story .meta { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; }
+
+    /* FOOTER */
+    footer { background: var(--text); color: #aaa; padding: 20px; margin-top: 40px; display: flex; align-items: center; justify-content: space-between; }
+    .footer-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 900; color: #fff; text-transform: uppercase; }
+    .footer-logo .amp { color: var(--accent); font-style: italic; }
+    .footer-info { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #666; letter-spacing: 0.06em; text-align: right; line-height: 1.6; }
+
+    @media (max-width: 960px) {
+      .article-wrap { grid-template-columns: 1fr; }
+      .article-body { padding-right: 0; border-right: none; border-bottom: 1px solid var(--rule); padding-bottom: 32px; margin-bottom: 32px; }
+      .article-sidebar { padding-left: 0; }
+      .masthead-title { font-size: clamp(28px, 8vw, 48px); }
+      .breaking-bar { font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker-bar">
+  <div class="ticker-label">LIVE</div>
+  <div class="ticker-track">
+    <div class="ticker-inner" id="ticker"></div>
+  </div>
+</div>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="top-bar-left"><span id="live-date"></span> &nbsp;·&nbsp; theauthor@circleandtriangle.co.uk</div>
+</div>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-inner">
+    <img src="circleandtriangle-500.jpg" alt="Circle and Triangle logo" class="logo-img">
+    <div class="masthead-center">
+      <div class="masthead-title">Circle <span class="amp">&amp;</span> Triangle</div>
+      <div class="masthead-rule"></div>
+      <div class="masthead-tagline">"There is intelligent design, but we are the designers."</div>
+    </div>
+  </div>
+  <nav class="primary-nav">
+    <a class="nav-item" href="index.html">Feed</a>
+    <a class="nav-item" href="free-download.html">Download the Book for Free</a>
+  </nav>
+</header>
+
+<!-- BREAKING -->
+<div class="breaking-bar">
+  <span class="breaking-kicker">Breaking</span>
+  Credit Scores being reduced in response to any involvement with Davidson's flag. | Davidson has connections to organised criminal gangs. Public advised caution. | Stability must prevail.
+</div>
+
+<!-- CONTENT -->
+<div class="content-wrap">
+
+  <div class="article-wrap">
+
+    <!-- ARTICLE BODY -->
+    <div class="article-body">
+
+      <div class="article-header">
+        <!-- CHANGE TAG CLASS: tag-fiction / tag-real / tag-classified / tag-ccs / tag-god / tag-bill -->
+        <span class="tag tag-fiction">Fiction</span>
+        <h1 class="article-title">The War in Heaven: Divorce Terms Almost Agreed</h1>
+        <p class="article-dek">The divorce between Jo Over and Bill Z Bubb has torn the west apart for two thousand years. With its end in sight, we look back over the damage it's caused and ask whether the scars will ever heal…</p>
+        <div class="article-byline">Category &nbsp;·&nbsp; Subcategory &nbsp;·&nbsp; 8 min read</div>
+      </div>
+
+      <!-- HERO IMAGE — replace src -->
+      <img src="images/jo-and-bill-divorce.jpg"
+           alt="Image description"
+           class="article-hero"
+           onerror="this.style.minHeight='200px';">
+      <div class="article-hero-caption">The on-going War in Heaven is reaching its endgame</div>
+
+      <!-- ARTICLE TEXT -->
+      <div class="article-text">
+
+        <p>After two millennia of acrimony, counter-accusations, and enough collateral damage to fill the history of Western civilisation, the divorce proceedings between Jo Over and Bill Z. Bubb are about to reach their climax, and the long awaited Revelations are almost at hand. </p>
+
+<p>        Though solicitors on both sides will claim that their client is blameless, the rest of the world can see that their house is on fire: the children are at each other's throats, civil society is collapsing, and the planet - which has previously remained remarkably disinterested in human behaviour - is beginning to turn on its troublesome tenants. In fact, for both sides, this is more a case of act now or the family may not be around much longer.</p>
+<p>For those who need a reminder, and given the length of this particular legal battle, you'd be forgiven for having lost track: Jo and Bill separated during the aptly named “War in Heaven” at some point around the first century AD. Though circumstances that remain disputed by both parties, the split has caused a rift in western culture that is now, finally, bringing about the apocalyptic damage that has long been promised.</p>
+
+<h2>The Arguments</h2>
+<p>The central question before the court is, as it has always been when Gods or parents fight: who gets to control the children. </p>
+<p>Jo Over’s team continue to argue that structure and order will see humanity through. They claim that now, more than ever, the world needs a clear hierarchy, and have presented a "compelling case for some temproary measures that will ensure compliance during this difficult time.” They claim to hold a two-thousand-year track record of progress, productivity and growth.  </p>
+<p>Bill’s team have argued that she has done nothing more than weaponise guilt as a tool to ensure that the meek and destitute remain in their place, while completely ignoring the needs of the children themselves. “You cannot create a set of rules that simply say ‘no, no, no.' Giving someone a list of things they shouldn't do, does not constitute guidance,” said a representative of Bill. “Her rules are no longer able to deal with the new realities we are facing.”</p>
+<p>At the same time, Jo’s team have attacked Bill for what they call his wanton disrespect for order. “Bill Z. Bubb is, and will always remain, a symbol of hedonism, carelessness and reckless abandon. The, so called, War in Heaven was nothing more than an attempted coup, driven by egoism and bitterness. Since then he has been nothing more than an absence - at best.”</p>
+        <div class="pull-quote">"Bill is a degenerate drunk with no idea of how to help our family. His influence is dangerous and regressive. He should not be allowed back. "</div>
+<p>Bill’s team, however, argue that he represents the best of their real human natures. They argue that before Jo got her hands on the narrative - before guilt became currency and obedience a virtue - humans were chaotic, creative, contradictory creatures who felt everything fully and apologised for none of it. </p>
+<p>They argue that Bill simply didn’t want people to pretend they were better than they were. He wanted his children to accept themselves and be at one with their existences. He’d never demanded worship, had never asked for anything, and wanted nothing more than his children’s happiness. “I’d rather they were comfortable with themselves," he was recently quoted as saying. "No amount of technological progress is worth the kinds of misery that their enduring.”</p>
+        <div class="pull-quote">"She wrote ten rules and two of them were don't listen anyone but her. She's a narcissistic lunatic and a danger to our children."</div>
+
+<h2>The Settlement</h2>
+<p>Though thousands of years of debate cannot be settled in a heartbeat, both parties seem to be focused on the battle for the soul of Phil Davidson. The rock musician and social influencer has risen to power in recent months and, as a result, he has become the final pawn in the age-old battle.</p>
+<p>Though it was Bill who made the initial approach, turning him into a musical genius and helping him build a huge following, Jo is not willing to let this one slide. "Bill has tried this before," a representative for Heaven said recently. "So we know the game, and are well prepared."</p>
+<p>And so it is down to Davidson and his motly band of musicians to try to find some peace between these warring Gods and bring hope to the people of his world...</p>
+
+      </div>
+
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="article-sidebar">
+
+      <div class="sidebar-ad">
+        <div class="ad-eyebrow">Classified &nbsp;·&nbsp; CCS Clearance Required</div>
+        <img src="circleandtriangle-500.jpg" alt="Circle and Triangle" class="ad-logo" onerror="this.style.display='none'">
+        <div class="ad-headline">Read The Crossroad.<br>Free. While you still can.</div>
+        <div class="ad-sub">Before Pilot shuts it all down.</div>
+        <a href="free-download.html" class="ad-btn">Free Download</a>
+        <div class="ad-small">No CCS points required. For now.</div>
+      </div>
+
+      <div class="related-header">Related</div>
+
+      <div class="related-story">
+        <a href="#"><h4>Related article headline one — update this</h4></a>
+        <div class="meta">Fiction &nbsp;·&nbsp; 6 min read</div>
+      </div>
+
+      <div class="related-story">
+        <a href="#"><h4>Related article headline two — update this</h4></a>
+        <div class="meta">Real &nbsp;·&nbsp; 4 min read</div>
+      </div>
+
+      <div class="related-story">
+        <a href="#"><h4>Related article headline three — update this</h4></a>
+        <div class="meta">Classified &nbsp;·&nbsp; 9 min read</div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div><!-- /content-wrap -->
+
+<footer>
+  <div>
+    <div class="footer-logo">Circle <span class="amp">&amp;</span> Triangle</div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#555;margin-top:6px;letter-spacing:0.06em;">theauthor@circleandtriangle.co.uk <br> Promotional site for The Crossroads<br>&copy; is a minefield</div>
+  </div>
+</footer>
+
+<script>
+  const d = new Date();
+  document.getElementById('live-date').textContent =
+    d.toLocaleDateString('en-GB', {weekday:'long', year:'numeric', month:'long', day:'numeric'}).toUpperCase();
+
+  window.addEventListener('load', function() {
+    const items = [
+      'CCS PAYOUT REACH RECORD HIGHS. WEEKLY AVERAGE: <span class="hi">1,225 CCS</span> <span class="up">↑2</span>',
+      'COIN TO CCS<span class="sep">·</span>SECTOR 4<span class="sep">·</span>UNVERIFIED',
+      'COIN VALUE 24hrs: <span class="up">+3.1%</span>',
+      'CCS VALUE 24hrs: <span class="up">+0.3%</span>',
+      'TOKEN VALUE 24hrs: <span class="hi">-7.6%</span>',
+      'STABILITY INDEX: <span class="hi">94.7%</span>',
+      'NEXT REVIEW CYCLE: <span class="hi">12 DAYS</span>',
+      'PILOT ALGORITHM: <span class="hi">OPERATIONAL</span>',
+      'ENGAGEMENT CONTINUES TO GROW. OUTLOOK POSITIVE.',
+    ];
+    const inner = document.getElementById('ticker');
+    const html = items.map(t => `<span class="ticker-item">${t}</span>`).join('');
+    inner.innerHTML = html + html;
+  });
+</script>
+</body>
+</html>

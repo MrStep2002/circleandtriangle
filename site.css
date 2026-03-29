@@ -251,7 +251,6 @@ footer { background: var(--text); color: #aaa; padding: 20px; margin-top: 40px; 
   .inline-banner-headline { font-size: 18px; }
   .inline-banner-cta { width: 100%; }
   .inline-banner-btn { display: block; text-align: center; }
-  .sidebar-ad-bg { display: none !important; }
 
   /* Shared */
   .masthead-title { font-size: clamp(28px, 8vw, 48px); }
