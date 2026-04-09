@@ -84,6 +84,40 @@
 
         <p>More article text goes here.</p>
 
+        <!-- COMMENTS FORM -->
+<div style="border-top: 2px solid var(--rule-dark); margin-top: 40px; padding-top: 24px;">
+  <div style="font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text); margin-bottom: 20px;">Your Response</div>
+  
+  <form action="https://formspree.io/f/xgopbzkr" method="POST">
+    
+    <div style="margin-bottom: 14px;">
+      <label style="font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); display: block; margin-bottom: 4px;">Name</label>
+      <input type="text" name="name" placeholder="Your name"
+             style="width: 100%; font-family: 'Source Serif 4', serif; font-size: 14px; padding: 8px 10px; border: 1px solid var(--rule); background: var(--bg-light); color: var(--text); outline: none;">
+    </div>
+
+    <div style="margin-bottom: 14px;">
+      <label style="font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); display: block; margin-bottom: 4px;">Email <span style="color: var(--text-dim); font-weight: 400;">(optional — only if you'd like a reply)</span></label>
+      <input type="email" name="email"  placeholder="your@email.com"
+             style="width: 100%; font-family: 'Source Serif 4', serif; font-size: 14px; padding: 8px 10px; border: 1px solid var(--rule); background: var(--bg-light); color: var(--text); outline: none;">
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <label style="font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); display: block; margin-bottom: 4px;">Your thoughts</label>
+      <textarea name="message" rows="6" placeholder="What did you make of it..."
+                style="width: 100%; font-family: 'Source Serif 4', serif; font-size: 14px; padding: 8px 10px; border: 1px solid var(--rule); background: var(--bg-light); color: var(--text); outline: none; resize: vertical;"></textarea>
+    </div>
+
+    <button type="submit"
+            style="background: var(--accent); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 24px; border: none; cursor: pointer;">
+      Send Response
+    </button>
+
+    <p style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--text-dim); margin-top: 12px; letter-spacing: 0.04em;">Your response will be sent directly to the author. It will not appear publicly on this site.</p>
+
+  </form>
+</div>
+
         <!-- INLINE BANNER AD — keep this at the end of the article -->
         <a href="free-download.html" class="inline-banner">
           <div class="inline-banner-inner">
