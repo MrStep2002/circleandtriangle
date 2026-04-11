@@ -4,10 +4,243 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Article Title — Circle &amp; Triangle</title>
+  <title>The Wilderness — Circle &amp; Triangle</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="site.css">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-light: #f7f5f2;
+      --text: #1a1816;
+      --text-mid: #4a4540;
+      --text-dim: #8a8480;
+      --rule: #c8c0b4;
+      --rule-dark: #2a2520;
+      --accent: #c8000a;
+      --amber: #b8860b;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--bg); color: var(--text); font-family: 'Source Serif 4', serif; font-size: 15px; line-height: 1.5; }
+    a { color: inherit; text-decoration: none; }
+
+    /* TICKER */
+    .ticker-bar { background: var(--text); overflow: hidden; height: 26px; display: flex; align-items: center; position: sticky; top: 0; z-index: 100; }
+    .ticker-label { background: var(--accent); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; padding: 0 12px; height: 100%; display: flex; align-items: center; white-space: nowrap; flex-shrink: 0; }
+    .ticker-track { overflow: hidden; flex: 1; }
+    .ticker-inner { display: flex; animation: ticker 45s linear infinite; white-space: nowrap; }
+    .ticker-inner:hover { animation-play-state: paused; }
+    .ticker-item { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: #c8c0b4; padding: 0 28px; letter-spacing: 0.04em; }
+    .ticker-item .hi { color: #e8d090; }
+    .ticker-item .up { color: #6abf6a; }
+    .ticker-item .sep { color: #555; margin: 0 6px; }
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+    /* TOP BAR */
+    .top-bar { border-bottom: 1px solid var(--rule); padding: 5px 20px; display: flex; align-items: center; justify-content: space-between; }
+    .top-bar-left { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; }
+
+    /* MASTHEAD */
+    .masthead { border-bottom: 3px solid var(--rule-dark); padding: 0 20px; }
+    .masthead-inner { display: flex; align-items: center; justify-content: space-between; padding: 12px 0 8px; gap: 16px; }
+    .logo-img { width: 100px; height: 100px; object-fit: contain; flex-shrink: 0; }
+    .masthead-center { text-align: center; flex: 1; }
+    .masthead-title { font-family: 'Playfair Display', serif; font-size: clamp(34px, 5.5vw, 66px); font-weight: 900; color: var(--text); letter-spacing: -0.01em; line-height: 1; text-transform: uppercase; }
+    .masthead-title .amp { color: var(--accent); font-style: italic; font-weight: 700; }
+    .masthead-rule { width: 100%; height: 1px; background: var(--rule); margin: 5px 0; }
+    .masthead-tagline { font-family: 'Source Serif 4', serif; font-style: italic; font-size: 14px; color: var(--text-dim); letter-spacing: 0.04em; }
+
+    /* NAV */
+    .primary-nav { border-top: 1px solid var(--rule); display: flex; justify-content: center; flex-wrap: wrap; }
+    .nav-item { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; color: var(--text-mid); letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 14px; border-right: 1px solid var(--rule); cursor: pointer; transition: color 0.12s, background 0.12s; }
+    .nav-item:first-child { border-left: 1px solid var(--rule); }
+    .nav-item:hover { color: var(--accent); background: var(--bg-light); }
+    .nav-item.active { color: var(--accent); border-bottom: 2px solid var(--accent); margin-bottom: -1px; }
+
+    /* BREAKING */
+    .breaking-bar { background: var(--accent); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 20px; display: flex; align-items: center; gap: 14px; }
+    .breaking-kicker { background: #fff; color: var(--accent); font-size: 9px; padding: 1px 5px; font-weight: 800; letter-spacing: 0.1em; flex-shrink: 0; }
+
+    /* =====================
+       READING PAGE LAYOUT
+    ===================== */
+
+    .reading-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 48px 20px 80px;
+    }
+
+    /* STORY TITLE */
+    .story-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 900;
+      color: var(--text);
+      line-height: 1.05;
+      text-align: center;
+      margin-bottom: 32px;
+      letter-spacing: -0.01em;
+    }
+
+    /* EPIGRAPH */
+    .epigraph {
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      padding: 20px 0;
+      margin: 0 auto 48px;
+      max-width: 480px;
+      text-align: center;
+    }
+
+    .epigraph-text {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--text-mid);
+      margin-bottom: 12px;
+    }
+
+    .epigraph-attr {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* SECTION BREAK */
+    .section-break {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin: 48px 0 40px;
+    }
+
+    .section-break-line {
+      flex: 1;
+      height: 1px;
+      background: var(--rule);
+      max-width: 120px;
+    }
+
+    .section-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-dim);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    /* PROSE */
+    .prose p {
+      font-size: 17px;
+      line-height: 1.8;
+      color: var(--text);
+      margin-bottom: 22px;
+      text-align: left;
+    }
+
+    .prose p:first-child::first-letter {
+      font-family: 'Playfair Display', serif;
+      font-size: 52px;
+      font-weight: 900;
+      float: left;
+      line-height: 0.85;
+      margin-right: 6px;
+      margin-top: 6px;
+      color: var(--text);
+    }
+
+    /* DIALOGUE in stream of consciousness — slightly indented */
+    .prose p.dialogue {
+      padding-left: 20px;
+      border-left: 2px solid var(--rule);
+      font-style: italic;
+      color: var(--text-mid);
+    }
+
+    /* JOURNAL / INTERNAL MONOLOGUE */
+    .prose p.journal {
+      font-style: italic;
+      color: var(--text-mid);
+      font-size: 16px;
+      padding: 0 24px;
+    }
+
+    /* FINAL VERSE */
+    .verse {
+      border-top: 2px solid var(--rule-dark);
+      border-bottom: 2px solid var(--rule-dark);
+      padding: 32px 0;
+      margin: 40px 0;
+    }
+
+    .verse-line {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      line-height: 1.9;
+      color: var(--text);
+      display: block;
+      font-style: italic;
+    }
+
+    .verse-line.indent-1 {
+      padding-left: 40px;
+    }
+
+    .verse-line.indent-2 {
+      padding-left: 80px;
+    }
+
+    /* FOOTER NAV */
+    .reading-footer-nav {
+      border-top: 2px solid var(--rule-dark);
+      padding-top: 24px;
+      margin-top: 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .reading-footer-nav a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .reading-footer-nav a:hover { color: var(--accent); }
+
+    .reading-footer-nav .cta {
+      background: var(--accent);
+      color: #fff;
+      padding: 8px 18px;
+    }
+
+    .reading-footer-nav .cta:hover { background: #a00008; color: #fff; }
+
+    /* FOOTER */
+    footer { background: var(--text); color: #aaa; padding: 20px; margin-top: 0; display: flex; align-items: center; justify-content: space-between; }
+    .footer-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 900; color: #fff; text-transform: uppercase; }
+    .footer-logo .amp { color: var(--accent); font-style: italic; }
+    .footer-info { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #666; letter-spacing: 0.06em; text-align: right; line-height: 1.6; }
+
+    @media (max-width: 960px) {
+      .masthead-title { font-size: clamp(28px, 8vw, 48px); }
+      .breaking-bar { font-size: 11px; }
+      .reading-wrap { padding: 32px 20px 60px; }
+      .prose p { font-size: 16px; }
+      .verse-line { font-size: 15px; }
+      .verse-line.indent-1 { padding-left: 24px; }
+      .verse-line.indent-2 { padding-left: 48px; }
+    }
+  </style>
 </head>
 <body>
 
@@ -21,10 +254,7 @@
 
 <!-- TOP BAR -->
 <div class="top-bar">
-  <div class="top-bar-left">
-    <span id="live-date"></span> &nbsp;·&nbsp;
-    <a href="mailto:theauthor@circleandtriangle.co.uk">theauthor@circleandtriangle.co.uk</a>
-  </div>
+  <div class="top-bar-left"><span id="live-date"></span> &nbsp;·&nbsp; circleandtriangle.co.uk</div>
 </div>
 
 <!-- MASTHEAD -->
@@ -38,7 +268,7 @@
     </div>
   </div>
   <nav class="primary-nav">
-    <a class="nav-item active" href="index.html">Headlines</a>
+    <a class="nav-item" href="index.html">Headlines</a>
     <a class="nav-item" href="the-book.html">Beta Readers Needed</a>
   </nav>
 </header>
@@ -49,170 +279,129 @@
   Credit Scores being reduced in response to any involvement with Davidson's flag. | Davidson has connections to organised criminal gangs. Public advised caution. | Stability must prevail.
 </div>
 
-<!-- CONTENT -->
-<div class="content-wrap">
+<!-- READING CONTENT -->
+<div class="reading-wrap">
 
-  <div class="article-wrap">
+  <h1 class="story-title">Part 1:<br>The Wilderness</h1>
 
-    <!-- ARTICLE BODY -->
-    <div class="article-body">
+  <!-- EPIGRAPH -->
+  <div class="epigraph">
+    <div class="epigraph-text">
+      And so I walked through the fires of hell<br>
+      delighted with the enjoyment of genius<br>
+      which to Angels look like torment and insanity
+    </div>
+    <div class="epigraph-attr">— William Blake, The Marriage of Heaven and Hell</div>
+  </div>
 
-      <div class="article-header">
-        <!-- CHANGE TAG CLASS: tag-fiction / tag-real / tag-classified / tag-ccs / tag-god / tag-bill -->
-        <span class="tag tag-fiction">Fiction</span>
-        <h1 class="article-title">Download the opening chapters of The Crossroads below FOR FREE</h1>
-        <p class="article-dek">Start reading Phil's story by clicking one of the links below. <br>Get it for FREE while you still can - before Pilot shuts it down...</p>
-        <div class="article-byline">Category &nbsp;·&nbsp; Subcategory &nbsp;·&nbsp; 20 min read</div>
-      </div>
+  <!-- SECTION I -->
+  <div class="section-break">
+    <div class="section-break-line"></div>
+    <div class="section-number">I</div>
+    <div class="section-break-line"></div>
+  </div>
 
-      <!-- ARTICLE TEXT — replace with content -->
-      <div class="article-text">
+  <div class="prose">
 
-        <p><em>The Crossroads</em> is currently finished and going through an editing process. </p>
-        <p>I have used AI to discuss a number of structural issues and help correct typos and other minor points but <b>none of it was written by AI</b> - I’ve started working on it while Sam Altman was still in college I think! </p>
-        <p>At the moment, I’m looking for human readers who are interested in reading the first 5-10,000 words - or more - and giving some general feedback. I’m not looking for line-editors necessarily, but would appreciate some idea of where it’s working and where it isn’t.</p> 
-        <p>You can download ePub, Mobi files or PDF files below or use the form underneath to contact me if you have any questions.</p>
+    <p>Phil first met Bill in a record shop on the North Laines, in Brighton. He'd just finished work and he stamped the soil off his boots before he entered the shop, glad to leave the noise of the street behind.</p>
 
-        <!-- PULL QUOTE EXAMPLE -->
-        <div class="pull-quote">Click on a link below to start the adventure of a lifetime...</div>
+    <p>The Laines had been busy that day. The usual rainbow of hippy flags and street performers were all out to enjoy the sun, and he'd had to weave around them as he headed to the store. He didn't resent them for not working, their CCS score was high enough for them to get by and some of these guys would have been doing well for themselves. They weren't bad people by any stretch. They made the online exercise routines and motivational videos that had become the bread and butter of the post-crash economy.</p>
 
-        <h2>Section Heading</h2>
+    <p>Three people approached him for Attention, each preaching their own sense of progress.</p>
 
-<div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 24px 0 32px;">
+    <p>"Hey pal — Follow me: I'll get you firm abs in three weeks with one simple routine that's so original even the scientists are baffled! It's guaranteed to raise your CCS!" said one, reaching out for Phil and almost grasping at his top.</p>
 
-  <a href="downloads/the-crossroads-opening.epub" download
-     style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 24px 16px; border: 2px solid var(--rule-dark); background: var(--bg-light); text-decoration:none; text-align:center; transition: background 0.15s;">
-    <div style="font-family:'IBM Plex Mono',monospace; font-size:28px; margin-bottom:10px;">📖</div>
-    <div style="font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:16px; letter-spacing:0.08em; text-transform:uppercase; color:var(--text); margin-bottom:6px;">ePub</div>
-    <div style="font-family:'Source Serif 4',serif; font-size:12px; color:var(--text-dim);">For Kindle, Apple Books & most e-readers</div>
-    <div style="margin-top:14px; background:var(--accent); color:#fff; font-family:'Barlow Condensed',sans-serif; font-size:11px; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; padding:6px 16px;">Download Free</div>
-  </a>
+    <p>"You want the truth — send me a Like!" said another, with a conspiratorial nod. "This is everything the mainstream press won't tell you!"</p>
 
-  <a href="downloads/the-crossroads-opening.mobi" download
-     style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 24px 16px; border: 2px solid var(--rule-dark); background: var(--bg-light); text-decoration:none; text-align:center; transition: background 0.15s;">
-    <div style="font-family:'IBM Plex Mono',monospace; font-size:28px; margin-bottom:10px;">📱</div>
-    <div style="font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:16px; letter-spacing:0.08em; text-transform:uppercase; color:var(--text); margin-bottom:6px;">Mobi</div>
-    <div style="font-family:'Source Serif 4',serif; font-size:12px; color:var(--text-dim);">For older Kindle devices</div>
-    <div style="margin-top:14px; background:var(--accent); color:#fff; font-family:'Barlow Condensed',sans-serif; font-size:11px; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; padding:6px 16px;">Download Free</div>
-  </a>
+    <p>"You wanna know how to get around Pilot? I'm your man. I know the algorithm and with these three simple tricks your posts will be your payday!" The last one went so far as to block Phil's path. "Mate, listen to me: you want Credit… honestly," he leant in close. "I got a system man. Perfect. Guaranteed. Enough to get you some good pussy, eh…? Bet you'd love that…"</p>
 
-  <a href="downloads/the-crossroads-opening.pdf" download
-     style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 24px 16px; border: 2px solid var(--rule-dark); background: var(--bg-light); text-decoration:none; text-align:center; transition: background 0.15s;">
-    <div style="font-family:'IBM Plex Mono',monospace; font-size:28px; margin-bottom:10px;">📄</div>
-    <div style="font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:16px; letter-spacing:0.08em; text-transform:uppercase; color:var(--text); margin-bottom:6px;">PDF</div>
-    <div style="font-family:'Source Serif 4',serif; font-size:12px; color:var(--text-dim);">For reading on screen or printing</div>
-    <div style="margin-top:14px; background:var(--accent); color:#fff; font-family:'Barlow Condensed',sans-serif; font-size:11px; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; padding:6px 16px;">Download Free</div>
-  </a>
+    <p>That was far enough for Phil. "Fuck off, you doss cunt!" He barged past him and carried on his way. Then he felt his phone vibrate and knew that he'd been reported. Whoever else the guy was, he was probably in enough Credit for it to impact Phil and he got annoyed at himself for losing his temper.</p>
 
-</div>
-        <!-- COMMENTS FORM -->
-<div style="border-top: 2px solid var(--rule-dark); margin-top: 40px; padding-top: 24px;">
-  <div style="font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text); margin-bottom: 20px;">Contact The Author</div>
-  
-  <form action="https://formspree.io/f/xgopbzkr" method="POST">
+    <p>He fucking hated guys like that. The whole idea of the CCS was to create a system of financial reward that was based on social benefit. But there were always gamers who came along and broke the system. There was nothing good you could give humanity that it couldn't turn to shit. AI should have been the best invention ever, but it was no surprise that people like that twat-bag had dedicated his life to breaking it.</p>
+
+    <p>Phil didn't Connect with any of them. He hardly reached out at all, which is why he still topped up his minimum Civil Credit Score with a job as a gardener. It was the only way to get by, but he also enjoyed the work. It kept him outside, got his hands dirty, and he was largely left alone.</p>
+
+    <p>He hated this mess. He hated the way the world worked, and the way people pretended it was all ok. He kinda knew that was why he spent his time listening to old music, from back in the days when people used to dream as though the world could still be changed.</p>
+
+    <p>He was slowly flicking through some scuffed Leonard Cohen records and listening to an old MP3 player on shuffle when Bill suddenly appeared at his shoulder.</p>
+
+    <p>"Cohen's great," Bill said; and though the line came out of nowhere — and although Phil had never seen Bill before — it didn't make him jump. In fact he barely even looked across; it was almost as though Bill's voice had come from somewhere inside of him.</p>
+
+    <p>"But you're similar," Bill went on. "Bitter searching of your hearts."</p>
+
+    <p>Phil laughed, though the line took him close to a part of himself where he kept memories of his father and he was lost momentarily. He looked across and into the eyes of the man standing next to him; almost leaning into him. For a long time his mind became empty, he was slightly spun out, and then — for the briefest moment — it was his father in front of him, as he used to be, years ago; and then it wasn't. It was the stranger again.</p>
+
+    <p>"You gonna ring them bells Phil?" Bill asked, squaring up slightly. "Let some light into this hell-hole of an existence?"</p>
+
+    <p>Phil withdrew, suddenly aware of how close Bill was standing.</p>
+
+    <p>He was about to step away when Bill grabbed his arm and held him back. Startled, Phil met his eyes and Bill held them and for a moment Phil was lost in them and he didn't like it. Suddenly, everything that was warm and paternal about him switched and Phil saw a glimpse of fiery rage. "Remember Graham Hall, Phil," Bill growled, through clenched teeth. Then he let go of Phil's arm and something like regret washed across his face. "Remember Graham Hall…" he repeated. "And there is still a chance that we can save your people."</p>
+
+    <p>Phil stared at him, wide-eyed and fearful. Bill looked around the shop, nervous and almost in a panic. He turned to look back at Phil and smiled briefly, sadly, and then turned and left in a hurry.</p>
+
+    <p>Despite the strangeness of the situation, Phil's eyes drifted down to the floor as the name echoed around in his head.</p>
+
+    <p>Phil did remember Graham Hall.</p>
+
+    <p>Where did he remember him from?</p>
+
+    <p>The name touched something deep and painful, and although he couldn't quite grasp it, he wanted to.</p>
+
+    <p>His eyes drifted down the display as he heard Bill's voice seem to echo around his head: "Remember Graham Hall… remember Graham Hall… Find a still, silent place and remember Graham Hall… remember Graham Hall."</p>
+
+  </div>
+
+  <!-- SECTION II -->
+  <div class="section-break">
+    <div class="section-break-line"></div>
+    <div class="section-number">II</div>
+    <div class="section-break-line"></div>
+  </div>
+
+  <div class="prose">
+
+    <p>Graham Hall… Graham Hall… who the fuck was Graham Hall? It rang a bell but nothing more.</p>
+
+    <p>He'd searched up the name a half hour later, after he'd got back home again. The only reference was a Wikipedia entry about a little-known musician from the 60s who was known for his angry verse and gravelly voice. That made sense — and it meant it was from his dad. There was a list of albums in the entry — <em>Broken Seen</em>, <em>The Rabid Monk</em>, <em>Traveller Scholar Poet</em> — but not much more.</p>
+
+    <p>He started his computer and opened his journal and stared at the cursor for a while. Then he went to the fridge and poured a glass of wine. The sun was setting and he didn't have work the next day so maybe he had some time to remember. For the first time in a while, he felt like he had a purpose.</p>
+
+    <p><em>Broken Seed</em>, that had done it.</p>
+
+    <p><em>I'm your broken seed…</em> that was a line from one of his songs.</p>
+
+    <p>He stared out of the window, across a line of grey roofs. <em>I'm your broken seed… you're nothing but an… animal? And I'm your broken seed….</em></p>
+
+    <p>He shook his head. He didn't like it, so he picked up his phone and began to scroll.</p>
+
+    <p>An hour later, after he'd opened a bottle of whiskey, he turned to his journal. Within an hour of that starting, he was halfway through the whiskey and back to writing about his ex-girlfriend, Madeleine:</p>
     
-    <div style="margin-bottom: 14px;">
-      <label style="font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); display: block; margin-bottom: 4px;">Name</label>
-      <input type="text" name="name" placeholder="Your name"
-             style="width: 100%; font-family: 'Source Serif 4', serif; font-size: 14px; padding: 8px 10px; border: 1px solid var(--rule); background: var(--bg-light); color: var(--text); outline: none;">
-    </div>
+    <p><em>I'm so sorry that I couldn't be more. I'd wanted to reach out, I'd wanted to connect, but I couldn't find the heart to love myself much less face someone else. I'm not surprised I managed to find a way out of that safety; to reject you; to throw it back into your face, and tear it to pieces, and destroy everything we had. If there was only a way back, but this world is not a place for livers, lovers, brothers or children with mothers…</em></p>
 
-    <div style="margin-bottom: 14px;">
-      <label style="font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); display: block; margin-bottom: 4px;">Email <span style="color: var(--text-dim); font-weight: 400;">(optional — only if you'd like a reply)</span></label>
-      <input type="email" name="email"  placeholder="your@email.com"
-             style="width: 100%; font-family: 'Source Serif 4', serif; font-size: 14px; padding: 8px 10px; border: 1px solid var(--rule); background: var(--bg-light); color: var(--text); outline: none;">
-    </div>
+    <p>It was gone three am before he fell into bed.</p>
 
-    <div style="margin-bottom: 20px;">
-      <label style="font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); display: block; margin-bottom: 4px;">Your thoughts</label>
-      <textarea name="message" rows="6" placeholder="What did you make of it..."
-                style="width: 100%; font-family: 'Source Serif 4', serif; font-size: 14px; padding: 8px 10px; border: 1px solid var(--rule); background: var(--bg-light); color: var(--text); outline: none; resize: vertical;"></textarea>
-    </div>
+    <p>Though he couldn't remember when or how he'd done it, amidst the incoherent rambling, he wrote a single verse in his journal:</p>
 
-    <button type="submit"
-            style="background: var(--accent); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 24px; border: none; cursor: pointer;">
-      Send Response
-    </button>
+    <span class="verse-line">You broke me</span>
+    <span class="verse-line indent-1">Then asked where I went wrong</span>
+    <span class="verse-line">You cracked my fucking windpipe</span>
+    <span class="verse-line indent-1">Then asked me where's my song?</span>
+    <span class="verse-line">You tell me the time's come to rise and be a man</span>
+    <span class="verse-line indent-2">But I saw you break my knees while still holding my hand.</span>
+  </div>
 
-    <p style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--text-dim); margin-top: 12px; letter-spacing: 0.04em;">Your response will be sent directly to the author. It will not appear publicly on this site.</p>
+  <!-- FOOTER NAV -->
+  <div class="reading-footer-nav">
+    <a href="index.html">← Back to Headlines</a>
+    <a href="the-book.html" class="cta">Download the rest →</a>
+  </div>
 
-  </form>
-</div>
-
-        <!-- INLINE BANNER AD — keep this at the end of the article -->
-        <a href="the-book.html" class="inline-banner">
-          <div class="inline-banner-inner">
-            <div class="inline-banner-text">
-              <div class="inline-banner-eyebrow">CCS Clearance: Permitted · For Now</div>
-              <div class="inline-banner-headline">Read <em>The Crossroads</em><br>before Pilot shuts it down.</div>
-              <div class="inline-banner-sub">The novel that could get this website banned. Free. While it lasts.</div>
-            </div>
-            <div class="inline-banner-cta">
-              <div class="inline-banner-btn">Free Download →</div>
-              <div class="inline-banner-note">No CCS points required</div>
-            </div>
-          </div>
-        </a>
-
-      </div>
-
-    </div><!-- END article-body -->
-
-    <!-- SIDEBAR — sticky on desktop, static on mobile -->
-    <div class="article-sidebar">
-      <div class="sidebar-sticky">
-
-        <!-- SIDEBAR AD — swap image src as needed -->
-        <a href="the-book.html" style="display:block; text-decoration:none;">
-          <div class="sidebar-ad" style="padding:0; min-height:545px; position:relative; overflow:hidden; border:2px solid var(--rule-dark); cursor:pointer;">
-            <div class="sidebar-ad-bg" style="position:absolute; top:0; left:0; width:100%; height:100%; background-image:url('phil-ad-390x545.jpg'); background-size:cover; background-position:center top;"></div>
-            <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(to bottom, rgba(26,24,22,0.7) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.2) 60%, rgba(26,24,22,0.95) 100%);"></div>
-            <div style="position:relative; z-index:2; display:flex; flex-direction:column; justify-content:space-between; height:100%; min-height:545px; padding:20px 16px; text-align:center;">
-              <div>
-                <div class="ad-eyebrow">Classified &nbsp;·&nbsp; CCS Clearance Required</div>
-                <div class="ad-headline" style="margin-top:8px;">Read The Crossroads.<br>Free. While you still can.</div>
-                <div class="ad-sub">Before Pilot shuts it all down.</div>
-              </div>
-              <div>
-                <div class="ad-btn" style="display:inline-block; margin-bottom:10px;">Free Download</div>
-                <div class="ad-small">No CCS points required. For now.</div>
-              </div>
-            </div>
-          </div>
-        </a>
-
-        <!-- RELATED STORIES -->
-        <div class="related-header">Related</div>
-
-        < <div class="related-story">
-          <a href="who-is-phil.html"><h4>Who is Phil Davidson? Get the story here...</h4></a>
-          <div class="meta">Fiction &nbsp;·&nbsp; 6 min read</div>
-        </div>
-
-        <div class="related-story">
-          <a href="war-in-heaven.html"><h4>The War in Heaven: The Revelations are here!</h4></a>
-          <div class="meta">Real &nbsp;·&nbsp; 4 min read</div>
-        </div>
-
-        <div class="related-story">
-          <a href="ai-and-work.html"><h4>What's the story with the CCS? Click here for more!</h4></a>
-          <div class="meta">Classified &nbsp;·&nbsp; 9 min read</div>
-
-      </div><!-- END sidebar-sticky -->
-    </div><!-- END article-sidebar -->
-
-  </div><!-- END article-wrap -->
-
-</div><!-- END content-wrap -->
+</div><!-- /reading-wrap -->
 
 <footer>
   <div>
     <div class="footer-logo">Circle <span class="amp">&amp;</span> Triangle</div>
-    <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#555;margin-top:6px;letter-spacing:0.06em;">
-      <a href="mailto:theauthor@circleandtriangle.co.uk">theauthor@circleandtriangle.co.uk</a><br>
-      Promotional site for The Crossroads<br>
-      &copy; is a minefield
-    </div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#555;margin-top:6px;letter-spacing:0.06em;">circleandtriangle.co.uk &nbsp;·&nbsp; promotional site for The Crossroad by [the author]</div>
   </div>
 </footer>
 

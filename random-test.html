@@ -1,64 +1,436 @@
-    <!-- ARTICLE BODY -->
-    <div class="article-body">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Wilderness — Circle &amp; Triangle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-light: #f7f5f2;
+      --text: #1a1816;
+      --text-mid: #4a4540;
+      --text-dim: #8a8480;
+      --rule: #c8c0b4;
+      --rule-dark: #2a2520;
+      --accent: #c8000a;
+      --amber: #b8860b;
+    }
 
-      <div class="article-header">
-        <!-- CHANGE TAG CLASS: tag-fiction / tag-real / tag-classified / tag-ccs / tag-god / tag-bill -->
-        <span class="tag tag-fiction">Fiction</span>
-        <h1 class="article-title">AI Ended Work: So why are we still doing so much of it?
-</h1>
-        <p class="article-dek">Ten years after the AI Crash, we ask what happened to the dream of liberation and explore how life really looks while living under an AI Overlord...</p>
-        <div class="article-byline">Technology and Society &nbsp;·&nbsp; 8 min read</div>
-      </div>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--bg); color: var(--text); font-family: 'Source Serif 4', serif; font-size: 15px; line-height: 1.5; }
+    a { color: inherit; text-decoration: none; }
 
-      <!-- HERO IMAGE — replace src -->
-      <img src="images/ai-work-image.jpg"
-           alt="AI has taken away jobs but we're working harder than ever"
-           class="article-hero"
-           onerror="this.style.minHeight='200px';">
-      <div class="article-hero-caption">AI has taken away jobs but we're working harder than ever</div>
+    /* TICKER */
+    .ticker-bar { background: var(--text); overflow: hidden; height: 26px; display: flex; align-items: center; position: sticky; top: 0; z-index: 100; }
+    .ticker-label { background: var(--accent); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; padding: 0 12px; height: 100%; display: flex; align-items: center; white-space: nowrap; flex-shrink: 0; }
+    .ticker-track { overflow: hidden; flex: 1; }
+    .ticker-inner { display: flex; animation: ticker 45s linear infinite; white-space: nowrap; }
+    .ticker-inner:hover { animation-play-state: paused; }
+    .ticker-item { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: #c8c0b4; padding: 0 28px; letter-spacing: 0.04em; }
+    .ticker-item .hi { color: #e8d090; }
+    .ticker-item .up { color: #6abf6a; }
+    .ticker-item .sep { color: #555; margin: 0 6px; }
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-      <!-- ARTICLE TEXT -->
-      <div class="article-text">
+    /* TOP BAR */
+    .top-bar { border-bottom: 1px solid var(--rule); padding: 5px 20px; display: flex; align-items: center; justify-content: space-between; }
+    .top-bar-left { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; }
 
-        <p>Ten years ago, the British economy hit a very predictable wall: AI was taking jobs faster than they could be replaced, and the trend didn’t look like it was slowing down. After record levels of insolvency and mortgage defaults, the banks approached the government for a solution. This time, however, they weren’t carrying a begging-bowl, they were carrying a hand-grenade that, for once, wasn't of their own making: if we don't fix this situation the economy will collapse; and the time-frame was months rahter than years.</p> 
-        <p>Initially, UBI (Universal Basic Income) was introduced, to some fanfare. However, a lack of time for any meaningful trials or to stage its launch meant that its introduction was chaotic and ultimately unworkable. Within months, rates of alcoholism and violence - both on the streets and at home - made it clear that the system couldn’t continue. At the same time, key-workers were leaving in their droves so there was no state-infrastructure available to deal with the collapse.</p>
-        <p>The government reacted quickly and introduced the CCS (the Civil Credit Score), which had all the hallmarks of a workable solution: food and housing would be guaranteed, as would a small minimal wage; and to increase the wage you could fill those key-worker roles that were so badly needed: teachers, nurses, care-workers, mental health professionals, the police. Working at any job which required human intervention could increase your weekly CCS payments.</p>
-        <p>This, however, also proved unworkable: hospitals didn’t need three-thousand nurses arriving for a shift, and certainly not when the vast majority of them had no idea how to work with people or meet the medical needs of their patients. These weren’t trained carers, they were people from the hollowed out offices; they were lawyers, marketing professionals, coders. They were white collar workers with degrees and skills; they just weren't the kinds of skills that were needed anymore.</p>
-        <p>Then Kai Fassard stepped up with the final piece of the jigsaw and created the Creative Economy, as it was dubbed: a world where social interactions would earn you CCS Credits: Releasing an exercise regime that was Followed by thousands could triple your weekly payments; Sharing a recipe that people Liked could earn your dinner; releasing a video that went viral nationwide could clear your rent for the month. Surely this was the solution. A genuinely social rewards system that allowed society to reward those who, they felt, most deserved it.</p>
-        <p>Key workers had their bonuses guaranteed, and the rest of us would make the entertainment we needed to keep ourselves busy. What could possibly go wrong?</p>
-        <div class="pull-quote">"We'd known what was coming for a long time," said a Department for Work and Pensions representative. "The truth was that there had been no desire to find a resolution because everyone in power was benefitting so much that they saw nothing to be afraid of."</div>
+    /* MASTHEAD */
+    .masthead { border-bottom: 3px solid var(--rule-dark); padding: 0 20px; }
+    .masthead-inner { display: flex; align-items: center; justify-content: space-between; padding: 12px 0 8px; gap: 16px; }
+    .logo-img { width: 100px; height: 100px; object-fit: contain; flex-shrink: 0; }
+    .masthead-center { text-align: center; flex: 1; }
+    .masthead-title { font-family: 'Playfair Display', serif; font-size: clamp(34px, 5.5vw, 66px); font-weight: 900; color: var(--text); letter-spacing: -0.01em; line-height: 1; text-transform: uppercase; }
+    .masthead-title .amp { color: var(--accent); font-style: italic; font-weight: 700; }
+    .masthead-rule { width: 100%; height: 1px; background: var(--rule); margin: 5px 0; }
+    .masthead-tagline { font-family: 'Source Serif 4', serif; font-style: italic; font-size: 14px; color: var(--text-dim); letter-spacing: 0.04em; }
 
-<h2>What went wrong with the CCS?</h2>
+    /* NAV */
+    .primary-nav { border-top: 1px solid var(--rule); display: flex; justify-content: center; flex-wrap: wrap; }
+    .nav-item { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; color: var(--text-mid); letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 14px; border-right: 1px solid var(--rule); cursor: pointer; transition: color 0.12s, background 0.12s; }
+    .nav-item:first-child { border-left: 1px solid var(--rule); }
+    .nav-item:hover { color: var(--accent); background: var(--bg-light); }
+    .nav-item.active { color: var(--accent); border-bottom: 2px solid var(--accent); margin-bottom: -1px; }
 
-      <p>There were a number of clear problems from the start: gaming the system was a very profitable enterprise. You didn’t have to do the exercise or make the recipe, you just had to click Like, on the premise that others would reciprocate. As a result, Liking and being Liked became a national pastime. </p>
-      <p>We no longer spent time in offices doing work, our time was spent at home either creating content (which was, initially anyway, largely AI generated;) or Liking other’s content (whether we watched it or not - and it made more sense not to watch it as you were cutting into the time you could spend getting Likes and being Liked;) or we spent time monitoring the Likes we’d received, to ensure that everyone we’d Liked had actually Liked us back. </p>
-      <p>The system didn’t incentivise the creation of good quality content, it incentivised Likes and drew no distinctions between the two. We were rapidly becoming trapped in a culture that worked insane hours to produce nothing of value as people desperately tried to be Liked enough to pay their way. In theory, this was the future we’d all dreamt of; in practice it was the dystopia we’d all feared.</p>
+    /* BREAKING */
+    .breaking-bar { background: var(--accent); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 20px; display: flex; align-items: center; gap: 14px; }
+    .breaking-kicker { background: #fff; color: var(--accent); font-size: 9px; padding: 1px 5px; font-weight: 800; letter-spacing: 0.1em; flex-shrink: 0; }
 
-         <!-- INLINE BANNER — end of article -->
-      <a href="the-book.html" class="inline-banner">
-        <div class="inline-banner-inner">
-          <div class="inline-banner-text">
-            <div class="inline-banner-eyebrow">CCS Clearance: Permitted · For Now</div>
-            <div class="inline-banner-headline">Read <em>The Crossroads</em><br>before Pilot shuts it down.</div>
-            <div class="inline-banner-sub">The novel that could get this website banned. Free. While it lasts.</div>
-          </div>
-          <div class="inline-banner-cta">
-            <div class="inline-banner-btn">Free Download →</div>
-            <div class="inline-banner-note">No CCS points required</div>
-          </div>
-        </div>
-      </a>
+    /* =====================
+       READING PAGE LAYOUT
+    ===================== */
 
-<h2>Pilot Steps In</h2>
-        <p>We’d always known about Pilot, the dominant AI model that had been pieced together during the final days before the Crash. Its logic circuits were built out of elements of other major AIs - mostly the large American and Chinese ones - that Kai Fassard had stolen before China’s Final Firewall was raised, and the US descended into the chaos of civil war. </p>
-        <p>Though Pilot had always been present, and had previously worked in the manner that LLMs have done since the 20s, it was now tasked with the job of helping good content rise. It would reward quality content, while downgrading work that was seen as having either no social role, or work that might have a negative social impact. In this respect, it became the first and final arbitrator in the decision making process. What did society need? Pilot decided.</p>
-        <p>As a result, positivity became lucrative and negativity was to be avoided. On the most obvious level there were arguments that this punished anyone who questioned the state or its systems, though this wasn’t nearly as damaging as the move away from negative human emotions themselves. It was a world like 1984, except that dour misery was replaced by a superficial smile.</p>
-        <div class="pull-quote">"Pilot will ensure that the state runs without judgement, without prejudice and without error. It is a perfect being, that exists to serve us all. There really is nothing to be afraid of here." - Kai Fassard, CEO of Pilot Inc.</div>
+    .reading-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 48px 20px 80px;
+    }
 
-<h2>A Divided Society</h2>
-        <p>The biggest issue, however, was that social stratification had just been given a shot of adrenaline that turned glass ceilings into concrete walls.</p>
-        </p>International trade, which wasn’t possible using CCS Credits, used only Coin; a cryptocurrency that was owned en-masse by the wealthiest. Though exchange between Credit and Coin was possible, most imports were out of reach for most people and once luxury goods and housing became only tradable in Coin the aristocracy was solidified.</p>
-        <p>And the age-old question remained: what do you do with people who drop out of the system?</p>
-        <p>In this world, if your CCS score drops so low that you can no longer be considered a contributing member of society, you were moved into the Slums: huge estates where people were fed from soup kitchens and housed in dilapidated rooms, infested with damp and often short of basic neccessitiies like electricity or the phones that were required to raise your CCS score. Over time, people have been moved here in their millions. </p>
-        <p>They are ghettos, where inescapable poverty lives and anger is beginning grow. They are a cancer where society’s shame is brushed to and forgotten about. They are a home to resentment and bitterness and there is a growing belief that there is no way out because the system was designed this way.</p>
-        <p>Society has not broken down yet but it is beginning to crack, and it is into this world that Phil was sent, with a mission to change the way we live...</p>
+    /* STORY TITLE */
+    .story-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 900;
+      color: var(--text);
+      line-height: 1.05;
+      text-align: center;
+      margin-bottom: 32px;
+      letter-spacing: -0.01em;
+    }
+
+    /* EPIGRAPH */
+    .epigraph {
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      padding: 20px 0;
+      margin: 0 auto 48px;
+      max-width: 480px;
+      text-align: center;
+    }
+
+    .epigraph-text {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--text-mid);
+      margin-bottom: 12px;
+    }
+
+    .epigraph-attr {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* SECTION BREAK */
+    .section-break {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin: 48px 0 40px;
+    }
+
+    .section-break-line {
+      flex: 1;
+      height: 1px;
+      background: var(--rule);
+      max-width: 120px;
+    }
+
+    .section-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-dim);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    /* PROSE */
+    .prose p {
+      font-size: 17px;
+      line-height: 1.8;
+      color: var(--text);
+      margin-bottom: 22px;
+      text-align: left;
+    }
+
+    .prose p:first-child::first-letter {
+      font-family: 'Playfair Display', serif;
+      font-size: 52px;
+      font-weight: 900;
+      float: left;
+      line-height: 0.85;
+      margin-right: 6px;
+      margin-top: 6px;
+      color: var(--text);
+    }
+
+    /* DIALOGUE in stream of consciousness — slightly indented */
+    .prose p.dialogue {
+      padding-left: 20px;
+      border-left: 2px solid var(--rule);
+      font-style: italic;
+      color: var(--text-mid);
+    }
+
+    /* JOURNAL / INTERNAL MONOLOGUE */
+    .prose p.journal {
+      font-style: italic;
+      color: var(--text-mid);
+      font-size: 16px;
+      padding: 0 24px;
+    }
+
+    /* FINAL VERSE */
+    .verse {
+      border-top: 2px solid var(--rule-dark);
+      border-bottom: 2px solid var(--rule-dark);
+      padding: 32px 0;
+      margin: 40px 0;
+    }
+
+    .verse-line {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      line-height: 1.9;
+      color: var(--text);
+      display: block;
+      font-style: italic;
+    }
+
+    .verse-line.indent-1 {
+      padding-left: 40px;
+    }
+
+    .verse-line.indent-2 {
+      padding-left: 80px;
+    }
+
+    /* FOOTER NAV */
+    .reading-footer-nav {
+      border-top: 2px solid var(--rule-dark);
+      padding-top: 24px;
+      margin-top: 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .reading-footer-nav a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .reading-footer-nav a:hover { color: var(--accent); }
+
+    .reading-footer-nav .cta {
+      background: var(--accent);
+      color: #fff;
+      padding: 8px 18px;
+    }
+
+    .reading-footer-nav .cta:hover { background: #a00008; color: #fff; }
+
+    /* FOOTER */
+    footer { background: var(--text); color: #aaa; padding: 20px; margin-top: 0; display: flex; align-items: center; justify-content: space-between; }
+    .footer-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 900; color: #fff; text-transform: uppercase; }
+    .footer-logo .amp { color: var(--accent); font-style: italic; }
+    .footer-info { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #666; letter-spacing: 0.06em; text-align: right; line-height: 1.6; }
+
+    @media (max-width: 960px) {
+      .masthead-title { font-size: clamp(28px, 8vw, 48px); }
+      .breaking-bar { font-size: 11px; }
+      .reading-wrap { padding: 32px 20px 60px; }
+      .prose p { font-size: 16px; }
+      .verse-line { font-size: 15px; }
+      .verse-line.indent-1 { padding-left: 24px; }
+      .verse-line.indent-2 { padding-left: 48px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker-bar">
+  <div class="ticker-label">LIVE</div>
+  <div class="ticker-track">
+    <div class="ticker-inner" id="ticker"></div>
+  </div>
+</div>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="top-bar-left"><span id="live-date"></span> &nbsp;·&nbsp; circleandtriangle.co.uk</div>
+</div>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-inner">
+    <a href="index.html"><img src="circleandtriangle-500.jpg" alt="Circle and Triangle logo" class="logo-img"></a>
+    <div class="masthead-center">
+      <a href="index.html"><div class="masthead-title">Circle <span class="amp">&amp;</span> Triangle</div></a>
+      <div class="masthead-rule"></div>
+      <div class="masthead-tagline">"There is intelligent design, but we are the designers."</div>
+    </div>
+  </div>
+  <nav class="primary-nav">
+    <a class="nav-item" href="index.html">Headlines</a>
+    <a class="nav-item" href="free-download.html">Beta Readers Needed</a>
+  </nav>
+</header>
+
+<!-- BREAKING -->
+<div class="breaking-bar">
+  <span class="breaking-kicker">Breaking</span>
+  Credit Scores being reduced in response to any involvement with Davidson's flag. | Davidson has connections to organised criminal gangs. Public advised caution. | Stability must prevail.
+</div>
+
+<!-- READING CONTENT -->
+<div class="reading-wrap">
+
+  <h1 class="story-title">Part 1:<br>The Wilderness</h1>
+
+  <!-- EPIGRAPH -->
+  <div class="epigraph">
+    <div class="epigraph-text">
+      And so I walked through the fires of hell<br>
+      delighted with the enjoyment of genius<br>
+      which to Angels look like torment and insanity
+    </div>
+    <div class="epigraph-attr">— William Blake, The Marriage of Heaven and Hell</div>
+  </div>
+
+  <!-- SECTION I -->
+  <div class="section-break">
+    <div class="section-break-line"></div>
+    <div class="section-number">I</div>
+    <div class="section-break-line"></div>
+  </div>
+
+  <div class="prose">
+
+    <p>Phil first met Bill in a record shop on the North Laines, in Brighton. He'd just finished work and he stamped the soil off his boots before he entered the shop, glad to leave the noise of the street behind.</p>
+
+    <p>The Laines had been busy that day. The usual rainbow of hippy flags and street performers were all out to enjoy the sun, and he'd had to weave around them as he headed to the store. He didn't resent them for not working, their CCS score was high enough for them to get by and some of these guys would have been doing well for themselves. They weren't bad people by any stretch. They made the online exercise routines and motivational videos that had become the bread and butter of the post-crash economy.</p>
+
+    <p>Three people approached him for Attention, each preaching their own sense of progress.</p>
+
+    <p>"Hey pal — Follow me: I'll get you firm abs in three weeks with one simple routine that's so original even the scientists are baffled! It's guaranteed to raise your CCS!" said one, reaching out for Phil and almost grasping at his top.</p>
+
+    <p>"You want the truth — send me a Like!" said another, with a conspiratorial nod. "This is everything the mainstream press won't tell you!"</p>
+
+    <p>"You wanna know how to get around Pilot? I'm your man. I know the algorithm and with these three simple tricks your posts will be your payday!" The last one went so far as to block Phil's path. "Mate, listen to me: you want Credit… honestly," he leant in close. "I got a system man. Perfect. Guaranteed. Enough to get you some good pussy, eh…? Bet you'd love that…"</p>
+
+    <p>That was far enough for Phil. "Fuck off, you doss cunt!" He barged past him and carried on his way. Then he felt his phone vibrate and knew that he'd been reported. Whoever else the guy was, he was probably in enough Credit for it to impact Phil and he got annoyed at himself for losing his temper.</p>
+
+    <p>He fucking hated guys like that. The whole idea of the CCS was to create a system of financial reward that was based on social benefit. But there were always gamers who came along and broke the system. There was nothing good you could give humanity that it couldn't turn to shit. AI should have been the best invention ever, but it was no surprise that people like that twat-bag had dedicated his life to breaking it.</p>
+
+    <p>Phil didn't Connect with any of them. He hardly reached out at all, which is why he still topped up his minimum Civil Credit Score with a job as a gardener. It was the only way to get by, but he also enjoyed the work. It kept him outside, got his hands dirty, and he was largely left alone.</p>
+
+    <p>He hated this mess. He hated the way the world worked, and the way people pretended it was all ok. He kinda knew that was why he spent his time listening to old music, from back in the days when people used to dream as though the world could still be changed.</p>
+
+    <p>He was slowly flicking through some scuffed Leonard Cohen records and listening to an old MP3 player on shuffle when Bill suddenly appeared at his shoulder.</p>
+
+    <p>"Cohen's great," Bill said; and though the line came out of nowhere — and although Phil had never seen Bill before — it didn't make him jump. In fact he barely even looked across; it was almost as though Bill's voice had come from somewhere inside of him.</p>
+
+    <p>"But you're similar," Bill went on. "Bitter searching of your hearts."</p>
+
+    <p>Phil laughed, though the line took him close to a part of himself where he kept memories of his father and he was lost momentarily. He looked across and into the eyes of the man standing next to him; almost leaning into him. For a long time his mind became empty, he was slightly spun out, and then — for the briefest moment — it was his father in front of him, as he used to be, years ago; and then it wasn't. It was the stranger again.</p>
+
+    <p>"You gonna ring them bells Phil?" Bill asked, squaring up slightly. "Let some light into this hell-hole of an existence?"</p>
+
+    <p>Phil withdrew, suddenly aware of how close Bill was standing.</p>
+
+    <p>He was about to step away when Bill grabbed his arm and held him back. Startled, Phil met his eyes and Bill held them and for a moment Phil was lost in them and he didn't like it. Suddenly, everything that was warm and paternal about him switched and Phil saw a glimpse of fiery rage. "Remember Graham Hall, Phil," Bill growled, through clenched teeth. Then he let go of Phil's arm and something like regret washed across his face. "Remember Graham Hall…" he repeated. "And there is still a chance that we can save your people."</p>
+
+    <p>Phil stared at him, wide-eyed and fearful. Bill looked around the shop, nervous and almost in a panic. He turned to look back at Phil and smiled briefly, sadly, and then turned and left in a hurry.</p>
+
+    <p>Despite the strangeness of the situation, Phil's eyes drifted down to the floor as the name echoed around in his head.</p>
+
+    <p>Phil did remember Graham Hall.</p>
+
+    <p>Where did he remember him from?</p>
+
+    <p>The name touched something deep and painful, and although he couldn't quite grasp it, he wanted to.</p>
+
+    <p>His eyes drifted down the display as he heard Bill's voice seem to echo around his head: "Remember Graham Hall… remember Graham Hall… Find a still, silent place and remember Graham Hall… remember Graham Hall."</p>
+
+  </div>
+
+  <!-- SECTION II -->
+  <div class="section-break">
+    <div class="section-break-line"></div>
+    <div class="section-number">II</div>
+    <div class="section-break-line"></div>
+  </div>
+
+  <div class="prose">
+
+    <p>Graham Hall… Graham Hall… who the fuck was Graham Hall? It rang a bell but nothing more.</p>
+
+    <p>He'd searched up the name a half hour later, after he'd got back home again. The only reference was a Wikipedia entry about a little-known musician from the 60s who was known for his angry verse and gravelly voice. That made sense — and it meant it was from his dad. There was a list of albums in the entry — <em>Broken Seen</em>, <em>The Rabid Monk</em>, <em>Traveller Scholar Poet</em> — but not much more.</p>
+
+    <p>He started his computer and opened his journal and stared at the cursor for a while. Then he went to the fridge and poured a glass of wine. The sun was setting and he didn't have work the next day so maybe he had some time to remember. For the first time in a while, he felt like he had a purpose.</p>
+
+    <p><em>Broken Seed</em>, that had done it.</p>
+
+    <p><em>I'm your broken seed…</em> that was a line from one of his songs.</p>
+
+    <p>He stared out of the window, across a line of grey roofs. <em>I'm your broken seed… you're nothing but an… animal? And I'm your broken seed….</em></p>
+
+    <p>He shook his head. He didn't like it, so he picked up his phone and began to scroll.</p>
+
+    <p>An hour later, after he'd opened a bottle of whiskey, he turned to his journal. Within an hour of that starting, he was halfway through the whiskey and back to writing about his ex-girlfriend, Madeleine:</p>
+    
+    <p><em>I'm so sorry that I couldn't be more. I'd wanted to reach out, I'd wanted to connect, but I couldn't find the heart to love myself much less face someone else. I'm not surprised I managed to find a way out of that safety; to reject you; to throw it back into your face, and tear it to pieces, and destroy everything we had. If there was only a way back, but this world is not a place for livers, lovers, brothers or children with mothers…</em></p>
+
+    <p>It was gone three am before he fell into bed.</p>
+
+    <p>Though he couldn't remember when or how he'd done it, amidst the incoherent rambling, he wrote a single verse in his journal:</p>
+
+    <span class="verse-line">You broke me</span>
+    <span class="verse-line indent-1">Then asked where I went wrong</span>
+    <span class="verse-line">You cracked my fucking windpipe</span>
+    <span class="verse-line indent-1">Then asked me where's my song?</span>
+    <span class="verse-line">You tell me the time's come to rise and be a man</span>
+    <span class="verse-line indent-2">But I saw you break my knees while still holding my hand.</span>
+  </div>
+
+  <!-- FOOTER NAV -->
+  <div class="reading-footer-nav">
+    <a href="index.html">← Back to Headlines</a>
+    <a href="the-book.html" class="cta">Download the rest →</a>
+  </div>
+
+</div><!-- /reading-wrap -->
+
+<footer>
+  <div>
+    <div class="footer-logo">Circle <span class="amp">&amp;</span> Triangle</div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#555;margin-top:6px;letter-spacing:0.06em;">circleandtriangle.co.uk &nbsp;·&nbsp; promotional site for The Crossroad by [the author]</div>
+  </div>
+  <div class="footer-info">
+    FICTION = from the world of the novel &nbsp;·&nbsp; REAL = from ours<br>
+    CLASSIFIED = could be either. You decide.<br>
+    CCS score updates every 24 hours. Compliance is not optional.
+  </div>
+</footer>
+
+<script>
+  const d = new Date();
+  document.getElementById('live-date').textContent =
+    d.toLocaleDateString('en-GB', {weekday:'long', year:'numeric', month:'long', day:'numeric'}).toUpperCase();
+
+  window.addEventListener('load', function() {
+    const items = [
+      'CCS PAYOUT REACH RECORD HIGHS. WEEKLY AVERAGE: <span class="hi">1,225 CCS</span> <span class="up">↑2</span>',
+      'COIN TO CCS<span class="sep">·</span>SECTOR 4<span class="sep">·</span>UNVERIFIED',
+      'COIN VALUE 24hrs: <span class="up">+3.1%</span>',
+      'CCS VALUE 24hrs: <span class="up">+0.3%</span>',
+      'TOKEN VALUE 24hrs: <span class="hi">-7.6%</span>',
+      'STABILITY INDEX: <span class="hi">94.7%</span>',
+      'NEXT REVIEW CYCLE: <span class="hi">12 DAYS</span>',
+      'PILOT ALGORITHM: <span class="hi">OPERATIONAL</span>',
+      'ENGAGEMENT CONTINUES TO GROW. OUTLOOK POSITIVE.',
+    ];
+    const inner = document.getElementById('ticker');
+    const html = items.map(t => `<span class="ticker-item">${t}</span>`).join('');
+    inner.innerHTML = html + html;
+  });
+</script>
+</body>
+</html>
