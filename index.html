@@ -94,8 +94,8 @@
         <div class="lead-top-text">
           <span class="tag tag-fiction">The Crossroads</span>
           <a href="who-is-phil.html"><h1 class="hl-lead">Phil Davidson rockets to success: so what is haunting him?</h1></a>
-          <a href="who-is-phil.html"><div class="pull-quote">The musician who claims he's "never played guitar" has become the most controversial figure of the age. But who is the man behind the movement?</div></a>
           <a href="who-is-phil.html"><p class="dek">A month ago, Phil Davidson burst onto the scene with a series of albums that have seen him rocket to fame, fortune, and the kind of influence that could change the world. However, he shows clear signs of profound mental distress and many are calling for him to be locked up. We explore the damage he's doing and ask where he's taking us...</p></a>
+
           <div class="byline">The Crossroads &nbsp;·&nbsp; Novel Trailer &nbsp;·&nbsp; 4 min read</div>
         </div>
 
@@ -210,46 +210,45 @@
 </footer>
 
 <script>
-  const d = new Date();
-  document.getElementById('live-date').textContent =
-    d.toLocaleDateString('en-GB', {weekday:'long', year:'numeric', month:'long', day:'numeric'}).toUpperCase();
-  document.getElementById('edition-date').textContent =
-    d.toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric'}).toUpperCase();
+ // Date
+const d = new Date();
+document.getElementById('live-date').textContent =
+  d.toLocaleDateString('en-GB', {weekday:'long', year:'numeric', month:'long', day:'numeric'}).toUpperCase();
 
-  // Blake quotes
-  const blakeQuotes = [
-    "No bird soars too high if he soars with his own wings.",
-    "The road of excess leads to the palace of wisdom.",
-    "Energy is eternal delight.",
-    "You never know what is enough unless you know what is more than enough.",
-    "The tigers of wrath are wiser than the horses of instruction.",
-    "Eternity is in love with the productions of time.",
-    "If the fool would persist in his folly, he would become wise.",
-    "The pride of the peacock is the Glory of God.",
-    "Always be ready to speak your mind and a base man will avoid you.",
-    "Everything possible to be believed is an image of truth.",
-    "Sooner murder an infant in its cradle than nurse unacted desires.",
-  ];
-  document.getElementById('blake-quote').textContent =
-    blakeQuotes[Math.floor(Math.random() * blakeQuotes.length)];
+// Blake quotes
+const blakeQuotes = [
+  "No bird soars too high if he soars with his own wings.",
+  "The road of excess leads to the palace of wisdom.",
+  "Energy is eternal delight.",
+  "You never know what is enough unless you know what is more than enough.",
+  "The tigers of wrath are wiser than the horses of instruction.",
+  "Eternity is in love with the productions of time.",
+  "If the fool would persist in his folly, he would become wise.",
+  "The pride of the peacock is the Glory of God.",
+  "Always be ready to speak your mind and a base man will avoid you.",
+  "Everything possible to be believed is an image of truth.",
+  "Sooner murder an infant in its cradle than nurse unacted desires.",
+];
+const randomQuote = blakeQuotes[Math.floor(Math.random() * blakeQuotes.length)];
+document.getElementById('blake-quote').textContent = randomQuote;
+
+window.addEventListener('load', function() {
 
   // Ticker
-  window.addEventListener('load', function() {
-    const items = [
-      'CCS PAYOUT REACH RECORD HIGHS. WEEKLY AVERAGE: <span class="hi">1,225 CCS</span> <span class="up">↑2</span>',
-      'COIN TO CCS<span class="sep">·</span>SECTOR 4<span class="sep">·</span>UNVERIFIED',
-      'COIN VALUE 24hrs: <span class="up">+3.1%</span>',
-      'CCS VALUE 24hrs: <span class="up">+0.3%</span>',
-      'TOKEN VALUE 24hrs: <span class="hi">-7.6%</span>',
-      'STABILITY INDEX: <span class="hi">94.7%</span>',
-      'NEXT REVIEW CYCLE: <span class="hi">12 DAYS</span>',
-      'PILOT ALGORITHM: <span class="hi">OPERATIONAL</span>',
-      'ENGAGEMENT CONTINUES TO GROW. OUTLOOK POSITIVE.',
-    ];
-    const inner = document.getElementById('ticker');
-    const html = items.map(t => `<span class="ticker-item">${t}</span>`).join('');
-    inner.innerHTML = html + html;
-  });
+  const items = [
+    'CCS PAYOUT REACH RECORD HIGHS. WEEKLY AVERAGE: <span class="hi">1,225 CCS</span> <span class="up">↑2</span>',
+    'COIN TO CCS<span class="sep">·</span>SECTOR 4<span class="sep">·</span>UNVERIFIED',
+    'COIN VALUE 24hrs: <span class="up">+3.1%</span>',
+    'CCS VALUE 24hrs: <span class="up">+0.3%</span>',
+    'TOKEN VALUE 24hrs: <span class="hi">-7.6%</span>',
+    'STABILITY INDEX: <span class="hi">94.7%</span>',
+    'NEXT REVIEW CYCLE: <span class="hi">12 DAYS</span>',
+    'PILOT ALGORITHM: <span class="hi">OPERATIONAL</span>',
+    'ENGAGEMENT CONTINUES TO GROW. OUTLOOK POSITIVE.',
+  ];
+  const inner = document.getElementById('ticker');
+  const html = items.map(t => `<span class="ticker-item">${t}</span>`).join('');
+  inner.innerHTML = html + html;
 
   // Slideshow
   let currentSlide = 0;
@@ -262,7 +261,9 @@
     document.getElementById('slideTrack').style.transform = `translateX(-${currentSlide * width}px)`;
     document.getElementById('slideCounter').textContent = `${currentSlide + 1} / ${total}`;
   }
+
   setInterval(() => moveSlide(1), 5000);
+  window.moveSlide = moveSlide;
 
   // CCS score animation
   let ccs = 847;
@@ -271,6 +272,8 @@
     const el = document.getElementById('ccs-number');
     if (el) el.textContent = ccs;
   }, 4000);
+
+});
 </script>
 </body>
 </html>
