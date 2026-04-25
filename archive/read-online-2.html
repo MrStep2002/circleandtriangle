@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Wilderness — Circle &amp; Triangle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-light: #f7f5f2;
+      --text: #1a1816;
+      --text-mid: #4a4540;
+      --text-dim: #8a8480;
+      --rule: #c8c0b4;
+      --rule-dark: #2a2520;
+      --accent: #c8000a;
+      --amber: #b8860b;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--bg); color: var(--text); font-family: 'Source Serif 4', serif; font-size: 15px; line-height: 1.5; }
+    a { color: inherit; text-decoration: none; }
+
+    /* TICKER */
+    .ticker-bar { background: var(--text); overflow: hidden; height: 26px; display: flex; align-items: center; position: sticky; top: 0; z-index: 100; }
+    .ticker-label { background: var(--accent); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; padding: 0 12px; height: 100%; display: flex; align-items: center; white-space: nowrap; flex-shrink: 0; }
+    .ticker-track { overflow: hidden; flex: 1; }
+    .ticker-inner { display: flex; animation: ticker 45s linear infinite; white-space: nowrap; }
+    .ticker-inner:hover { animation-play-state: paused; }
+    .ticker-item { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: #c8c0b4; padding: 0 28px; letter-spacing: 0.04em; }
+    .ticker-item .hi { color: #e8d090; }
+    .ticker-item .up { color: #6abf6a; }
+    .ticker-item .sep { color: #555; margin: 0 6px; }
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+    /* TOP BAR */
+    .top-bar { border-bottom: 1px solid var(--rule); padding: 5px 20px; display: flex; align-items: center; justify-content: space-between; }
+    .top-bar-left { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; }
+
+    /* MASTHEAD */
+    .masthead { border-bottom: 3px solid var(--rule-dark); padding: 0 20px; }
+    .masthead-inner { display: flex; align-items: center; justify-content: space-between; padding: 12px 0 8px; gap: 16px; }
+    .logo-img { width: 100px; height: 100px; object-fit: contain; flex-shrink: 0; }
+    .masthead-center { text-align: center; flex: 1; }
+    .masthead-title { font-family: 'Playfair Display', serif; font-size: clamp(34px, 5.5vw, 66px); font-weight: 900; color: var(--text); letter-spacing: -0.01em; line-height: 1; text-transform: uppercase; }
+    .masthead-title .amp { color: var(--accent); font-style: italic; font-weight: 700; }
+    .masthead-rule { width: 100%; height: 1px; background: var(--rule); margin: 5px 0; }
+    .masthead-tagline { font-family: 'Source Serif 4', serif; font-style: italic; font-size: 14px; color: var(--text-dim); letter-spacing: 0.04em; }
+
+    /* NAV */
+    .primary-nav { border-top: 1px solid var(--rule); display: flex; justify-content: center; flex-wrap: wrap; }
+    .nav-item { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; color: var(--text-mid); letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 14px; border-right: 1px solid var(--rule); cursor: pointer; transition: color 0.12s, background 0.12s; }
+    .nav-item:first-child { border-left: 1px solid var(--rule); }
+    .nav-item:hover { color: var(--accent); background: var(--bg-light); }
+    .nav-item.active { color: var(--accent); border-bottom: 2px solid var(--accent); margin-bottom: -1px; }
+
+    /* BREAKING */
+    .breaking-bar { background: var(--accent); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 20px; display: flex; align-items: center; gap: 14px; }
+    .breaking-kicker { background: #fff; color: var(--accent); font-size: 9px; padding: 1px 5px; font-weight: 800; letter-spacing: 0.1em; flex-shrink: 0; }
+
+    /* READING LAYOUT */
+    .reading-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 48px 20px 80px;
+    }
+
+    .story-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 900;
+      color: var(--text);
+      line-height: 1.05;
+      text-align: center;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .story-subtitle {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .story-subtitle a {
+      color: var(--accent);
+      border-bottom: 1px solid var(--accent);
+    }
+
+    /* SECTION BREAK */
+    .section-break {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin: 48px 0 40px;
+    }
+
+    .section-break-line {
+      flex: 1;
+      height: 1px;
+      background: var(--rule);
+      max-width: 120px;
+    }
+
+    .section-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-dim);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    /* PROSE */
+    .prose p {
+      font-size: 17px;
+      line-height: 1.8;
+      color: var(--text);
+      margin-bottom: 22px;
+    }
+
+    .prose p.journal {
+      font-style: italic;
+      color: var(--text-mid);
+      font-size: 16px;
+      padding: 0 24px;
+    }
+
+    /* INLINE VERSE — within prose flow */
+    .inline-verse {
+      margin: 24px 0 24px 32px;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+    }
+
+    .inline-verse .verse-line {
+      font-size: 16px;
+      line-height: 1.9;
+      color: var(--text-mid);
+      display: block;
+    }
+
+    .inline-verse .verse-line.indent-1 { padding-left: 32px; }
+    .inline-verse .verse-line.indent-2 { padding-left: 64px; }
+
+    /* WORD BY WORD VERSE — the composition scene */
+    .word-verse {
+      margin: 24px 0;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+    }
+
+    .word-verse .wv-line {
+      font-size: 17px;
+      line-height: 2.2;
+      color: var(--text);
+      display: block;
+    }
+
+    .word-verse .wv-line.indent-1 { padding-left: 40px; }
+    .word-verse .wv-line.indent-2 { padding-left: 80px; }
+    .word-verse .wv-line.indent-3 { padding-left: 120px; }
+
+    /* FINAL VERSE — section V, standalone */
+  .final-verse {
+  padding: 32px 0 32px 32px;
+  margin: 40px 0;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+}
+
+    .final-verse .verse-line {
+      font-size: 17px;
+      line-height: 2;
+      color: var(--text);
+      display: block;
+    }
+
+    .final-verse .verse-line.indent-1 { padding-left: 40px; }
+    .final-verse .verse-line.indent-2 { padding-left: 80px; }
+
+    /* FOOTER NAV */
+    .reading-footer-nav {
+      border-top: 2px solid var(--rule-dark);
+      padding-top: 24px;
+      margin-top: 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .reading-footer-nav a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .reading-footer-nav a:hover { color: var(--accent); }
+    .reading-footer-nav .cta { background: var(--accent); color: #fff; padding: 8px 18px; }
+    .reading-footer-nav .cta:hover { background: #a00008; color: #fff; }
+
+    /* FOOTER */
+    footer { background: var(--text); color: #aaa; padding: 20px; margin-top: 0; display: flex; align-items: center; justify-content: space-between; }
+    .footer-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 900; color: #fff; text-transform: uppercase; }
+    .footer-logo .amp { color: var(--accent); font-style: italic; }
+    .footer-info { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #666; letter-spacing: 0.06em; text-align: right; line-height: 1.6; }
+
+    @media (max-width: 960px) {
+      .masthead-title { font-size: clamp(28px, 8vw, 48px); }
+      .breaking-bar { font-size: 11px; }
+      .reading-wrap { padding: 32px 20px 60px; }
+      .prose p { font-size: 16px; }
+      .inline-verse .verse-line { font-size: 15px; }
+      .final-verse .verse-line { font-size: 15px; }
+      .inline-verse .verse-line.indent-1 { padding-left: 20px; }
+      .inline-verse .verse-line.indent-2 { padding-left: 40px; }
+      .final-verse .verse-line.indent-1 { padding-left: 24px; }
+      .final-verse .verse-line.indent-2 { padding-left: 48px; }
+      .word-verse .wv-line.indent-1 { padding-left: 24px; }
+      .word-verse .wv-line.indent-2 { padding-left: 48px; }
+      .word-verse .wv-line.indent-3 { padding-left: 72px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker-bar">
+  <div class="ticker-label">LIVE</div>
+  <div class="ticker-track">
+    <div class="ticker-inner" id="ticker"></div>
+  </div>
+</div>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="top-bar-left"><span id="live-date"></span> &nbsp;·&nbsp; circleandtriangle.co.uk</div>
+</div>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-inner">
+    <a href="index.html"><img src="circleandtriangle-500.jpg" alt="Circle and Triangle logo" class="logo-img"></a>
+    <div class="masthead-center">
+      <a href="index.html"><div class="masthead-title">Circle <span class="amp">&amp;</span> Triangle</div></a>
+      <div class="masthead-rule"></div>
+      <div class="masthead-tagline">"There is intelligent design, but we are the designers."</div>
+    </div>
+  </div>
+  <nav class="primary-nav">
+    <a class="nav-item" href="index.html">Headlines</a>
+    <a class="nav-item" href="free-download.html">Beta Readers Needed</a>
+  </nav>
+</header>
+
+<!-- BREAKING -->
+<div class="breaking-bar">
+  <span class="breaking-kicker">Breaking</span>
+  Credit Scores being reduced in response to any involvement with Davidson's flag. | Davidson has connections to organised criminal gangs. Public advised caution. | Stability must prevail.
+</div>
+
+<!-- READING CONTENT -->
+<div class="reading-wrap">
+
+  <h1 class="story-title">The Wilderness</h1>
+  <div class="story-subtitle">Continued from <a href="read-online.html">Part One</a></div>
+
+  <!-- SECTION III -->
+  <div class="section-break">
+    <div class="section-break-line"></div>
+    <div class="section-number">III</div>
+    <div class="section-break-line"></div>
+  </div>
+
+  <div class="prose">
+
+    <p>The second time Phil saw Bill he was sitting on a bench in Preston Cemetery. He'd spent the morning tending to the plots, clearing them of bramble and nettles. At the time, he'd been eating his lunch and staring into the distance and dreaming about changing the world. His current fantasy had been running for a couple of weeks, on and off. He replayed large parts of it like a film he edited as he watched.</p>
+
+    <p>In it, he'd been declared a wanted man by the Government for expressing dangerously liberal views and garnering so much support that it seemed revolution wouldn't be far off. Despite Phil's reassurance that fighting wasn't the answer — 'Revolutions only take you back to where you began,' he said with a dry smile during an in-depth exposé on a topical news show — storm clouds were on the horizon.</p>
+
+    <p>In one last-ditch attempt to stop him he was captured by idealistic young hicks (who he suspected were MI6 in disguise) who tortured him, streaming the video live on the internet. He escaped moments before an execution that would have been seen by billions.</p>
+
+    <p>After killing his captors — in an act that was also broadcast live — he stole their truck and drove cross-country until he arrived in London, where, with helicopter cameras circling, he was reunited tearfully with his ex-girlfriend, Madeleine, who told him she loved him, and only him, and always had, and always would. And then he died in her arms, because he couldn't imagine a better way to end it.</p>
+
+    <p>Phil was just building up to the big reunion — he was driving the truck and nursing a bullet wound in his side — when Bill suddenly piped up: "Amazing places, cemeteries," he said. Phil jumped like he'd been caught out. "I honestly think," Bill went on. "That the world would be a better place if people spent a little longer hanging around with dead people." Then he looked across at Phil and smiled. And despite his outfit — he was dressed in a rough wooden jumper and jeans, with wore short wellington boots with a ring of fur around the top (he looked like he should be reading the Sunday papers in a country pub somewhere in Surrey) — Bill's smile did nothing to take away from the strange fire that still burnt in his eyes.</p>
+
+    <p>"You ok?" Bill asked, after Phil had stared for long enough to establish that he wasn't.</p>
+
+    <p>Phil nodded.</p>
+
+    <p>Bill waited.</p>
+
+    <p>Phil stared.</p>
+
+    <p>"You remembered Graham Hall yet?" Bill asked brightly. Then he smiled and waited for Phil to pull himself together.</p>
+
+    <p>Now that he'd looked longer, Bill's sense of Sunday supplement, academic disarray — his hair was naturally messy and his chin was dusted with silver stubble — gave Phil a feeling of warmth that he felt strangely comforted by. For a moment he remembered the shock of the moment he'd been grabbed in the record store, but… he couldn't quite place it to this guy anymore. There was nothing fearful about him now. And for a moment, he was his father again.</p>
+
+    <p>"Yeah, I…" He was about to start answering questions when it occurred to him to ask: "Who are you?"</p>
+
+    <p>"I'm just… visiting some relatives," Bill said, gesturing indiscriminately at the graves. "Don't worry." Then he breathed deeply and that seemed to settle the discussion. Then he repeated his question: "Have you remembered Graham Hall yet?"</p>
+
+    <p>"Well, yeah, maybe…" Phil was unable to shake the feeling that he was still in the middle of a dream. "I wrote this… I remembered it earlier today." He opened the notes app on his phone. "I think it's… yeah."</p>
+
+    <p>Bill smiled and took the phone:</p>
+
+    <div class="inline-verse">
+      <span class="verse-line">They'll suck you dry, take all you've got</span>
+      <span class="verse-line indent-1">and leave you living but starting to rot</span>
+      <span class="verse-line">They'll use you, abuse you, and smile while they do</span>
+      <span class="verse-line indent-1">You're just another face to screw</span>
+      <span class="verse-line indent-2">But time's a tricky thing to play</span>
+      <span class="verse-line indent-2">And their time's gonna come someday.</span>
+    </div>
+
+    <p>Bill looked up when he'd finished and smiled softly: "That's the stuff. This is the energy I'm looking for. Don't dwell on the heartbreak. You need to move on from that."</p>
+
+    <p>Phil laughed. "There's a lot of sadness there," he said.</p>
+
+    <p>"Well… he was a broken man by the end, that's true. But it wasn't all her fault, it's important to remember that."</p>
+
+    <p>"It wasn't her fault at all! It was mine." Phil sort of realised that he wasn't sure if he was talking about Graham Hall or himself here — or maybe even his dad — but he ignored the thought. The chance to talk to someone else about what he was going through was just too alluring.</p>
+
+    <p>Bill shrugged a little and looked across the stones. "It's not anyone's fault really. It's not designed this way," he said. "But reality cannot be denied, and sometimes it doesn't matter where the buck stops. If you're in as much trouble as you lot are in, something's gotta be done."</p>
+
+    <p>"What do you mean?"</p>
+
+    <p>Bill paused a moment: "There's a lot of anger in Graham Hall," he said. "There's a lot of anger in you as well. But don't turn it all inwards. Don't blame yourself mate. You were born a perfect being, and then…" he wafted a hand around at the world… "all this happened and… it broke you. I understand." He looked back at Phil and the fire in his eyes was a warming Christmas hearth: "But don't blame yourself son. It's the world that needs to change."</p>
+
+    <p>Phil, who was sitting forward with his elbows rested on his knees, hung his head. "Too right," was all he said.</p>
+
+    <p>"Dark days are coming Philip," Bill said. "And you might be the only one who can stop them now."</p>
+
+    <p>That took him by surprise. I mean, the whole thing should have done, but for some reason Bill's appearance seemed so natural and the memories of Graham Hall seemed so real, that he wasn't really taken aback until Bill suggested that he might be the one who could fix it. "What do you mean?" he asked.</p>
+
+    <p>Bill was looking across at two mourners standing at a nearby grave, who stared back at him curiously.</p>
+
+    <p>"Keep looking back," Bill said. "There's a lot more." He returned Phil's phone. "Hall was really important to your dad," he said, almost as an afterthought. "It might help if you spent some time thinking about him. Try and remember the best of him. Only the best."</p>
+
+    <p>Phil didn't reply. The couple seemed to be making a move in his direction which led him to sit upright and wave as though to check that everything was ok.</p>
+
+    <p>"I better get going," Bill said and left in a hurry.</p>
+
+    <p>Phil watched him go for a long moment, lost in thought. But it wasn't until he walked behind a tree and didn't come out the other side that he took a double-take on how weird the whole thing was.</p>
+
+  </div>
+
+<!-- DOWNLOAD AD -->
+<div style="border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: 28px 0; margin: 48px 0; text-align: center;">
+  <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--accent); letter-spacing:0.14em; text-transform:uppercase; margin-bottom:12px;">CCS Clearance: Permitted · For Now</div>
+  <div style="font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--text); line-height:1.3; margin-bottom:8px;">Enjoying the story?<br>Take it with you.</div>
+  <div style="font-family:'Source Serif 4',serif; font-style:italic; font-size:14px; color:var(--text-mid); margin-bottom:20px;">Download the opening chapters as a PDF or ePub — free, before Pilot shuts it down.</div>
+  <a href="the-book.html" style="display:inline-block; background:var(--accent); color:#fff; font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; padding:10px 28px; text-decoration:none;">Download Free →</a>
+  <div style="font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--text-dim); margin-top:10px; letter-spacing:0.06em;">No CCS points required. For now.</div>
+</div>
+
+  <!-- SECTION IV -->
+  <div class="section-break">
+    <div class="section-break-line"></div>
+    <div class="section-number">IV</div>
+    <div class="section-break-line"></div>
+  </div>
+
+  <div class="prose">
+
+    <p>He looked up Graham Hall again online when he got back and re-read the short article on Wikipedia: 1960s British musician, famous for his angry verse. That was him. That was the guy. Acoustic guitar, wandering poet; spoke from the heart, wrote from the hip. He remembered him now; a man with a life so like his own but blessed with the ability to make the pain somehow beautiful.</p>
+
+    <p>Phil sat back and tried to remember his house and his dad's records… and his dad, and he tried to place Graham Hall in the middle of it.</p>
+
+    <p>Phil's dad had died a few months earlier, alone and in poverty; and although they'd rarely spoken in the years beforehand, the manner of his death — he'd been dead for a week before anyone found him — had hit Phil hard. They weren't bitter, but there was so much left unsaid that they'd grown apart. His dad was deeply resentful, and so was Phil. And although they both agreed that the issue was the mother, the agreement wasn't strong enough to keep them together.</p>
+
+    <p>Phil's mum had always maintained that he shouldn't have expected anything different. But Phil knew that wasn't true. She was the abuser: tyrannical, bitterly disappointed in them both, and full of blame.</p>
+
+    <p>Phil had barely responded to the news of his father's death, delivered to him by a long-forgotten uncle, over the phone one rainy day in November.</p>
+
+    <p>Phil said he wouldn't be going to the funeral because of the distance that had grown between them, but the truth was that he didn't want to speak to anyone about his dad. He had his own version of events and he was sticking to them: it wasn't his father's fault, it was hers. She'd worked to be rid of him for years, and had, as far as Phil was concerned, succeeded almost two decades ago. She hated him because he'd tried to stand up for himself, and she simply couldn't have that.</p>
+
+    <p>He'd been cold to the fact that he was now an orphan for months. He'd barely known his parents when they were alive and was determinedly non-plussed now they were both dead.</p>
+
+    <p>But as he sat and drank, late at night, and searched for Graham Hall amidst the memories, his mind touched on a sadness that became the most powerful thing he'd ever felt. The feeling was accompanied by a rush of adrenaline that was painful but enlivening, and for a long moment he was lost in it.</p>
+
+    <p>Despite having his journal, he started a new document in Word. He stared at the blank screen for so long it grew out of focus, his hands lightly brushing the letters on the keyboard.</p>
+
+    <p>He could remember his dad's old house in Bristol as being always in shadow, and he moved through it in search of his father. He moved down the blue-walled, purple-carpeted corridor — his mind's eye like a cinematic tracking shot — toward the smoke of the living room, to where his dad was drinking and thinking and listening to Graham Hall.</p>
+
+    <p>Then he wrote the word: <em>I</em></p>
+
+    <p>Then: <em>don't</em></p>
+    <p>Then: <em>want</em></p>
+    <p>Then: <em>nothing</em></p>
+    <p>And then: <em>more</em></p>
+ 
+    <p>He wrote them out slowly and deliberately, without thinking about the previous one. They were just five words that felt right.</p>
+
+    <p>He looked it back over: <em>I don't want nothing more</em></p>
+
+    <p>He wondered if it was <em>anymore</em> — <em>I don't want nothing anymore</em> — but he knew it wasn't. Hall wasn't like him. Hall was braver than him. Hall wanted things, he hadn't given up.</p>
+
+    <p>What did Hall want?</p>
+
+    <div class="word-verse">
+      <span class="wv-line indent-1"><em>A home</em></span>
+      <span class="wv-line indent-2"><em>And a hearth</em></span>
+    </div>
+
+    <p>And then he stopped and sat back and took a drink.</p>
+
+    <p>Then he arranged the lines and added a word and read:</p>
+
+    <div class="inline-verse">
+      <span class="verse-line">I don't want nothing more</span>
+      <span class="verse-line indent-1">Than a home and a hearth</span>
+    </div>
+
+    <p>And although that was right — he could almost remember the song now: it was just Hall and his guitar with some strings in the background… ah, but that was what was missing: the strings.</p>
+
+    <p>Because Hall was a romantic; like a broken romantic.</p>
+
+    <p><em>And a woman to share in the magic,</em> Phil wrote, and his stomach momentarily reeled from the realisation. It was almost enough for him to lose the flow, but before he stopped he tipped over the moment and wrote:</p>
+
+    <div class="inline-verse">
+      <span class="verse-line">And a red wall to paint</span>
+      <span class="verse-line indent-1">And a life without shame</span>
+      <span class="verse-line indent-2">Don't tell me that that's all too much</span>
+    </div>
+
+    <p>After he finished he stayed still for a long time, feeling his body acclimatise itself to a gentle pain that moved around his core. He sat back and read it through twice.</p>
+
+    <p>It was Graham Hall. They were real lyrics, he was sure. He finished his beer so he could open the bottle of red he'd bought and lit another cigarette, reading the lines over and over, and searching inside himself for what came next.</p>
+
+    <p>It was the feeling he chased. He was touching a place deep inside himself, a place he hadn't felt for years, and the desire to acknowledge it again became all-powerful. It was painful to touch but the pain felt keen and enlivening, and he wanted more.</p>
+
+    <p>He stayed up writing until he was so drunk he couldn't see properly and then crashed into bed, pulling the blinds shut to keep out the daylight.</p>
+
+  </div>
+
+  <!-- SECTION V -->
+  <div class="section-break">
+    <div class="section-break-line"></div>
+    <div class="section-number">V</div>
+    <div class="section-break-line"></div>
+  </div>
+
+  <div class="final-verse">
+    <span class="verse-line">I don't want nothing more</span>
+    <span class="verse-line indent-1">Than a home and a hearth</span>
+    <span class="verse-line">And a woman to share in the magic</span>
+    <span class="verse-line indent-1">And a red wall to paint</span>
+    <span class="verse-line indent-2">And a life without shame</span>
+    <span class="verse-line">Don't tell me that that's all too much</span>
+  </div>
+
+  <!-- FOOTER NAV -->
+  <div class="reading-footer-nav">
+    <a href="read-online.html">← Part One</a>
+    <a href="read-online-3.html" class="cta">Read On →</a>
+  </div>
+
+</div><!-- /reading-wrap -->
+
+<footer>
+  <div>
+    <div class="footer-logo">Circle <span class="amp">&amp;</span> Triangle</div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#555;margin-top:6px;letter-spacing:0.06em;">circleandtriangle.co.uk &nbsp;·&nbsp; promotional site for The Crossroad by [the author]</div>
+  </div>
+  <div class="footer-info">
+    FICTION = from the world of the novel &nbsp;·&nbsp; REAL = from ours<br>
+    CLASSIFIED = could be either. You decide.<br>
+    CCS score updates every 24 hours. Compliance is not optional.
+  </div>
+</footer>
+
+<script>
+  const d = new Date();
+  document.getElementById('live-date').textContent =
+    d.toLocaleDateString('en-GB', {weekday:'long', year:'numeric', month:'long', day:'numeric'}).toUpperCase();
+
+  window.addEventListener('load', function() {
+    const items = [
+      'CCS PAYOUT REACH RECORD HIGHS. WEEKLY AVERAGE: <span class="hi">1,225 CCS</span> <span class="up">↑2</span>',
+      'COIN TO CCS<span class="sep">·</span>SECTOR 4<span class="sep">·</span>UNVERIFIED',
+      'COIN VALUE 24hrs: <span class="up">+3.1%</span>',
+      'CCS VALUE 24hrs: <span class="up">+0.3%</span>',
+      'TOKEN VALUE 24hrs: <span class="hi">-7.6%</span>',
+      'STABILITY INDEX: <span class="hi">94.7%</span>',
+      'NEXT REVIEW CYCLE: <span class="hi">12 DAYS</span>',
+      'PILOT ALGORITHM: <span class="hi">OPERATIONAL</span>',
+      'ENGAGEMENT CONTINUES TO GROW. OUTLOOK POSITIVE.',
+    ];
+    const inner = document.getElementById('ticker');
+    const html = items.map(t => `<span class="ticker-item">${t}</span>`).join('');
+    inner.innerHTML = html + html;
+  });
+</script>
+</body>
+</html>
