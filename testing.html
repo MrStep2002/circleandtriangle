@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>A Tour of HTML</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,700;9..144,900&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    :root {
+      --ink: #1a1a1a;
+      --paper: #f4ebd9;
+      --accent: #d62828;
+      --rule: #1a1a1a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 2rem 1rem;
+      font-family: 'Fraunces', Georgia, serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.6;
+    }
+
+    .page {
+      max-width: 780px;
+      margin: 0 auto;
+      background: var(--paper);
+      padding: 2.5rem;
+      border: 2px solid var(--ink);
+      box-shadow: 12px 12px 0 var(--ink);
+    }
+
+    .masthead {
+      text-align: center;
+      border-bottom: 4px double var(--ink);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .masthead h1 {
+      font-size: 3.5rem;
+      font-weight: 900;
+      margin: 0;
+      letter-spacing: -2px;
+      line-height: 1;
+    }
+    .masthead .accent { color: var(--accent); font-style: italic; }
+    .masthead p {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-top: 0.5rem;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 0.3rem;
+      margin-top: 2.5rem;
+    }
+    h3 { font-size: 1.2rem; margin-bottom: 0.4rem; }
+
+    .tag {
+      display: inline-block;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      margin-right: 6px;
+      vertical-align: middle;
+      letter-spacing: 1px;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(214, 40, 40, 0.12);
+      padding: 1px 6px;
+      font-size: 0.9em;
+      color: var(--accent);
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: underline wavy;
+      text-underline-offset: 4px;
+    }
+
+    blockquote {
+      border-left: 4px solid var(--accent);
+      margin: 1rem 0;
+      padding: 0.5rem 1rem;
+      font-style: italic;
+      background: rgba(0,0,0,0.04);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.95rem;
+    }
+    th, td {
+      border: 1px solid var(--ink);
+      padding: 8px 12px;
+      text-align: left;
+    }
+    th { background: var(--ink); color: var(--paper); }
+
+    .demo-box {
+      border: 1px dashed var(--ink);
+      padding: 1rem;
+      margin: 0.8rem 0 1.5rem;
+      background: rgba(255,255,255,0.4);
+    }
+
+    button {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--accent);
+      color: var(--paper);
+      border: 2px solid var(--ink);
+      padding: 8px 16px;
+      cursor: pointer;
+      box-shadow: 4px 4px 0 var(--ink);
+      transition: transform 0.1s;
+    }
+    button:active { transform: translate(4px, 4px); box-shadow: none; }
+
+    input, select {
+      font-family: 'JetBrains Mono', monospace;
+      padding: 6px 10px;
+      border: 2px solid var(--ink);
+      background: var(--paper);
+    }
+
+    details {
+      border: 1px solid var(--ink);
+      padding: 0.5rem 1rem;
+      margin: 0.5rem 0;
+      cursor: pointer;
+    }
+    summary { font-weight: bold; }
+
+    footer {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 4px double var(--ink);
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <header class="masthead">
+      <h1>The HTML <span class="accent">Gazette</span></h1>
+      <p>Vol. 1 &middot; A Field Guide for Curious Students</p>
+    </header>
+
+    <h2>1. Headings &amp; Paragraphs</h2>
+    <p><span class="tag">&lt;h1&gt; - &lt;h6&gt;</span> Headings come in six sizes, from biggest to smallest. The <code>&lt;p&gt;</code> tag wraps a paragraph of text — like this one you're reading right now.</p>
+    <div class="demo-box">
+      <h3>This is an &lt;h3&gt; heading</h3>
+      <p>And this is a paragraph below it. You can make text <strong>bold</strong> with <code>&lt;strong&gt;</code>, or <em>emphasized</em> with <code>&lt;em&gt;</code>. You can even <mark>highlight it</mark> with <code>&lt;mark&gt;</code>.</p>
+    </div>
+
+    <h2>2. Links &amp; Images</h2>
+    <p><span class="tag">&lt;a&gt;</span> The anchor tag creates a hyperlink. For example, here's a link to <a href="https://developer.mozilla.org/en-US/docs/Web/HTML" target="_blank" rel="noopener">MDN's HTML docs</a> — a great place to learn more.</p>
+    <p><span class="tag">&lt;img&gt;</span> The image tag displays a picture. Notice it's "self-closing" — it doesn't need a separate closing tag.</p>
+    <div class="demo-box" style="text-align:center;">
+      <img src="https://placehold.co/400x150/1a1a1a/f4ebd9?text=An+%3Cimg%3E+tag" alt="An example image" style="max-width:100%; border: 2px solid var(--ink);">
+    </div>
+
+    <h2>3. Lists</h2>
+    <p><span class="tag">&lt;ul&gt;</span> An <strong>unordered list</strong> uses bullet points:</p>
+    <ul>
+      <li>Apples</li>
+      <li>Oranges</li>
+      <li>Bananas</li>
+    </ul>
+    <p><span class="tag">&lt;ol&gt;</span> An <strong>ordered list</strong> uses numbers:</p>
+    <ol>
+      <li>Wake up</li>
+      <li>Drink coffee</li>
+      <li>Write some HTML</li>
+    </ol>
+
+    <h2>4. Quotes</h2>
+    <p><span class="tag">&lt;blockquote&gt;</span> Use a blockquote when you're quoting someone:</p>
+    <blockquote>
+      "The best way to predict the future is to invent it." — Alan Kay
+    </blockquote>
+
+    <h2>5. Tables</h2>
+    <p><span class="tag">&lt;table&gt;</span> Tables organize data into rows and columns.</p>
+    <table>
+      <thead>
+        <tr><th>Tag</th><th>What it does</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>&lt;tr&gt;</code></td><td>Defines a table row</td></tr>
+        <tr><td><code>&lt;th&gt;</code></td><td>A header cell</td></tr>
+        <tr><td><code>&lt;td&gt;</code></td><td>A regular data cell</td></tr>
+      </tbody>
+    </table>
+
+    <h2>6. Forms &amp; Buttons</h2>
+    <p><span class="tag">&lt;input&gt;</span> <span class="tag">&lt;button&gt;</span> Forms let users type things and click things.</p>
+    <div class="demo-box">
+      <label>Your name: <input type="text" placeholder="Type here..."></label>
+      <br><br>
+      <label>Pick one:
+        <select>
+          <option>HTML</option>
+          <option>CSS</option>
+          <option>JavaScript</option>
+        </select>
+      </label>
+      <br><br>
+      <button onclick="alert('You clicked the button!')">Click me</button>
+    </div>
+
+    <h2>7. Hidden Surprises</h2>
+    <p><span class="tag">&lt;details&gt;</span> Click the arrow to reveal more. This is a great way to hide extra info.</p>
+    <details>
+      <summary>What does HTML stand for?</summary>
+      <p>HyperText Markup Language! It's the skeleton of every webpage on the internet.</p>
+    </details>
+    <details>
+      <summary>Why are some tags "self-closing"?</summary>
+      <p>Tags like <code>&lt;img&gt;</code>, <code>&lt;br&gt;</code>, and <code>&lt;hr&gt;</code> don't wrap content — they just place something on the page, so they don't need a closing tag.</p>
+    </details>
+
+    <h2>8. Line Breaks &amp; Dividers</h2>
+    <p>A <code>&lt;br&gt;</code> creates a line break.<br>Like that.<br>And that.</p>
+    <p>An <code>&lt;hr&gt;</code> draws a horizontal rule:</p>
+    <hr>
+
+    <footer>
+      &mdash; END OF TOUR &mdash;<br>
+      Now try editing this file and see what happens!
+    </footer>
+  </div>
+</body>
+</html>
