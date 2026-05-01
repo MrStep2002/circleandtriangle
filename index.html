@@ -9,6 +9,20 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="site.css">
 </head>
+
+<!-- POPUP -->
+<div id="popup-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; display:flex; align-items:center; justify-content:center;">
+  <div style="background:#fff; max-width:480px; width:90%; padding:40px; position:relative; border-top: 4px solid #c8000a;">
+    <div style="font-family:'Playfair Display',serif; font-size:22px; font-weight:900; margin-bottom:16px;">A note before you read</div>
+    <div style="font-family:'Source Serif 4',serif; font-size:15px; line-height:1.7; color:#4a4540; margin-bottom:24px;">
+      <p style="margin-bottom:12px;">This is a promotional site for <em>The Crossroads</em>, a novel. Everything you read here exists in the world of the book — except this message.</p>
+      <p style="margin-bottom:12px;">The novel was written entirely by a human. No AI was involved in the writing. AI was used only in building this site.</p>
+      <p>Welcome to the world of Circle &amp; Triangle. Stability must prevail.</p>
+    </div>
+    <button onclick="document.getElementById('popup-overlay').style.display='none'" style="background:#c8000a; color:#fff; font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; padding:10px 24px; border:none; cursor:pointer;">I understand →</button>
+  </div>
+</div>
+
 <body>
 
 <!-- TICKER -->
@@ -275,5 +289,14 @@ window.addEventListener('load', function() {
 
 });
 </script>
+
+<script>
+  if (sessionStorage.getItem('popupSeen')) {
+    document.getElementById('popup-overlay').style.display = 'none';
+  } else {
+    sessionStorage.setItem('popupSeen', 'true');
+  }
+</script>
+
 </body>
 </html>
