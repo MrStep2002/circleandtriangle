@@ -1,634 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>When Phil Met Bill — Circle &amp; Triangle</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #ffffff;
-      --bg-light: #f7f5f2;
-      --text: #1a1816;
-      --text-mid: #4a4540;
-      --text-dim: #8a8480;
-      --rule: #c8c0b4;
-      --rule-dark: #2a2520;
-      --accent: #c8000a;
-      --amber: #b8860b;
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: var(--bg); color: var(--text); font-family: 'Source Serif 4', serif; font-size: 15px; line-height: 1.5; }
-    a { color: inherit; text-decoration: none; }
-
-    /* MINIMAL HEADER */
-    .site-header {
-      border-bottom: 3px solid var(--rule-dark);
-      padding: 20px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 24px;
-    }
-
-    .header-logo {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      text-decoration: none;
-    }
-
-    .logo-img {
-      width: 60px;
-      height: 60px;
-      object-fit: contain;
-      flex-shrink: 0;
-    }
-
-.word-verse .wv-line {
-  display: block;
-  font-size: 17px;
-  line-height: 2.2;
-  color: var(--text);
-  font-style: italic;
-}
-
-    .logo-text {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(20px, 3vw, 32px);
-      font-weight: 900;
-      color: var(--text);
-      letter-spacing: -0.01em;
-      line-height: 1;
-      text-transform: uppercase;
-    }
-
-    .logo-text .amp {
-      color: var(--accent);
-      font-style: italic;
-      font-weight: 700;
-    }
-
-    .header-nav {
-      display: flex;
-      gap: 0;
-    }
-
-    .header-nav a {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      padding: 6px 16px;
-      border: 1px solid var(--rule);
-      border-right: none;
-      transition: color 0.12s, background 0.12s;
-    }
-
-    .header-nav a:last-child { border-right: 1px solid var(--rule); }
-    .header-nav a:hover { color: var(--accent); background: var(--bg-light); }
-
-    /* READING LAYOUT */
-    .reading-wrap {
-      max-width: 680px;
-      margin: 0 auto;
-      padding: 56px 20px 80px;
-    }
-
-    /* SECTION TITLE */
-    .section-title {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(36px, 6vw, 58px);
-      font-weight: 900;
-      color: var(--text);
-      line-height: 1.05;
-      text-align: center;
-      margin-bottom: 32px;
-      letter-spacing: -0.01em;
-    }
-
-    /* EPIGRAPH */
-    .epigraph {
-      border-top: 1px solid var(--rule);
-      border-bottom: 1px solid var(--rule);
-      padding: 20px 0;
-      margin: 0 auto 56px;
-      max-width: 480px;
-      text-align: center;
-    }
-
-    .epigraph-text {
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-size: 16px;
-      line-height: 1.7;
-      color: var(--text-mid);
-      margin-bottom: 12px;
-    }
-
-    .epigraph-attr {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 10px;
-      color: var(--text-dim);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    /* CHAPTER BREAK — decorative lines either side of title */
-    .chapter-break {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin: 0 0 40px;
-    }
-
-    .chapter-break-line {
-      flex: 1;
-      height: 1px;
-      background: var(--rule);
-    }
-
-    .chapter-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 25px;
-      font-weight: 700;
-      color: var(--text-mid);
-      letter-spacing: 0.04em;
-      font-style: italic;
-      white-space: nowrap;
-      padding: 0 8px;
-    }
-
-    /* SECTION BREAK — *** between passages */
-    .passage-break {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      margin: 40px 0;
-      color: var(--text-dim);
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 14px;
-      letter-spacing: 0.3em;
-    }
-
-    /* PROSE */
-    .prose p {
-      font-size: 15px;
-      line-height: 1.8;
-      color: var(--text);
-      margin-bottom: 0px;
-      text-indent: 1.5em;
-    }
-
-    /* Drop cap on first paragraph of each chapter */
-    .prose.chapter-open p:first-child::first-letter {
-      font-family: 'Playfair Display', serif;
-      font-size: 52px;
-      font-weight: 900;
-      float: left;
-      line-height: 0.85;
-      margin-right: 6px;
-      margin-top: 6px;
-      color: var(--text);
-    }
-
-    /* Italic passages — journal, internal monologue */
-    .prose p.journal {
-      font-style: italic;
-      color: var(--text-mid);
-      font-size: 15px;
-      padding: 0 24px;
-    }
-
-    /* INLINE VERSE — within prose flow */
-    .inline-verse {
-      margin: 24px 0 24px 32px;
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-    }
-
-    .inline-verse .verse-line {
-      font-size: 15px;
-      line-height: 1.9;
-      color: var(--text-mid);
-      display: block;
-    }
-
-    .inline-verse .verse-line.i1 { padding-left: 32px; }
-    .inline-verse .verse-line.i2 { padding-left: 64px; }
-    .inline-verse .verse-line.i3 { padding-left: 96px; }
-
-    /* STANDALONE VERSE — set apart */
-    .standalone-verse {
-      padding: 24px 0 24px 32px;
-      margin: 32px 0;
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-    }
-
-    .standalone-verse .verse-line {
-      font-size: 16px;
-      line-height: 1.9;
-      color: var(--text);
-      display: block;
-    }
-
-    .standalone-verse .verse-line.i1 { padding-left: 32px; }
-    .standalone-verse .verse-line.i2 { padding-left: 64px; }
-    .standalone-verse .verse-line.i3 { padding-left: 96px; }
-
-    /* DOWNLOAD AD */
-    .download-ad {
-      border-top: 1px solid var(--rule);
-      border-bottom: 1px solid var(--rule);
-      padding: 28px 0;
-      margin: 48px 0;
-      text-align: center;
-    }
-
-    .download-ad-eyebrow {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 10px;
-      color: var(--accent);
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-    }
-
-    .download-ad-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--text);
-      line-height: 1.3;
-      margin-bottom: 8px;
-    }
-
-    .download-ad-sub {
-      font-family: 'Source Serif 4', serif;
-      font-style: italic;
-      font-size: 14px;
-      color: var(--text-mid);
-      margin-bottom: 20px;
-    }
-
-    .download-ad-btn {
-      display: inline-block;
-      background: var(--accent);
-      color: #fff;
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 10px 28px;
-      text-decoration: none;
-    }
-
-    .download-ad-note {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 9px;
-      color: var(--text-dim);
-      margin-top: 10px;
-      letter-spacing: 0.06em;
-    }
-
-    /* FOOTER NAV */
-    .reading-footer-nav {
-      border-top: 2px solid var(--rule-dark);
-      padding-top: 24px;
-      margin-top: 48px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .reading-footer-nav a {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--text-dim);
-    }
-
-    .reading-footer-nav a:hover { color: var(--accent); }
-    .reading-footer-nav .cta { background: var(--accent); color: #fff; padding: 8px 18px; }
-    .reading-footer-nav .cta:hover { background: #a00008; color: #fff; }
-
-    /* FOOTER */
-    .site-footer {
-      border-top: 1px solid var(--rule);
-      padding: 24px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 60px;
-    }
-
-    .footer-logo {
-      font-family: 'Playfair Display', serif;
-      font-size: 18px;
-      font-weight: 900;
-      color: var(--text);
-      text-transform: uppercase;
-    }
-
-    .footer-logo .amp { color: var(--accent); font-style: italic; }
-
-    .footer-info {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 10px;
-      color: var(--text-dim);
-      letter-spacing: 0.06em;
-      text-align: right;
-      line-height: 1.8;
-    }
-
-    @media (max-width: 760px) {
-      .site-header { padding: 16px 20px; flex-wrap: wrap; gap: 12px; }
-      .header-nav { display: none; }
-      .reading-wrap { padding: 36px 20px 60px; }
-      .prose p { font-size: 16px; }
-      .inline-verse .verse-line { font-size: 15px; }
-      .standalone-verse .verse-line { font-size: 15px; }
-      .site-footer { flex-direction: column; gap: 16px; padding: 20px; text-align: center; }
-      .footer-info { text-align: center; }
-    }
-  </style>
-</head>
-<body>
-
-<!-- MINIMAL HEADER -->
-<header class="site-header">
-  <a href="index.html" class="header-logo">
-    <img src="circleandtriangle-500.jpg" alt="Circle and Triangle" class="logo-img">
-    <div class="logo-text">Circle <span class="amp">&amp;</span> Triangle</div>
-  </a>
-  <nav class="header-nav">
-    <a href="index.html">← Headlines</a>
-    <a href="the-book.html">Download</a>
-  </nav>
-</header>
-
-<!-- READING CONTENT -->
-<div class="reading-wrap">
-
-  <!-- SECTION TITLE -->
-  <h1 class="section-title">Part 1:<br>The Wilderness</h1>
-
-  <!-- EPIGRAPH -->
-  <div class="epigraph">
-    <div class="epigraph-text">
-      And so I walked through the fires of hell<br>
-      delighted with the enjoyment of genius<br>
-      which to Angels look like torment and insanity
-    </div>
-    <div class="epigraph-attr">— William Blake, The Marriage of Heaven and Hell</div>
-  </div>
-
-  <!-- CHAPTER TITLE -->
-  <div class="chapter-break">
-    <div class="chapter-break-line"></div>
-    <div class="chapter-title">Ch 1: When Phil Met Bill</div>
-    <div class="chapter-break-line"></div>
-  </div>
-
-  <!-- PROSE — add class="chapter-open" to get drop cap on first paragraph -->
-  <div class="prose chapter-open">
-
-   <!-- =====================
-     WHEN PHIL MET BILL
-     Template A page — section opener
+<!-- =====================
+     SHE GETS HIM FIRST
      Paste after the chapter-break div
      ===================== -->
 
 <div class="prose chapter-open">
 
-  <p>Phil first met Bill in a record shop on the North Laines, in Brighton. He’d just finished work and he stamped the soil off his boots before he entered the shop, glad to leave the noise of the street behind.</br>
-The Laines had been busy that day. The heat wasn’t unmanageable, and there was a rainbow of hippies and street performers practicing circus tricks for Attention. He didn’t mind that lot, they stayed busy and kept out of his way and mostly off their phones, and Phil felt there was at least some purpose in what they did - it didn’t do any harm, at least. And it wasn’t easy to make a living in the post-crash world. </br>
-Three people approached him for Attention, each preaching their own sense of progress. These were the ones he didn’t like:</br>
-The first one popped up from behind him patted his stomach: “What’s that! Mate, give us a Follow: I’ll get these rock solid in three weeks with a simple routine!” Phil brushed him off. “Guaranteed to raise your CCS!” He shouted after him.</br>
-The second appeared in front of him then walked alongside and put his arm around his shoulder, almost trying to pull him away. He spoke conspiratorially: “You want to know the truth about Kai Fassard - send me a Like!” He winked. “Everything the mainstream press won’t tell ya!” Phil turned away again. Though homelessness was now a thing of the past, begging was still doing very well for itself.</br>
-“Wanna know how to get around Pilot?” This one went so far as to block Phil’s path. ”I’m your man! I know the algorithm and I’ll turn your posts into paydays!” Phil went to move around him, but he kept in his path and gently held his shoulder. “Listen, mate: you want Credit?” He leant in close. “I got a system. Guaranteed. Enough to get you some good pussy, eh…? Bet it’s been a while…”</br>
-That was enough. Phil wanted to tell him to fuck off and call him a twat. He wanted to tell him that his behaviour was the reason why the Creative Economy was destroying society instead of saving it. But instead he pushed him off and carried on his way. Then he felt his phone vibrate and knew that he’d been reported. Whoever else the guy was, he was in enough Credit for a negative Engagement to impact Phil and he got annoyed at himself for losing his temper. A warden glanced across. Phil gestured with his hands, acknowledging that he’d made a mistake, and they both let it be.</br>
-Phil hated this world, and the way everyone pretended it was all ok. He hated the Creative Economy and everything it had done. He hated the constant badgering and fear-mongering and profiteering, and the desperate need for Attention. Life had somehow been reduced to a constant scream of look at me; a guttural human need that now drove the economy. It could be withdrawn or gorged upon and it was this process that created the strange combination of egotists and neurotics that seemed to make up most of society these days.</br>
-Phil didn’t Connect with any of them. He hardly reached out at all, which is why he still topped up his minimum Civil Credit Score with a job as a gardener. It was the only way to get by, but he also enjoyed the work. It kept him outside - which was still refreshing, despite the heat - and he was largely left alone.</br>
-It was also why he still spent time in record shops listening to old music, from back in the days when people used to dream that the world could still become a better place.</br>
-He was slowly flicking through some scuffed Leonard Cohen records and listening to an MP3 player on shuffle when Bill suddenly appeared at his shoulder. </br>
-“Cohen's great,” Bill said; and though the line came out of nowhere, Phil didn’t react. In fact, he barely even looked across; it was almost as though the voice had come from somewhere inside of him. 
-“But you’re similar,” Bill continued. “Bitter searching of your hearts.”</br>
-Phil laughed, though the line took him close to a part of himself where he kept memories of his father and he was lost momentarily. When he did look across, the man was almost leaning into him and staring, deeply and strangely at Phil. For a long time his mind became empty; and then - for the briefest moment - memories of his father came back to him in a form so real they burnt at his insides… and then they were gone. </br>
-“You gonna ring them bells Phil?” Bill asked, stepping back and squaring up slightly. “Let in the light?”</br>
-Phil withdrew, suddenly aware of how strange this was. He was about to step away when Bill grabbed his arm and held it tight.</br>
-Suddenly, Bill changed and a glimpse of rage sparked in him; his eyes burnt and Phil could feel heat where his arm was being gripped. “Remember Graham Hall, Phil,” Bill growled, through clenched teeth. Then he let go of Phil’s arm and something like regret washed across his face. “Remember Graham Hall…” he repeated. “And there is still a chance that we can save your people.”</br>
-Phil stared at him, wide eyed and fearful. Bill looked around the shop, nervous and almost in a panic. He turned to look back at Phil and smiled briefly, sadly, and then left in a hurry.</br>
-Despite the strangeness of the situation, the name was what remained.  </br>
-He did remember Graham Hall. </br>
-Where did he remember him from? </br>
-The name touched something deep and painful, and although he couldn't quite grasp it, he wanted to.</br>
-</br>
-***
-</br>
-Graham Hall… Graham Hall… who the fuck was Graham Hall? </br>
-He’d searched up the name a half hour later, after he’d got back home again. The only reference was a Wikipedia entry about a little known musician from the 60s with a gravelly voice and anger issues. That made sense - and it meant it was from his dad. There was a list of albums in the entry - Broken Seed, The Rabid Monk, Traveller Scholar Poet - but not much more. </br>
-He started his computer and opened his journal and stared at the cursor for a while. Then he went to the fridge and poured a glass of wine. The sun was setting and he didn’t have work the next day so maybe he had some time to remember. For the first time in a while, he felt like he had a purpose.
-Broken Seed, that had done it. </br>
-I’m your broken seed… it was a line from one of his songs. </br>
-He stared out of the window, across a line of grey roofs. I’m your broken seed… you’re nothing but an… animal? And I’m your broken seed…? </br>
-He shook his head. He didn’t like it, so he picked up his phone and began to scroll.  </br>
-Though he never engaged, he regularly swiped through life with the detachment of the serial scroller. It was almost like a form of meditative state that he fell into as he glazed through images and video and mindless words of encouragement. He didn’t enjoy scrolling, he hated it, but for him this was a chance to meditate on his loathing.  </br>
-In the hour he sat there he must have swiped through a thousand posts, promoting anything from the benefits of hiking to the fun that could be had after fifteen beers; one in five was a healthy cooking recipe or an exercise regime - they’d increased as Phil had grown older; there were the standard pictures of food or a nice view, that were really just requests for a Like; a diminishing few were AI-generated videos or images that used to be entertaining at times, but had drifted into a kind of generic oddness that always gave Phil a rush of hate. Every dozen-or-so swipes Phil would see another advert to encourage him to join the wardens, or sign up for Border Patrol, and he swiped past them with a bitter snarl and a feeling of superiority. </br>
-He took a break to go to the toilet and open a bottle of whiskey, then he turned to his journal. Within a few hours, he was halfway through the whiskey and back to writing about his ex-girlfriend, Madeleine. 
-I’m so sorry that I wasn’t more. I’d wanted to reach out, I’d wanted to connect, but I couldn’t find the heart to love myself much less face someone else. If there was only a way back… but this world is not a place for livers, lovers, brothers or children with mothers… 
-It was gone three am before he fell into bed. </br>
-Though he couldn’t remember when or how he’d done it, amidst the incoherent rambling, he wrote a single verse in his journal:
-<i>You broke me  </br>
-	Then asked where I went wrong  </br>
-You cracked my fucking windpipe  </br>
-	Then asked me where’s my song? </br>
-You tell me the time’s come to rise and be a man  </br>
-	But I saw you break my knees while still holding my hand.</i>
+  <p>By the time Phil awoke, under the bridge and with his arm draped around his guitar, it was past noon and the bustle of London was above him. He sat up and tried to remember what had happened. He remembered meeting Nick and he remembered playing music on the South Bank and getting paid for it, which was nuts because he couldn't play the guitar — he didn't even own one.</p>
 
-***
+  <p>But he'd come from Brighton, and he'd slept while cradling the guitar Nick had given him.</p>
 
-During the next day, while he cleared gardens in Queen’s Park he was constantly distracted by fragments of lyrics that came back to him, sometimes in sudden clarity, sometimes fading into awareness: Our world was built out of so many mirrors / We’ve lost which face is our own … Don’t ask me for nothing and you won’t be disappointed … You spend too much time alone and it’s bound to affect you / You lose the ability to know or recognise truth - on their own they were nothing… but they came from a feeling, and he knew they connected to something bigger and so he was never not looking for more.
-For a long time he stood by a rose bed and had a profound and very real memory of Hall: acoustic guitar, wandering poet; spoke from the heart, wrote from the hip. He remembered him: a man with a life so like his own but blessed with the ability to make the pain somehow beautiful. 
-On the way home, he bought his usual wine and noodles with a kind of determination and then went back to his flat and tried to remember his house and his dad's records… and his dad, and he tried to place Graham Hall in the middle of it.
-Phil’s dad had died a few months earlier, alone and in poverty; and although they’d rarely spoken in the years beforehand, the manner of his death - he’d been dead for a week before anyone found him - had hit Phil hard. They weren’t bitter, but there was so much left unsaid that they’d grown apart. His dad was deeply resentful, and so was Phil. And although they weren’t angry at each other - they both agreed that the mother was the issue - the agreement wasn’t strong enough to keep them together.
-Phil’s mum had always maintained that Phil shouldn’t have expected anything different. His father was always going to leave, it was in his DNA. But Phil knew that wasn’t true. As far as he was concerned, she was the abuser: tyrannical, bitterly disappointed in them both, and full of blame. She’d wanted her life to turn out differently and had never been afraid of expressing it to either of them. 
-And so, despite the fact that Phil spent his teenage years living with her, while she cooked his meals and washed his clothes and attended the occasional parents’ evening and poked her head around the door to check he hadn’t died in the night when he was still in bed at 3pm, he never really forgave her. 
-Years later, he visited her a number of times while she was in the hospice. He’d told her he loved her and that he was sorry for what she was going through, and he soothed her where he could. But if he had been honest with himself, he didn’t really think she deserved it. He was sorry she was dying, that was only human, but he wasn’t sorry he wouldn’t have to deal with her again.
-In a similar manner, Phil had barely responded to the news of his father’s death, delivered to him by a long forgotten uncle, over the phone one rainy day in November.
-Phil said he wouldn’t be going to the funeral because of the distance that had grown between them, but the truth was that he didn’t want to speak to anyone about his dad. He had his own version of events and he was sticking to them: It wasn’t his father’s fault, it was hers. She’d worked to be rid of him for years, and had, as far as Phil was concerned, succeeded almost two decades ago. She hated him because he’d tried to stand up for himself, and she simply couldn’t have that. 
-He’d been cold to the fact that he was now an orphan for months. He’d barely known his parents when they were alive and was determinedly nonplussed now they were both dead.
-But as he sat and drank, late at night, and searched for Graham Hall amidst the memories, his mind touched on a sadness that became the most powerful thing he’d ever felt. The feeling was accompanied by a rush of adrenaline that was painful but enlivening, and for a long moment he was lost in it.
-Despite having his journal, he started a new document in Word. He stared at the blank screen for so long it grew out of focus, his hands lightly brushing the letters on the keyboard.
-He could remember his dad’s old house in Bristol as being always in shadow, and he moved through it in search of his father: down the blue-walled, purple-carpeted corridor – his mind’s eye like a cinematic tracking shot – toward the smoke of the living room, to where his dad was drinking and thinking and listening to Graham Hall.
-Then he wrote the word: I
-Then: don’t 
-		Then: want
-			Then: nothing
-				And then: more
-He wrote them out slowly and deliberately, without thinking about the previous one. They were just five words that felt right. 
-He looked it back over: I don’t want nothing more
-He wondered if it was anymore, I don’t want nothing anymore but he knew it wasn’t. Hall wasn’t like him. Hall was braver than him. Hall wanted things, he hadn’t given up.
-What did Hall want?
-	A home he wrote
-		And a hearth
-And then he stopped and sat back and took a drink.
-Then he arranged the lines and added a word and read:
-	I don’t want nothing more 
-		Than a home and a hearth
-And although that was right – he could almost remember the song now: it was just Hall and his guitar with some strings in the background… ah, but that was what was missing: the strings. 
-Because Hall was a romantic; like a broken romantic.
-And a woman to share in the magic, Phil wrote, and his stomach momentarily reeled from the realisation. It was almost enough for him to lose the flow, but before he stopped he tipped over the moment and wrote:
-	And a red wall to paint 
-		And a life without shame
-			Don’t tell me that that’s all too much
-After he finished he stayed still for a long time, feeling his body acclimatise itself to a gentle pain that moved around his core. He sat back and read it through twice.
-It was Graham Hall. They were real lyrics, he was sure. He finished his beer so he could open the bottle of red he’d bought and lit another cigarette, reading the lines over and over, and searching inside himself for what came next.
-It was the feeling he chased. He was touching a place deep inside himself, a place he hadn’t felt for years, and the desire to acknowledge it again became all-powerful. It was painful to touch but the pain felt keen and enlivening, and he wanted more.
-He stayed up writing until he was so drunk he couldn't see properly and then crashed into bed, pulling the blinds shut to keep out the daylight.
-I don’t want nothing more
-Than a home and a hearth
-And a woman to share in the magic
-	And a red wall to paint
-	And a life without shame
-		Don’t tell me that that’s all too much
+  <p>It must have… but it wasn't a dream. He was in London. And he had a guitar.</p>
 
-***
+  <p>He pulled himself to his feet and made his way absently into the crowds that bustled across London Bridge eating food they'd bought from Borough Market and drinking cold pints in the early summer sun.</p>
 
-The pattern repeated itself, night after night… but remembering Graham Hall was different to any of the other writing Phil had done before. Hall was found in a feeling that grew in his guts; a rush of adrenaline that set his heart racing. He felt like something had become alive inside of him, and if he didn't feed it, it would eat him up from within. 
-And all the while he was writing, because he was remembering the lyrics to songs, music began taking shape in his mind: an echo of clean-cut strings and an icy guitar line chilled the corridor that ran through his dad’s house like a crooked spine. He could smell the damp carpets, smoke and drink. And his dad was silently listening to Hall pluck strings on his guitar like a funeral march, while a single violin rose above it like a phantom.  
-It was warlike, but intensely sad; like the sound of impotent rage:
-Be whoever you are, I can tell you no more,
-	There’s trouble out there, we’re heading for a fall,
-But that wasn’t your fault
-	You ain’t the world
-Work for your family, keep hold of your girl
-	And keep your heart safe,
-	Given time, it’s a pearl
-In spare moments in the gardens, he’d trawl the net looking for any other references to Hall but even the Wikipedia article had been removed. It seemed like he was the only person who remembered him now and it became Phil’s mission to preserve this work for the world. 
-One day he went out and bought some paper and coloured pens and began writing them out on A4 sheets and then he cut around the words and stuck them to the walls of his flat, designing layouts that would highlight ideas or themes. 
-Though it was all written by Hall, it seemed like there were whole sections about relationships and it felt as though the breakdown of his relationship with Madeleine was written in these lines; and there were reams about his parents, or Hall’s parents, Phil couldn’t tell the difference anymore. But now that he could see it all, spread out in lines and stanzas, he could see how clearly the collapse of his parents’ relationship had led inevitably to the collapse of his relationship with Madeleine: he’d inherited his parents’ mess and it had doomed his chance of love. It was all here, in Hall’s lyrics:
-You say I bring it upon myself,
-	I know but that’s my calling,
-And if I brought it down with my two hands
-	It don’t stop the thing from falling.
-Eventually he ran out of wall space, and so he started sticking string to the ceiling and hanging pieces of verse in the middle of the room that spun gently, like dark dream catchers. As he did this he’d often be reminded of something new, and he’d return to the desk and begin writing again:
-Who made these eyes I see with?
-	At what point was I born?
-	Who moved the hands I write with
-		To choose the clothes that I have worn?
+  <p>He patted his pockets and pulled out a handful of Tokens, which meant that he had played the guitar. Then he noticed he didn't have his bag. Or his phone. Or his keys.</p>
 
+  <p>He ran back to where he'd slept but found nothing there.</p>
 
+  <p>Nick must have taken them… a cracked phone, some random clothes… but then left him with a handful of Tokens and a guitar. It didn't make any sense.</p>
 
-- The Graveyard Shift -
-The second time he saw Bill, Phil was sitting on a bench in Preston Cemetery at sunset. He’d spent the morning tending to the plots, clearing them of bramble and nettles. He liked this work: it was simple and repetitive and he could see the difference he’d made at the end of the shift. His father was never far from his thoughts that day, and for the morning remembering him had even eclipsed his search for Graham Hall. At one point his memories had become so vivid that he’d caught himself having a full-blown conversation with him. Not just the mumbling he’d been doing for the hour leading up to it, but a full-throated chat with a memory. He stopped when he realised someone was watching him and sheepishly went back to his work.
-Though he was only paid up until 5pm, he worked until almost sunset. He’d allowed himself a longer lunch-break than he was strictly allowed and he preferred to work in the cool of the evening. 
-As a result, at a little after 8pm, he was sitting with the remains of his lunch and staring into the distance and dreaming about changing the world while the sun went down. His current fantasy had been running for a couple of weeks, on and off. He replayed large parts of it like a film he edited as he watched.
-In it, he’d been declared a wanted man by the Government for expressing dangerously liberal views and garnering so much support that it seemed revolution wouldn’t be far off. In one last-ditch attempt to stop him he was captured by idealistic young thugs (who he suspected were wardens in disguise) who tortured him, streaming the video live on the internet. He escaped moments before an execution that would have been seen by millions. After killing his captors he drove cross-country to London, where, with helicopter cameras circling, he was reunited tearfully with Madeleine, who told him she loved him, and only him, and always had, and always would. And then he died in her arms, because he couldn’t imagine a better way to end it.
-Phil was just building up to the big reunion – he was driving the truck and nursing a bullet wound in his side – when Bill suddenly piped up: “Amazing places, cemeteries,” he said. This time, Phil did jump, like he’d been caught out. 
-“I honestly think,” Bill went on. “That the world would be a better place if people spent a little longer reflecting on the condition of the dead.” Then he looked across at Phil and smiled. And despite his outfit - he was dressed in a rough woollen jumper and jeans, and short wellington boots with a ring of fur around the top (he looked like he should be reading the Sunday papers in a country pub somewhere in Surrey) - Bill’s smile did nothing to soften the strange fire that still burnt in his eyes. 
-“You ok?” Bill asked, after Phil had stared for long enough to establish that he wasn’t.
-Bill waited.
-Phil stared some more. 
-“You remembered Graham Hall yet?” Bill asked brightly. Then he smiled and waited for Phil to pull himself together.
-“Yeah, I…” He was about to start answering questions when it occurred to him to ask: “Who are you?” 
-‘You can call me Bill,” he said. “I’m just… visiting some relatives.” He gestured indiscriminately at the graves. “Don’t worry.” Then he breathed deeply and that seemed to settle the discussion. Then he repeated his question: “Have you remembered Graham Hall yet?”
-“Well, yeah, maybe…” Phil was unable to shake the feeling that he was still in the middle of a dream. “I wrote this… I remembered it earlier today.” He opened the notes app on his phone. “I think it’s him…”
-Bill smiled and took the phone: 
-I been walkin' for days
-	Down buttercup lanes
-Looking for ways
-	To ease my pain
-But it ain’t gonna go
-	I’ve accepted that now
-It won’t ever be gone 
-		I can see the truth now
-Bill looked up when he'd finished but seemed to roll his eyes a little with a strange kind of disappointment. “That’s him alright.” He sat forward and rested his elbows on his knees. “But don’t dwell on… that side of things, you know.” He looked like he checked himself in thought and then sat back. “There’s a lot of Graham Hall that was very hurt; and sometimes he dwelt on it for longer than he should have done. But don’t turn it all inwards. Don’t blame yourself, son. You were born perfect, and then…” he wafted a hand around at the world,“all this happened… and that’s what broke you, really. I understand the pain, Phil, I really do… but don’t blame yourself.” He looked across at Phil and the fire in his eyes was now a warming Christmas hearth: “It’s the world that needs to change, you see, not you.”
-Phil hung his head. “Yeah,” was all he said.
-“No, I mean it Phil,” Bill said. “If you go through your life blaming yourself all the time, you’ll do nothing. And you haven’t got the time for that anymore. It’s self-indulgent. It’s lazy and it’s selfish.”
-That seemed a bit harsh. ”What are you talking about?”
-“You sit around crying about everything… Madeleine left you, boo-fucking-hoo; your mum never loved you, boo-fucking-hoo; your dad’s dead - who gives a shit!” A bit rude! “You gotta move on, Phil. You were designed to deal with these things. Now you can get over them, and be the great man you were meant to be, but you need to get your shit together.”
-“I’m doing alright,” Phi was getting defensive now. “I’m working… I pay my way.”
-“You are a shadow,” Bill whispered. “A shadow of who you could be.”
-“Yeah… but it’s hard…”
-“Then you need to be harder!” Bill shoved him. ”Your father was broken by what happened to him. But he was a great man. A kind man. And the world fucking destroyed him. Now you need to be driven by the fire of vengeance, not consumed by it.”
-Phil laughed. “Fucking hell… what am I supposed to do?”
-“It’s not about you, Phil, it’s Hall. Find his rage and channel it. Forget about yourself. His voice will speak for both of you.”
-Phil had been doing that - it was all he was doing these days.
-“Keep looking,” Bill said, returning his phone. “Because I’m telling you that dark days are coming. You know it. I know it. Everyone knows it. But I’m giving you a chance to change this, I just need you to wake up.” 
-Bill looked down the hill, towards the graves, to where two mourners eyed them back, curiously.
-“We haven’t got the time for self-pity anymore,” Bill said, then looked back at him. “You don’t need to change, Phil… you need to change the world.”
-Phil didn’t reply. Strangely, even more than Bill’s appearance, the idea that Phil might be the one who could do something about the state of society was the thing that really took him by surprise.
-“I better get going,” Bill said and left in a hurry.
-Phil watched him go, lost in thought. But it wasn’t until he walked behind a tree and didn’t come out the other side that he took a double-take on how weird the whole thing was. 
+  <p>Phil wanted to go home now. He had enough money for train fare and he figured he'd work it out on the way back. Besides, he needed to get back to work… but he had no job… shit.</p>
 
-***
+  <p>Nick had said he was homeless. And Nick had taken his stuff because he was homeless as well. Phil had been hustled… by someone who'd left him in profit? He span out slightly, feeling a little out of body. For a moment he felt himself slip into a panic. He must have had… some kind of a breakdown.</p>
 
-The encounter changed things for Phil; he dropped further into the pit of verse but left behind the pity. He worked incessantly, barely sleeping, rarely eating, but when he wrote it was with the bitter rage of a man empowered by his hatred. 
-When the well was dry, he’d stand in his room and perform verse to the wall, imagining a world hanging on his every word, and almost hearing the songs that went along with them.
-The quiet, uncomfortable, passive man was growing into a noisy, confident, angry one. 
-He fucking hated his world. He’d always hated it, that was clear, but over the course of those weeks his hate morphed into something with a venom and a purpose that he’d never felt before. It was like a moment of sobriety, or an epiphany - something he’d always known but never fully understood - and his eyes turned outward with Bill’s fire in them.
-Who were these fucking people?
-Not just the influencers - the shallow, narcissistic, vain, egotistical beggars, desperate to be seen and accepted - but their ring-masters as well. The luxurious rich who watched over it all and pretended it was ok and they were deserving of their wealth by virtue of the fact that they were simply so adept at enjoying it. 
-He often worked on the gardens in Withdean or Roedean or Tongdean; huge houses with long lawns he manicured, and bushes he carefully pruned. He never saw the residents: their gates were opened automatically, security monitored with AI; he held conversations with housekeeping robots who spoke with an imitation of enthusiasm that made him want to smash them into pieces.
-The wealth he saw was astonishing. While he worked he ran it over in his head: he earned a few hundred tokens a day for what he did, and a dozen tokens was a Credit, and a few hundred of them was a Sat and a hundred million of them was a Coin. A hundred million… he did the maths as he sifted the soil and trimmed the bushes and looked at the blades of grass… Their wealth was astonishing.
-And generated from what?
-Everyone knew it was just a matter of luck; thousands of years of economic development had all come down to a game of musical chairs: if you’d ended up Coined after the AI Crash, you were set for life on another level.
-Admittedly, some of these people would have sat on the high end of the Civil Credit Score, but most of them were Coined and this was just their seaside pad. These guys worked for the banks, the server centres, and CCTV control rooms; they set the targets, monitored behaviour, and ran the algorithms that ensured compliance. They were the reason his father’s payments had been stopped; the reason his father had died alone, in the Slums.
-	He’d died alone, and in the Slums. 
-		The fucking Slums.
-			They’d left his father to die in the Slums.
-Whatever else he’d done, he hadn’t deserved that. 
-On those days he didn't work so well at his job. On some of those days he was so angry that he either wouldn't do anything, he’d just stand and stare at a rose bush as though he was going to smash it in the face, or he’d work at small pieces of horticultural sabotage. It was pathetic really, but he’d over-trim the bushes or mis-plant the bulbs, or feed weedkiller into the wrong patch of flowers, or lay rodent bait with no trap. He’d pull healthy shoots or leave stems he should have cut, dreaming strange revenge fantasies of Triffid style plants strangling the home-owners with bloody, thorny arms.
-Why was he here anyway, giving his life over to the demands of excess? 
-He hated them all. Not just the rich, but the whole fucking lot of them. He'd stare at the robotic housecleaners patrolling carefully designed living rooms, imagining them as a prison guards, patrolling the perimeter fence.
-Besides, he didn’t have to work. He had a score still; it wouldn’t last him long, that was true, but long enough that he could do something that would be remembered. He wouldn’t turn to anything as petty as Attention Grabbing for Credit; he’d rather go down in a blaze of glory and burn the fucking lot of them.
-On some of those days, he left work feeling ten feet high, his resolution making him a king amongst men. But then he’d get home and Hall would be there waiting for him; his aching heart would be there again, still searching for love amidst the shame. It worked like a shot of cold truth that reminded him of his place.
-On some of those days he'd go out walking, and get some distance, and try to forget about Graham Hall.
+  <p>But Nick knew all those Graham Hall songs as well; and Phil had earned money from singing them. And all the Graham Hall stuff had been going on for ages, so that wasn't a breakdown. That would represent a complete change in his ongoing reality. But maybe that's what a breakdown was… maybe that was what madness was… And besides, he couldn't play the guitar.</p>
 
-***
+  <p>It was pretty clear what Occam's razor would say.</p>
 
-On one of those days, the days he couldn’t face the search for Hall, he climbed up into the flat’s loft area. He’d been up there before, moving some boxes around, and he knew there was a beam that he thought could work. He was never sure about the drop space though - you needed to pick up enough speed to break it, but had to make sure you didn’t hit the ground first. He needed a long enough rope to leave a small gap between his feet and the floor. He thought this could do it.
-But was that right? He had nothing left to give, he didn’t believe anything would change, and it seemed like a waste of a life to have him here in this strange limbo. Life meant nothing to him anymore. But wasn’t that a gift? Couldn’t he use that power to something amazing before he was gone? He had no need for regret, no fear of the end; that made him powerful. And maybe Hall was a path to somewhere… 
-On that day, he went out and he walked all across Brighton - along Hove lawns and up Kingsway and then North into Aldrington and past Hove station, Denmark Villas, and along the Shoreham Road to Seven Dials. He knew these streets well, he’d driven along them to jobs. A lot of the blocks there used to be flats, but more recently they’d been converted back into town houses for the London wealthy to visit when the mood took them. 
-He dropped down New England Road and past the old Duke of York’s Picturehouse - the oldest cinema in the country apparently. When he’d first arrived in Brighton it was famous for still showing old movies, 20th Century classics, but it was bought out a few years ago and now screened the same shit as everywhere else: AI generated hero films. They had some posters up, but even he knew that no-one went anymore and it was just a space in limbo until someone could decide what to do with it.
-He turned away from town and walked up Ditchling Rise and down the other side, then doubled back towards the Level. He stopped for a long time by St Peters Church, staring up at it and lost in thought. It was empty now. Derelict. They’d tried to turn it into a performance area a few years ago, but there was no-one left to perform and the only time anything had happened in it recently was when some kids had broken in for a stunt. They’d been fined, but the fine wasn’t anything compared to what they’d made in exposure. 
-There was nothing left here, in this wilderness. Nothing had value anymore. He looked around him, in the black of night, amidst the plastic glow of streetlights, at a barren wasteland of a space. Inside every building he’d walked past, people would have been eagerly generating digital distractions but the space itself - the real world - was lost to them. There was an alien kind of silence about it all that made Phil feel alone but exalted, because he did see it. He walked to a tree and put a hand on its trunk. He fucking loved trees. They just did their thing; there was no desire to be anymore than they were. He laughed at himself as he thought that, but he believed in it enough to bring himself back to sobriety and think the thought again.
-Suddenly there was a shout from across the street and he looked across and saw a lone male, dressed in torn jeans, with a dirty top on and no shoes. He was shouting at himself and then out and into the night and then he punched himself in the chest and collapsed to his knees. In a moment, he looked behind him and then scrambled to his feet and ran. A car pulled up and two wardens exited and grabbed him and dragged him, kicking and shouting, into the car. A few windows cracked light as curtains were parted and then the car drove off and the windows were blackened out again. Phil was left with his hand on the trunk still, in the silent darkness again.  
-Was that what awaited him?
-He reminded himself that he couldn't lose this job. 
-	He had nothing else. 
-		He had no-one else. 
-			He would remain silent and play the game and then die alone.
-				Sometimes he hated the fact, but the fact remained: he was his father’s son.
+  <p>The sense of panic began to grow. Phil had often had dreams where something central in the fabric of reality broke and the fact it was happening gave him a sense of déjà vu as much as anything else.</p>
 
-***
+  <p>He was pacing now, back and forth, and trying to piece something together when a new fear awoke as he realised how public his agitation was — and how unstable his position was: there were people everywhere, and he didn't want to be noticed. He was a long way from home, and probably not well. Then he remembered that without a job, very soon he wouldn't have a home. He wanted to turn back the last twenty-four hours and get his job back. He wanted to go back to something normal, but he knew he couldn't.</p>
 
-In the end, the decision was made for him. 
-His manager was young, with a head of curls like a wire brush. He was clean shaven and wore a suit. His hands were soft and had never touched dirt in their lives. He didn’t smile as Phil entered the room, and throughout their interview never once looked like anyone other than someone who enjoyed what they did.
-“Your work is simply below par,” he said. “When you do anything at all.”
-He gestured to a monitor and tapped his keyboard. The video showed Phil, in one of the gardens in Withdean. Phil was standing, stock still, and staring at the house. The bushes near to him rustled gently in the wind, but to look at Phil it could almost have been a photograph. He let the video play for a while before speaking again.
-“Plants do respond well to humans, and so, by chance, you had a good opportunity here. One of the few real jobs that remain. But I’m afraid that we won’t be continuing with your contract.” He smiled. “I’m sure you understand.”</p>
+  <p>And then, more than anything, he didn't want anyone to speak to him.</p>
 
-  <div class="standalone-verse">
-    <span class="verse-line">You broke me</span>
-    <span class="verse-line i1">Then asked where I went wrong</span>
-    <span class="verse-line">You cracked my fucking windpipe</span>
-    <span class="verse-line i1">Then asked me where's my song?</span>
-    <span class="verse-line">You tell me the time's come to rise and be a man</span>
-    <span class="verse-line i2">But I saw you break my knees while still holding my hand.</span>
-  </div>
+  <p>But this was London and as long as he kept his head down and stopped acting weird no-one would.</p>
+
+  <p>The day was warm and he heard a laugh in the distance and noticed a stream of saxophone that moved down the street like a ribbon.</p>
+
+  <p>He needed a reason to stop and think. What could he do that was casual enough to buy him some time?</p>
+
+  <p>Everyone was drinking.</p>
+
+  <p>He was in London.</p>
+
+  <p>He'd get a pint.</p>
 
 </div>
 
@@ -636,84 +51,149 @@ He gestured to a monitor and tapped his keyboard. The video showed Phil, in one 
 
 <div class="prose">
 
-  <p>During the next day, while he cleared gardens in Queen's Park he was constantly distracted by fragments of lyrics that came back to him, sometimes in sudden clarity, sometimes fading into awareness: <em>Our world was built out of so many mirrors / We've lost which face is our own… Don't ask me for nothing and you won't be disappointed… You spend too much time alone and it's bound to affect you / You lose the ability to know or recognise truth</em> — on their own they were nothing… but they came from a feeling, and he knew they connected to something bigger and so he was never not looking for more.</p>
+  <p>No-one really liked taking Tokens these days, but without his phone he had no access to the last of his Credits. After an awkward moment at the bar she'd agreed and he made it back outside with his drink. He'd had to concentrate hard throughout the experience and it made it clear to him that something wasn't right. There was a space in his head that was so silent it burnt. Like an open wound that throbbed with a pain that was almost enlivening but so horrifically real that it hurt.</p>
 
-  <p>For a long time he stood by a rose bed and had a profound and very real memory of Hall: acoustic guitar, wandering poet; spoke from the heart, wrote from the hip. He remembered him: a man with a life so like his own but blessed with the ability to make the pain somehow beautiful.</p>
+  <p>He remembered thinking suicidal thoughts the night before and wondered if he'd died but couldn't remember killing himself. He wondered if that was it: he was in purgatory now; the world between worlds… At least he'd made himself a guitarist, he thought with a smile. Then he realised how nuts that thought was and pushed it from his mind. Besides, he didn't feel dead, he felt more alive than he had for years. He felt the guitar hanging from his shoulders and wondered if he could play it.</p>
 
-  <p>On the way home, he bought his usual wine and noodles with a kind of determination and then went back to his flat and tried to remember his house and his dad's records… and his dad, and he tried to place Graham Hall in the middle of it.</p>
+  <p>If he was dead it didn't matter. None of it mattered.</p>
 
-  <p>Phil's dad had died a few months earlier, alone and in poverty; and although they'd rarely spoken in the years beforehand, the manner of his death — he'd been dead for a week before anyone found him — had hit Phil hard. They weren't bitter, but there was so much left unsaid that they'd grown apart. His dad was deeply resentful, and so was Phil. And although they weren't angry at each other — they both agreed that the mother was the issue — the agreement wasn't strong enough to keep them together.</p>
+  <p>He sipped his beer and wondered how hard he could push this dream. There was evidence for it, after all. He sat on the curb and rested the guitar on his knee, closing his eyes and breathing and reminding himself that no-one would notice him as long as he didn't act weird. He wasn't out of place.</p>
 
-  <p>Phil's mum had always maintained that Phil shouldn't have expected anything different. His father was always going to leave, it was in his DNA. But Phil knew that wasn't true. As far as he was concerned, she was the abuser: tyrannical, bitterly disappointed in them both, and full of blame. She'd wanted her life to turn out differently and had never been afraid of expressing it to either of them.</p>
+  <p>The instrument felt comfortable and as he held it he remembered playing more vividly. He gently stroked the strings, hearing each one ring. Then he did it again and bent his head down so he could play near silently. He strummed it ever so slightly, causing a perfect ripple of sound that warmed him. Then he moved his left to another position and strummed it again, and again the sound was safe and secure. He continued to wander slowly between chords, before he fell back to plucking individual strings in a way that wasn't tuneful but was rhythmic and seemed to mirror some part of himself perfectly.</p>
 
-  <p>And so, despite the fact that Phil spent his teenage years living with her, while she cooked his meals and washed his clothes and attended the occasional parents' evening and poked her head around the door to check he hadn't died in the night when he was still in bed at 3pm, he never really forgave her.</p>
+  <p>Then a female voice, that seemed far too close, asked: "Are you alright? Do you mind if I join you?"</p>
 
-  <p>Years later, he visited her a number of times while she was in the hospice. He'd told her he loved her and that he was sorry for what she was going through, and he soothed her where he could. But if he had been honest with himself, he didn't really think she deserved it. He was sorry she was dying, that was only human, but he wasn't sorry he wouldn't have to deal with her again.</p>
+  <p>Phil looked up and lost his breath as he stared straight into the eyes of the most beautiful woman he'd ever seen: pale skin, dark hair, deep eyes and full lips that smiled with a warmth that he wanted to be embraced by. She wore a pink afghan jumper that revealed the shape of a wonderful curve of breast and she sat next to him on the curb with a confidence that didn't push or pull but simply was.</p>
 
-  <p>In a similar manner, Phil had barely responded to the news of his father's death, delivered to him by a long-forgotten uncle, over the phone one rainy day in November.</p>
+  <p>"You've never played guitar before, have you?" she said, with a playful, knowing smile.</p>
 
-  <p>Phil said he wouldn't be going to the funeral because of the distance that had grown between them, but the truth was that he didn't want to speak to anyone about his dad. He had his own version of events and he was sticking to them: it wasn't his father's fault, it was hers. She'd worked to be rid of him for years, and had, as far as Phil was concerned, succeeded almost two decades ago. She hated him because he'd tried to stand up for himself, and she simply couldn't have that.</p>
+  <p>Phil was taken aback. Who the fuck was this?</p>
 
-  <p>He'd been cold to the fact that he was now an orphan for months. He'd barely known his parents when they were alive and was determinedly nonplussed now they were both dead.</p>
+  <p>Her smile was warm as she said, very clearly: "You're having a breakdown, Phil. Do you understand what that means?"</p>
 
-  <p>But as he sat and drank, late at night, and searched for Graham Hall amidst the memories, his mind touched on a sadness that became the most powerful thing he'd ever felt. The feeling was accompanied by a rush of adrenaline that was painful but enlivening, and for a long moment he was lost in it.</p>
+  <p>Phil was frozen.</p>
 
-  <p>Despite having his journal, he started a new document in Word. He stared at the blank screen for so long it grew out of focus, his hands lightly brushing the letters on the keyboard.</p>
+  <p>"You can't play the guitar," she shook her head gently. "You just think you can. It sounds awful." The insult was delivered with the smoothness of stirred ice-cream.</p>
 
-  <p>He could remember his dad's old house in Bristol as being always in shadow, and he moved through it in search of his father: down the blue-walled, purple-carpeted corridor — his mind's eye like a cinematic tracking shot — toward the smoke of the living room, to where his dad was drinking and thinking and listening to Graham Hall.</p>
+  <p>Phil looked around him and someone laughed, loudly, and Phil was hit with a wash of paranoia. He was breaking down.</p>
 
-  <p>Then he wrote the word: <em>I</em></p>
+  <p>"Do you understand?" she asked him, almost with a warning, and his fear tightened. "You've been on your own for months. Your father died. And now you've finally had the breakdown that's been inevitable for years."</p>
 
-<p>Then: <em>don't</em>, then: <em>want</em>, then: <em>nothing</em>, and then: <em>more</em></p>
+  <p>He felt himself spinning, like he was living in the moment before faint but his body wouldn't shut down. The clarity she spoke with brought each obvious conclusion crashing home: Life wasn't a movie. Nothing unusual happened. He'd had a breakdown, that was all.</p>
 
-  <p>He wrote them out slowly and deliberately, without thinking about the previous one. They were just five words that felt right.</p>
+  <p>She laughed a little and Phil knew she was right.</p>
 
-  <p>He looked it back over: <em>I don't want nothing more</em></p>
+  <p>"You look tired Phil," she said with a sympathetic smile.</p>
 
-  <p>He wondered if it was <em>anymore</em> — <em>I don't want nothing anymore</em> — but he knew it wasn't. Hall wasn't like him. Hall was braver than him. Hall wanted things, he hadn't given up.</p>
+  <p>She had the most loving look Phil had ever seen. He wanted to impregnate her, with himself, and then be raised by her as well. My God, who was she?</p>
 
-  <p>What did Hall want?</p>
+  <p>"Do you know why that is?" she asked. "Do you know why you've made me into the most beautiful woman you've ever seen?" Her face was alight with playful emotion, and Phil almost broke into a mindless, childlike, almost stoned giggle. "It's because I only live inside your head Phil." She laughed like it was an in-joke. "I'm a part of your breakdown — the same as Bill, and Nick. We all come from different parts of you but… we're not real, do you understand?"</p>
 
-  <div class="inline-verse">
-    <span class="wv-line i1"><em>A home</em> he wrote</span>
-    <span class="wv-line i2"><em>And a hearth</em></span>
-  </div>
+  <p>For a long moment Phil was lost in thought processing this, his mind now nothing but a spinning beach ball of manic stillness.</p>
 
-  <p>And then he stopped and sat back and took a drink. Then he arranged the lines and added a word and read:</p>
+  <p>"And you know that your mind can sometimes work against you, don't you Phil? So be careful who you trust." She leaned in slightly as though revealing something wonderful. "But you know that you can trust me, don't you." She almost whispered that bit.</p>
 
-  <div class="inline-verse">
-    <span class="verse-line">I don't want nothing more</span>
-    <span class="verse-line i1">Than a home and a hearth</span>
-  </div>
+  <p>Phil decided that he wouldn't ever be able to bring himself to betray this woman.</p>
 
-  <p>And although that was right — he could almost remember the song now: it was just Hall and his guitar with some strings in the background… ah, but that was what was missing: the strings.</p>
+  <p>"Have you got somewhere to sleep at the moment?" she asked and for a second Phil could see visions of them together and the paradise it would be.</p>
 
-  <p>Because Hall was a romantic; like a broken romantic.</p>
+  <p>"Why don't you let me look after you a bit?" Perfectly reasonable suggestion. "Come back to my place." Phil realised that he'd been staring at her breasts the whole time and he shook himself out. She almost seemed to do the same and, as a result, he was back to staring at her chest again.</p>
 
-  <p><em>And a woman to share in the magic,</em> Phil wrote, and his stomach momentarily reeled from the realisation. It was almost enough for him to lose the flow, but before he stopped he tipped over the moment and wrote:</p>
+  <p>But then something shifted slightly and he began to doubt it. He leant back, almost drunk with lust…</p>
 
-  <div class="inline-verse">
-    <span class="verse-line">And a red wall to paint</span>
-    <span class="verse-line i1">And a life without shame</span>
-    <span class="verse-line i2">Don't tell me that that's all too much</span>
-  </div>
+  <p>… and then he realised that no woman this beautiful would ever make a pass at him.</p>
 
-  <p>After he finished he stayed still for a long time, feeling his body acclimatise itself to a gentle pain that moved around his core. He sat back and read it through twice.</p>
+  <p>It was unreal. Too much.</p>
 
-  <p>It was Graham Hall. They were real lyrics, he was sure. He finished his beer so he could open the bottle of red he'd bought and lit another cigarette, reading the lines over and over, and searching inside himself for what came next.</p>
+  <p>She smiled again — white teeth — her tongue slightly visible. What could she do with it?</p>
 
-  <p>It was the feeling he chased. He was touching a place deep inside himself, a place he hadn't felt for years, and the desire to acknowledge it again became all-powerful. It was painful to touch but the pain felt keen and enlivening, and he wanted more.</p>
+  <p>He wanted her so badly…</p>
 
-  <p>He stayed up writing until he was so drunk he couldn't see properly and then crashed into bed, pulling the blinds shut to keep out the daylight.</p>
+  <p>He suddenly remembered Madeleine and then… she reminded him of her — something in the way her shoulder dropped, and her hair hung, and the confident yet sympathetic way she smiled. And once he'd seen it he couldn't un-see it.</p>
 
-  <div class="standalone-verse">
-    <span class="verse-line">I don't want nothing more</span>
-    <span class="verse-line">Than a home and a hearth</span>
-    <span class="verse-line">And a woman to share in the magic</span>
-    <span class="verse-line i1">And a red wall to paint</span>
-    <span class="verse-line i1">And a life without shame</span>
-    <span class="verse-line i2">Don't tell me that that's all too much</span>
-  </div>
+  <p>"Who are you?" he asked.</p>
+
+  <p>"I'm Trina," she said. "Trina Tee…" She shook her head and smiled as though to brush aside the joke. "I'm here to help you."</p>
+
+  <p>But as she said that, he began to feel that she was warning him. Something moved and there was suddenly something threatening about her. His drunk lust hit a moment of sobriety.</p>
+
+  <p>"I know about Bill," she said, but it was becoming serious now. "And I know what he made you do, and I know how painful that must have been. But there is another way. If you trust me, I'll take away the pain because you've suffered enough."</p>
+
+  <p>And that touched Phil, because all the writing had been painful. Everything that Bill had awoken in him seemed to celebrate his loneliness, and his sadness. It had made him a homeless drunk and he didn't want to be that. He looked away from Trina, up and down the street. A pretty girl laughed and pulled her boyfriend into her. Phil had always hated himself for the years he'd spent alone. He didn't want to be alone again. He missed being loved; he missed Madeleine.</p>
+
+  <p>"Come with me," the woman said, as advice. "You'll never be alone again. You can be reborn. I'll love you, and care for you and hold you." And she was Madeleine: her eyes, her smile. Then she gestured to the guitar: "But leave that behind. You won't need it."</p>
+
+  <p>Phil changed direction again.</p>
+
+  <p>"Why?" he asked, though the act of questioning left his chest tight.</p>
+
+  <p>"You won't need it," she repeated, almost forcefully, then added with a laugh: "You're rubbish at guitar anyway!"</p>
+
+  <p>The sentiment was warm, but it was painful. He felt like he had played the guitar… he didn't want to give it up. He looked down at the instrument, and realised something: "If none of you are real," he said. "How come Nick gave me the guitar?" Her face changed and for a moment everything that had been warm and welcoming became laced with poison. "And. How can I come and live with you… if you're not even real?"</p>
+
+  <p>She smiled again, but her lips were thin: "I know Bill," she said. "I know what he's like."</p>
+
+  <p>Phil felt the anger increase.</p>
+
+  <p>She looked at the ground in sadness: "He's setting you up, Phil."</p>
+
+  <p>Suddenly, Phil felt himself willing the aggression; like he wanted a fight with her.</p>
+
+  <p>But she attacked first: "You were talking to Nick last night, weren't you? About changing the world. You think he can do any of that?"</p>
+
+  <p>Phil stared.</p>
+
+  <p>She continued: "Nick's a drunk. A dreamer. He has no idea what will help you." Then she laughed, lightly. "Come on Phil, look around! You can't change this! That's madness…"</p>
+
+  <p>Immediately, Phil knew that he wouldn't go anywhere with this woman.</p>
+
+  <p>Her jaw shifted as she managed patience. "I'm prepared to work with you," she said, "but you won't force this through against us."</p>
+
+  <p>"I won't stop playing my guitar," he said, his voice laced with the stroppy defiance of an angry toddler.</p>
+
+  <p>She looked a little bitten, and the expression aged her slightly which knocked Phil for a moment.</p>
+
+  <p>"I can play guitar…" Phil said, suddenly charging after his instinct to attack, with the relish of an angry teenager. "And I'll fucking play it!"</p>
+
+  <p>"This isn't real!" She looked shaken now. "You're having a breakdown." She reached out for him.</p>
+
+  <p>He moved away quickly, not wanting to be touched, and stumbled into the road, scrabbling across the floor.</p>
+
+  <p>"We're not real Phil," she growled.</p>
+
+  <p>Phil looked back at her, and felt himself turn to ice as she rose to her feet and moved her arm gracefully through a parked car. Phil panicked and shuffled backwards on his elbows and then rose to his feet to defend himself. In a second she moved across the road and now stood in front of him.</p>
+
+  <p>"Get away from me!" He turned to run, but she was in front of him again and he fell back in shock.</p>
+
+  <p>"I'll love you still. But come back home."</p>
+
+  <p>"Get away from me," he growled, and moved towards the guitar.</p>
+
+  <p>"You will not stand against me!"</p>
+
+  <p>He swore at her and grabbed the instrument.</p>
+
+  <p>"You can't play that Philip!"</p>
+
+  <p>"I can!" he spat, holding it to his chest and turning back to her. "I can play the guitar. You're a liar! Get away from me!"</p>
+
+  <p>"I'm inside you Phil," she said. "You'll never be rid of me."</p>
+
+  <p>Phil span out as he realised how deep that truth was, and he rolled forward using the guitar as support. She was right. He could feel her words coming from inside his head, not from out there. He dropped the guitar and put his hands on his temples but couldn't get her out.</p>
+
+  <p>"Bill is a selfish drunk and I am not having him back…"</p>
+
+  <p>She was a stinging, stabbing pain in his brain and he wanted rid of her.</p>
+
+  <p>"I will not have him back here."</p>
+
+  <p>"Get out! Getout! Gettout!" he was mumbling, slurring, slapping his head, and screwing his face up in pain.</p>
+
+  <p>"You'll suffer and you'll fail," she said, and he felt fingers against his back. "Just like before."</p>
+
+  <p>And Phil snapped and turned, ready to hit her.</p>
+
+  <p>A man in a suit ducked, and pushed himself away and Phil heard a shout, and a gasp and he realised that the woman was gone and a small crowd of people were standing around him, some cautious, some concerned, a few laughing.</p>
 
 </div>
 
@@ -721,275 +201,202 @@ He gestured to a monitor and tapped his keyboard. The video showed Phil, in one 
 
 <div class="prose">
 
-  <p>The pattern repeated itself, night after night… but remembering Graham Hall was different to any of the other writing Phil had done before. Hall was found in a feeling that grew in his guts; a rush of adrenaline that set his heart racing. He felt like something had become alive inside of him, and if he didn't feed it, it would eat him up from within.</p>
+  <p>They formed a neat circle around him. Some kids were making a video on their phones.</p>
 
-  <p>And all the while he was writing, because he was remembering the lyrics to songs, music began taking shape in his mind: an echo of clean-cut strings and an icy guitar line chilled the corridor that ran through his dad's house like a crooked spine. He could smell the damp carpets, smoke and drink. And his dad was silently listening to Hall pluck strings on his guitar like a funeral march, while a single violin rose above it like a phantom.</p>
+  <p>"Jesus fucking Christ!" the man in the suit screamed, having backed off so quickly he'd almost fallen.</p>
 
-  <p>It was warlike, but intensely sad; like the sound of impotent rage:</p>
+  <p>Phil was in the centre of the circle, panting and looking like he was ready for another attack. The guitar was next to him on the roadway. There were people everywhere, and they were all staring.</p>
+
+  <p>"You alright mate?" a young guy with dreadlocks asked, moving forward slowly, with one hand gently raised. "You're alright," he confirmed.</p>
+
+  <p>Phil met eyes with him.</p>
+
+  <p>"Do you need me to get help?" he asked. "Do you have a carer with you?"</p>
+
+  <p>And although Phil realised that there was a circle of eyes staring at him he focused only on the man with the dreads.</p>
+
+  <p>Phil had felt that whole experience exactly like when he was writing. The moment had peaked and then subsided. It had briefly felt like an astonishing moment of clarity that had passed. It was like he'd been connected to a form of reality that was as present as freezing metal, but that his body had rejected.</p>
+
+  <p>"I'm ok," Phil said, wide eyed. He looked across to the kids with the phone who were laughing at the viral moment they'd caught.</p>
+
+  <p>"Shall I stay with you for a bit?" The guy gestured to the area of curb Phil had been sitting on.</p>
+
+  <p>"Maybe," Phil replied.</p>
+
+  <p>The guy bent down and picked up the guitar and brushed it off and then sat on the curb.</p>
+
+  <p>Although Phil still felt the pain, which had become dulled to the point where it reminded him of hunger or the need of a cigarette, he knew that the moment had passed, and he'd survived it.</p>
+
+  <p>"My name's Carl," Carl said.</p>
+
+  <p>Phil didn't respond.</p>
+
+  <p>"What's your name?" Carl asked. "Can you remember?"</p>
+
+  <p>"Phil. I think. Phil… Davidson."</p>
+
+  <p>"Phil Davidson," Carl repeated. "And where do you live Phil? Do you sleep rough? Don't get many of you these days."</p>
+
+  <p>That was a good question.</p>
+
+  <p>"I did last night," Phil said after a while.</p>
+
+  <p>"So you have a home?"</p>
+
+  <p>"I live in Brighton."</p>
+
+  <p>"Oh, ok. You sound a bit West Country."</p>
+
+  <p>"I was from Bristol originally. I studied at Sussex though, and… just… never left."</p>
+
+  <p>Carl smiled. "A lot of people do that. I know Brighton well actually. Whereabouts do you live?"</p>
+
+  <p>"Near The Pavilion, off St James's Street. Next to that little square of grass. Opposite the law courts."</p>
+
+  <p>Phil reminded himself to think rationally. This was someone who could help.</p>
+
+  <p>He should go back to the beginning. Where did this begin?</p>
+
+  <p>Did this begin when he'd left work? No, it began with the writing. Bill had started it.</p>
+
+  <p>Carl was waiting patiently while Phil raced through events in his head.</p>
+
+  <p>"Problem here is there?" asked a voice suddenly. Phil looked up like a rabbit in a corner. Carl smiled and stayed calm.</p>
+
+  <p>"It's ok," Carl said. "I'll take this one." He rose to his feet to speak to the warden.</p>
+
+  <p>"What happened?" The warden asked, staring at Phil.</p>
+
+  <p>Carl coughed lightly. "He's had a rough week but…" he looked down at Phil and then back at the warden. "I've got this," he said, though you couldn't be sure which one he was speaking to. He took out his phone and had it swiped.</p>
+
+  <p>The warden looked at the results and then stared at the two of them, not sure which one he wanted to eyeball more. In the end he just nodded and handed Carl his phone back. "Keep him out of trouble," he said and moved away.</p>
+
+  <p>Carl watched him leave with a clear sense of relief and came back to Phil with a clear awareness that he didn't want his sense of relief to end up being tragically premature.</p>
+
+  <p>"You ok?" he asked as he sat back down again.</p>
+
+  <p>Phil didn't reply for a moment. He breathed and looked around himself and tried to find something like his centre again. For a long moment the two sat in silence.</p>
+
+  <p>Phil spoke next: "Have you ever heard of Graham Hall?" he asked.</p>
+
+  <p>"No," Carl shook his head. "Who's he?"</p>
+
+  <p>"I thought he was famous," Phil said, slightly defeated but not really expecting an easy way out.</p>
+
+  <p>"Why… what brought you to London?" Carl asked.</p>
+
+  <p>"I think I might have had a breakdown. Or I might be going through a…" Phil wanted to stop the moment for a minute. "Thank you," he said. "I didn't…. I wouldn't have…" he stared at the warden who still eyed them from across the street. "He would have taken me in."</p>
+
+  <p>Carl nodded. "I think so." Then he tapped Phil. "But look at me. C'mon. Tell me: What's going on?"</p>
+
+  <p>Phil took another breath and felt the moment calm. He could have tried to talk himself out of it, but decided to be open instead: "I think I've had a breakdown. Or I'm having one. Like a nervous… you know… I don't really know what's happening to me at the moment. I used to have a job though — as a gardener." Phil could feel himself beginning to slouch in confusion, but he didn't want that so he sat up straighter and thought aloud instead: "I might be having a nervous breakdown, and it's something to do with… that." He gestured to the guitar.</p>
+
+  <p>Carl cleared his throat. "Yeah, you were shouting about that. You were shouting: 'I can play guitar.'"</p>
+
+  <p>Phil didn't say anything.</p>
+
+  <p>"Do you wanna have a go?" Carl asked.</p>
+
+  <p>"But what about that woman?"</p>
+
+  <p>"What woman?"</p>
+
+  <p>"The one I was just shouting at. A minute ago. I was shouting at a woman who said she lived in my head."</p>
+
+  <p>Carl's face became serious. "Ok. Have you been diagnosed with any mental illness?" In the end he was unable to hold back a slight smile — though he'd later defend that as he told the story, because other than what he was saying Phil seemed reasonably together.</p>
+
+  <p>"No," Phil replied. "No, I've only been like this for a bit. I got sacked the day before yesterday, or was it yesterday? I dunno. But I got sacked because I was just standing around at work and dreaming of burning down all the rich people's houses." Probably a bit too honest, there Phil; Carl laughed though. "So I guess it's fair enough they sacked me," he added as he didn't actually want to seem genuinely mad. "But then I think I had a breakdown." Oh. Then he had the breakdown… "But maybe the breakdown happened sooner because there was this guy who said I should remember a singer from the 70s called Graham Hall.</p>
+
+  <p>"And there was this old guy as well, and he gave me the guitar. And that's the weird bit, because he knew Graham Hall and that woman said that they weren't real. But the guitar must have come from somewhere — 'cause you can see it can't you? I mean I'm not going mad, it is there?" They both knew that the presence of the guitar had absolutely no bearing on Phil's mental health. Everything he'd said up to that point, however, did seem relevant. And it didn't bode well.</p>
+
+  <p>Carl, who was wealthy enough to have backed the warden off, was unclear on the details but enthralled by the story. He nodded placatingly. "Yes, I can see the guitar," he admitted.</p>
+
+  <p>"And I spent last night busking," Phil went on, more enthusiastically now. "And even though I can't play guitar, I made loads of money!"</p>
+
+  <p>Carl laughed. "Well that's a good start," he said, positively, gesturing to the instrument.</p>
+
+  <p>"But I can't play guitar," Phil replied very clearly. "I could never play a bar chord, you see." Phil held up his finger to demonstrate.</p>
+
+  <p>Carl thought for a second, and despite being clearly unsure what to expect, he said: "Well why don't you give it a go… and then you'll know."</p>
+
+  <p>Phil smiled because it rhymed and he'd always liked rhyme.</p>
+
+  <p>Carl put his beer on the floor and then he took the guitar onto his lap and started picking away.</p>
+
+  <p>"Oh right!" Phil confirmed with glee. "You can play guitar!" Phil's eyes were drawn into watching Carl's hands as they strode up and down the neck. And, while watching him, Phil remembered doing that. He had played guitar. Maybe it was a kind of amnesia that was going on here.</p>
+
+  <p>"Let me have a go," Phil said, swigging his beer and putting it down to take the instrument. "But give me a rhythm."</p>
+
+  <p>Carl smiled and started gently hitting his legs and quietly beat-boxing.</p>
+
+  <p>"Yeah, yeah, yeah," Phil laughed.</p>
+
+  <p>This was mental, but it was amazing as well because now someone else was involved.</p>
+
+  <p>Phil hit a string, then another, then he held a note, and stretched it, and then broke into a medley of chords and picking.</p>
+
+  <p>Carl laughed loudly when Phil hit his flow.</p>
+
+  <p>They played together for a few bars before Phil's excitement broke and he exclaimed: "I can play guitar! This is so fucking weird."</p>
+
+  <p>"Life is weird," Carl grinned. "But you can definitely play the guitar my friend." Then he held himself back a moment and asked: "But you can't remember ever playing before?"</p>
+
+  <p>"Not before last night. But I must have done."</p>
+
+  <p>Carl nodded. "Must have done." He raised his drink to his lips, pausing.</p>
+
+  <p>"You know what I think?" Carl asked, but continued before Phil could answer: "I think you're right, and you've had a… breakdown — or something — and it's gonna be a few days or… a while anyway, until you sort all this out. But for now you should just make like Oasis and Roll With It. That's the best way to find yourself again." Phil laughed because he got the reference. Carl paused before adding, with an open friendliness: "Ja nart ameen?"</p>
+
+  <p>And Phil did know, and plucked some strings to that effect.</p>
+
+  <p>"But maybe it'd help if you remembered that nothing makes sense at the moment. So stay positive, and over time it'll all start to become clear. I find life's a lot easier like that."</p>
+
+  <p>Phil laughed, and began playing again.</p>
+
+  <p>"Yeah I guess," Phil said. "I guess I've just forgotten something… or something. But I can remember last night and I remember thinking that it was alright and I didn't care if I was going mad or not, because it felt better than it did before."</p>
+
+  <p>Carl laughed.</p>
+
+  <p>"Fuck knows…" Phil said, jamming the E string so hard that it hurt. Then he cracked out with three chords and opened it up with Carl grinning in bewilderment.</p>
+
+  <p>Phil was suddenly bustled from one side by the three kids with the camera phone who were jostling to show him something. They held it out and Phil watched a screen that showed him shouting into the air: <em>'I can play the guitar. I can play the guitar. You're a liar!'</em></p>
+
+  <p>"Yes geezer," one laughed. "You fuckin' tell 'em man!"</p>
+
+  <p>His mate laughed and pointed: "You're fucking ment'uw, bruvva!"</p>
+
+  <p>"C'mon geez," the one with the camera grinned. "Giz a choon man."</p>
+
+  <p>Phil was struck by the three of them. They were always moving, pacing, rocking, and they pointed at him as though attacking and looked around constantly. Their energy was bottled, and aggressive; and then he remembered himself at that age and knew why.</p>
+
+  <p>Phil hit a blues riff, and rolled it twice, and said: "Do that beat again," and Carl joined in.</p>
+
+  <p>They played another eight, and then Phil started to mumble a song, growing louder as it progressed:</p>
 
   <div class="inline-verse">
-    <span class="verse-line">Be whoever you are, I can tell you no more,</span>
-    <span class="verse-line i1">There's trouble out there, we're heading for a fall,</span>
-    <span class="verse-line">But that wasn't your fault</span>
-    <span class="verse-line i1">You ain't the world</span>
-    <span class="verse-line">Work for your family, keep hold of your girl</span>
-    <span class="verse-line i1">And keep your heart safe,</span>
-    <span class="verse-line i2">Given time, it's a pearl</span>
+    <span class="verse-line">Morality's in myth and reality opinion</span>
+    <span class="verse-line">You're chasing understanding, believing in the one</span>
+    <span class="verse-line i1">I'm sick and tired of looking</span>
+    <span class="verse-line i1">The truth's a fuckin' lie</span>
+    <span class="verse-line">Here's something I believe in:</span>
+    <span class="verse-line">You're born and then you die</span>
   </div>
 
-  <p>In spare moments in the gardens, he'd trawl the net looking for any other references to Hall but even the Wikipedia article had been removed. It seemed like he was the only person who remembered him now and it became Phil's mission to preserve this work for the world.</p>
-
-  <p>One day he went out and bought some paper and coloured pens and began writing them out on A4 sheets and then he cut around the words and stuck them to the walls of his flat, designing layouts that would highlight ideas or themes.</p>
-
-  <p>Though it was all written by Hall, it seemed like there were whole sections about relationships and it felt as though the breakdown of his relationship with Madeleine was written in these lines; and there were reams about his parents, or Hall's parents, Phil couldn't tell the difference anymore. But now that he could see it all, spread out in lines and stanzas, he could see how clearly the collapse of his parents' relationship had led inevitably to the collapse of his relationship with Madeleine: he'd inherited his parents' mess and it had doomed his chance of love. It was all here, in Hall's lyrics:</p>
+  <p>He liked this one, and could remember something of how it sounded now. It had a big band sound — like a Springsteen style band — with brass, strings and a huge drum and it punched its way through:</p>
 
   <div class="inline-verse">
-    <span class="verse-line">You say I bring it upon myself,</span>
-    <span class="verse-line i1">I know but that's my calling,</span>
-    <span class="verse-line">And if I brought it down with my two hands</span>
-    <span class="verse-line i1">It don't stop the thing from falling.</span>
+    <span class="verse-line">I'm sick and tired of caring</span>
+    <span class="verse-line i1">Of tryin'a make some sense</span>
+    <span class="verse-line i2">Life's so fucking simple:</span>
+    <span class="verse-line i3">Just an action and a consequence</span>
   </div>
 
-  <p>Eventually he ran out of wall space, and so he started sticking string to the ceiling and hanging pieces of verse in the middle of the room that spun gently, like dark dream catchers. As he did this he'd often be reminded of something new, and he'd return to the desk and begin writing again:</p>
+  <p>The lads started acting like flier boys and singing Phil's praises to the crowd. One of them was trying to show off the video before he realised his viral moment was still happening, and he turned the camera back on Phil.</p>
 
-  <div class="inline-verse">
-    <span class="verse-line">Who made these eyes I see with?</span>
-    <span class="verse-line i1">At what point was I born?</span>
-    <span class="verse-line">Who moved the hands I write with</span>
-    <span class="verse-line i1">To choose the clothes that I have worn?</span>
-  </div>
+  <p>Phil began shifting seamlessly between tracks while Carl moved off to make a phone call and the cameraman stood stock still, preserving the moment.</p>
+
+  <p>Carl wrapped up his call and sat alongside Phil for a while, finishing his beer.</p>
+
+  <p>The next time Phil stopped to drink Carl said: "Why don't you come with me tonight. I know a pub in Shoreditch that'll be good for you. There's a couple of guys I'd like you to meet."</p>
 
 </div>
- 
-  <!-- DOWNLOAD AD -->
-  <div class="download-ad">
-    <div class="download-ad-eyebrow">CCS Clearance: Permitted · For Now</div>
-    <div class="download-ad-title">Enjoying the story? Take it with you.</div>
-    <div class="download-ad-sub">Download the opening chapters as a PDF or ePub — free, before Pilot shuts it down.</div>
-    <a href="the-book.html" class="download-ad-btn">Download Free →</a>
-    <div class="download-ad-note">No CCS points required. For now.</div>
-  </div>
-
-
- <!-- CHAPTER TITLE -->
-  <div class="chapter-break">
-    <div class="chapter-break-line"></div>
-    <div class="chapter-title">Ch 2: The Graveyard Shift</div>
-    <div class="chapter-break-line"></div>
-  </div>
- 
-
-<div class="prose chapter-open">
-
-  <p>The second time he saw Bill, Phil was sitting on a bench in Preston Cemetery. He'd spent the morning tending to the plots, clearing them of bramble and nettles. At the time, he'd been eating his lunch and staring into the distance and dreaming about changing the world. His current fantasy had been running for a couple of weeks, on and off. He replayed large parts of it like a film he edited as he watched.</p>
-
-  <p>In it, he'd been declared a wanted man by the Government for expressing dangerously liberal views and garnering so much support that it seemed revolution wouldn't be far off. In one last-ditch attempt to stop him he was captured by idealistic young hicks (who he suspected were wardens in disguise) who tortured him, streaming the video live on the internet. He escaped moments before an execution that would have been seen by millions. After killing his captors he drove cross-country to London, where, with helicopter cameras circling, he was reunited tearfully with his ex-girlfriend, Madeleine, who told him she loved him, and only him, and always had, and always would. And then he died in her arms, because he couldn't imagine a better way to end it.</p>
-
-  <p>Phil was just building up to the big reunion — he was driving the truck and nursing a bullet wound in his side — when Bill suddenly piped up: "Amazing places, cemeteries," he said. This time, Phil did jump, like he'd been caught out.</p>
-
-  <p>"I honestly think," Bill went on. "That the world would be a better place if people spent a little longer reflecting on the condition of the dead." Then he looked across at Phil and smiled. And despite his outfit — he was dressed in a rough woollen jumper and jeans, and short wellington boots with a ring of fur around the top (he looked like he should be reading the Sunday papers in a country pub somewhere in Surrey) — Bill's smile did nothing to soften the strange fire that still burnt in his eyes.</p>
-
-  <p>"You ok?" Bill asked, after Phil had stared for long enough to establish that he wasn't.</p>
-
-  <p>Bill waited.</p>
-
-  <p>Phil stared some more.</p>
-
-  <p>"You remembered Graham Hall yet?" Bill asked brightly. Then he smiled and waited for Phil to pull himself together.</p>
-
-  <p>"Yeah, I…" He was about to start answering questions when it occurred to him to ask: "Who are you?"</p>
-
-  <p>"I'm just… visiting some relatives," Bill said, gesturing indiscriminately at the graves. "Don't worry." Then he breathed deeply and that seemed to settle the discussion. Then he repeated his question: "Have you remembered Graham Hall yet?"</p>
-
-  <p>"Well, yeah, maybe…" Phil was unable to shake the feeling that he was still in the middle of a dream. "I wrote this… I remembered it earlier today." He opened the notes app on his phone. "I think it's him…"</p>
-
-  <p>Bill smiled and took the phone:</p>
-
-  <div class="inline-verse">
-    <span class="verse-line">I been walkin' for days</span>
-    <span class="verse-line i1">Down buttercup lanes</span>
-    <span class="verse-line">Looking for ways</span>
-    <span class="verse-line i1">To ease my pain</span>
-    <span class="verse-line">But it ain't gonna go</span>
-    <span class="verse-line i1">I've accepted that now</span>
-    <span class="verse-line">It won't ever be gone</span>
-    <span class="verse-line i2">I can see the truth now</span>
-  </div>
-
-  <p>Bill looked up when he'd finished but seemed to roll his eyes a little in a strange kind of disappointment. "That's him for sure," he said and then sat forward and rested his elbows on his knees. "But don't dwell on… that side of things, you know." He looked like he'd checked himself in thought and then sat back. "There's a lot of… Graham Hall was very hurt," he said. "But don't turn it all inwards. Don't blame yourself, son. You were born perfect, and then…" he wafted a hand around at the world… "all this happened and… that's what broke you, really. I understand the pain, Phil, I really do… but don't blame yourself." He looked across at Phil and the fire in his eyes was now a warming Christmas hearth: "It's the world that needs to change, you see, not you."</p>
-
-  <p>Phil hung his head. "Yeah," was all he said.</p>
-
-  <p>"Dark days are coming Philip," Bill said with a slightly melodramatic sense of gravitas. "And you might be the only one who can stop them now."</p>
-
-  <p>That took Phil by surprise. I mean, the whole thing should have done, but for some reason Bill's appearance seemed so natural and the memories of Graham Hall seemed so real that he wasn't really taken aback until Bill suggested that he might be the one who could fix it. "What do you mean by that?" Phil asked.</p>
-
-  <p>Bill was looking across at two mourners standing at a nearby grave, who stared back at him curiously.</p>
-
-  <p>"Keep looking back," Bill said. "There's a lot more." He returned Phil's phone. "But don't get dragged into self-pity. Your father was an amazing man, and so are you. Remember the best of him, the strength he showed, and try to speak with the voice he never had."</p>
-
-  <p>Phil didn't reply. The couple seemed to be making a move in his direction which led him to sit upright and wave as though to check that everything was ok.</p>
-
-  <p>"I better get going," Bill said and left in a hurry.</p>
-
-  <p>Phil watched him go, lost in thought. But it wasn't until he walked behind a tree and didn't come out the other side that he took a double-take on how weird the whole thing was.</p>
-
-  <p align="center">-</p>
-</div>
-
-
-
-   <!-- CHAPTER TITLE -->
-  <div class="chapter-break">
-    <div class="chapter-break-line"></div>
-    <div class="chapter-title">Ch 4: It's the World that Needs to Change</div>
-    <div class="chapter-break-line"></div>
-  </div>
-
-
-<div class="prose chapter-open">
-
-  <p>Phil had written a lot when he was younger, scribbling on jotter pads that had remained in his mother's loft until her death and their destruction. More recently, he'd dedicated hours to free-writing in his diary, to hear the sound of his own voice as much as anything. But remembering Hall was different. Hall was found in a feeling that grew in his guts; a rush of adrenaline that set his heart racing. He felt like something had become alive inside of him, and if he didn't feed it, it would eat him up from within. It was hungry and he was becoming addicted.</p>
-
-  <p>And then — because he was remembering the lyrics to songs — music began taking shape in his mind: an echo of clean-cut strings and an icy guitar line chilled the corridor that ran through his dad's house like a crooked spine. He could smell the damp carpets, smoke and drink. And his dad was silently listening to Hall pluck strings on his guitar like a funeral march, while a single violin rose above it like a phantom.</p>
-
-  <p>It was warlike, but intensely sad; like the sound of impotent rage:</p>
-
-  <div class="inline-verse">
-    <span class="verse-line">Be whoever you are, I can tell you no more,</span>
-    <span class="verse-line i1">There's trouble out there, we're heading for a fall,</span>
-    <span class="verse-line">But that wasn't your fault</span>
-    <span class="verse-line i1">You ain't the world</span>
-    <span class="verse-line">Work for your family, keep hold of your girl</span>
-    <span class="verse-line i1">And keep your heart safe,</span>
-    <span class="verse-line i2">Given time, it's a pearl</span>
-  </div>
-
-  <p>In spare moments in the gardens, he'd trawl the net looking for any other references to Hall but even the Wikipedia article had been removed. It seemed like he was the only person who remembered him now and it became Phil's mission to preserve this work for the world.</p>
-
-  <p>He went to a local print shop and printed it up on A4 sheets and began cutting round the words and sticking them to the walls of his flat, designing layouts that would highlight ideas or themes.</p>
-
-  <p>Though it was all written by Hall, it seemed like there were whole sections about relationships — and it felt as though the breakdown of his relationship with Madeleine was written in these lines — and reams about his parents (Hall's parents.) The crossover was astonishing. And now that he could see it all, spread out in lines and stanzas, he could see how clearly the collapse of one had led to the inevitable collapse of the other: he'd inherited his parents' mess and it had doomed his chance of love.</p>
-
-  <p>It was all here, in Hall's lyrics:</p>
-
-  <div class="inline-verse">
-    <span class="verse-line">You say I bring it upon myself,</span>
-    <span class="verse-line i1">I know but that's my calling,</span>
-    <span class="verse-line">And if I brought it down with my two hands</span>
-    <span class="verse-line i1">It don't stop the thing from falling.</span>
-  </div>
-
-  <p>Eventually he ran out of wall space, and so he started sticking string to the ceiling and hanging pieces of verse in the middle of the room that spun gently, like dark dream catchers. As he did this he'd often be reminded of something new, and he'd return to the desk and begin writing again:</p>
-
-  <div class="inline-verse">
-    <span class="verse-line">Who made these eyes I see with?</span>
-    <span class="verse-line i1">At what point was I born?</span>
-    <span class="verse-line">Who moved the hands I write with</span>
-    <span class="verse-line i1">To choose the clothes that I have worn?</span>
-  </div>
-
-</div>
-
-<div class="passage-break">* * *</div>
-
-<div class="prose">
-
-  <p>For forty days and nights he worked incessantly; barely sleeping, rarely eating. When the well was dry, he'd stand in his room and perform verse to the wall, remembering the songs that went along with them.</p>
-
-  <p>Over time something changed in Phil, as though the beast he'd awoken was absorbing itself into him and it turned the quiet, uncomfortable, passive man into a quiet, uncomfortable, angry man.</p>
-
-  <p>He hated his world. He'd always hated it, but in a passive way. Over the course of that month or so he learnt to hate it deeply and passionately and with a venom and a purpose that he'd never seen before. It was like a moment of sobriety, or an epiphany — something he'd always known but never fully understood.</p>
-
-  <p class="single">Who were these fucking people?</p>
-  <p class="single">Who did they think they were?</p>
-
-  <p>Not just the influencers — the shallow, narcissistic, vain, egotistical beggars, desperate to be seen and accepted — but the ring-masters as well. The luxurious rich who watched over it all and pretended it was ok and they were deserving of their position by virtue of the fact that they were simply so adept at enjoying it.</p>
-
-  <p>He often worked on the gardens in Withdean or Roedean or Tongdean; huge houses with long lawns he manicured, and bushes he carefully pruned. He never saw the residents: their gates were opened automatically, security monitored with AI; he held conversations with housekeeping robots who spoke with an imitation of enthusiasm that made him want to smash them into pieces.</p>
-
-  <p>The wealth he saw was astonishing. While he worked he ran it over in his head: he earned a few hundred tokens a day for what he did, and a dozen tokens was a Credit, and a few hundred of them was a Sat and a hundred million of them was a Coin. A hundred million… he did the maths as he sifted the soil and trimmed the bushes and looked at the blades of grass… Their wealth was astonishing.</p>
-
-  <p>And generated from what?</p>
-
-  <p>Everyone knew it was just a matter of luck; thousands of years of economic development had all come down to a game of musical chairs: if you'd ended up Coined after the AI Crash, you were set for life on another level.</p>
-
-  <p>Admittedly, some of these people would have sat on the high end of the Civil Credit Score, but most of them were Coined and this was just their seaside pad. These guys worked for the banks, the server centres, and CCTV control rooms; they set the targets, monitored behaviour, and ran the algorithms that ensured compliance. They were the reason his father's payments had been stopped; the reason his father had died alone, in the Slums.</p>
-
-  <p class="single">He'd died alone, and in the Slums.</p>
-  <p class="single">The fucking Slums.</p>
-  <p class="single">They'd left his father to die in the Slums.</p>
-
-  <p>Whatever else he'd done, he hadn't deserved that.</p>
-
-  <p>On those days he didn't work so well at his job. On some of those days he was so angry that he either wouldn't do anything, he'd just stand and stare at a rose bush as though he was going to smash it in the face, or he'd work at small pieces of horticultural sabotage. It was pathetic really, but he'd over-trim the bushes or mis-plant the bulbs, or feed weedkiller into the wrong patch of flowers, or lay rodent bait with no trap. He'd pull healthy shoots or leave stems he should have cut, dreaming strange revenge fantasies of Triffid-style plants strangling the home-owners with bloody, thorny arms.</p>
-
-  <p>Why was he here anyway, giving his life over to the demands of excess?</p>
-
-  <p>He hated them all. Not just the rich, but the whole fucking lot of them. He'd stare at the robotic housecleaners patrolling carefully designed living rooms, imagining them as prison guards, patrolling the perimeter fence.</p>
-
-  <p>Besides, he didn't have to work. He had a score still; it wouldn't last him long, that was true, but long enough that he could do something that would be remembered. He wouldn't turn to anything as petty as Attention Grabbing for Credit; he'd rather go down in a blaze of glory and burn the fucking lot of them.</p>
-
-  <p>On some of those days, he left work feeling ten feet high, his resolution making him a king amongst men. But then he'd get home and Hall would be there waiting for him; his aching heart would be there again, still searching for love amidst the shame. It worked like a shot of cold truth that reminded him of his place.</p>
-
-  <p>On some of those days he'd go out walking, and get some distance, and try to forget about Graham Hall.</p>
-
-  <p>On one of those days he walked all across Brighton — along Hove lawns and up Kingsway and then North into Aldrington and past Hove station, Denmark Villas, and along the Shoreham Road to Seven Dials. He dropped down New England Road and past the old Duke of York's Picturehouse — the oldest cinema in the country apparently. When he'd first arrived in Brighton it was famous for still showing old movies, classics from the 20th Century, but it was bought out a few years ago and now screened the same shit as everywhere else: AI generated hero films.</p>
-
-  <p>He turned away from town and walked up Ditchling Rise and down the other side, then doubled back towards the Level. He stopped for a long time by St Peters Church, staring up at it and lost in thought. It was empty now. Derelict. They'd tried to turn it into a performance area a few years ago, but there was no-one left to perform and the only time anything had happened in it recently was when some kids had broken in for a stunt.</p>
-
-  <p>There was nothing left here. Nothing had value anymore. He looked around him, in the black of night, amidst the plastic glow of streetlights, at a barren wasteland of a space. Inside every building he'd walked past, people would have been eagerly generating digital interactions but the space itself — the real world — was lost to them. There was an alien kind of silence about it all that made Phil feel alone but exalted, because he did see it. He walked to a tree and put a hand on its trunk. He fucking loved trees. They just did their thing; there was no desire to be anymore than they were. He even laughed at himself as he thought that, but he believed in it enough to bring himself back to sobriety and think the thought again.</p>
-
-  <p>Suddenly there was a shout from across the street and he looked across and saw a lone male, dressed in torn jeans, with a dirty top on and no shoes. He was shouting at himself and then out and into the night and then he punched himself in the chest and collapsed to his knees. In a moment, he looked behind himself and then scrambled to his feet and began to run. A car pulled up and two wardens exited and grabbed him and dragged him, kicking and shouting, into the car. A few windows cracked light as curtains were parted and then the car drove off and the windows were blackened out again. Phil was left with his hand on the trunk in the still, silent darkness again.</p>
-
-  <p class="single">He reminded himself that he couldn't lose this job.</p>
-  <p class="single">He had nothing else.</p>
-  <p class="single">He had no-one else.</p>
-  <p class="single">He would remain silent and play the game and then die alone.</p>
-
-  <p>Sometimes he hated the fact, but the fact remained: he was his father's son.</p>
-
-  <p align="center">-</p>
-</div>
-
-
- <!-- CHAPTER TITLE -->
-  <div class="chapter-break">
-    <div class="chapter-break-line"></div>
-    <div class="chapter-title">Ch 5: Or Maybe It's You</div>
-    <div class="chapter-break-line"></div>
-  </div>
- 
-
-<div class="prose chapter-open">
-
-  <p>In the end, the decision was made for him.</p>
-
-  <p>His manager was young, with a head of curls like a wire brush. He was clean-shaven and wore a suit. His hands were soft and had never touched dirt in their lives. He didn't smile as Phil entered the room, and throughout their interview never once looked like anyone other than someone who enjoyed what they did.</p>
-
-  <p>"Your work is simply below par," he said. "When you do anything at all."</p>
-
-  <p>He gestured to a monitor and tapped his keyboard. The video showed Phil, in one of the gardens in Withdean. Phil was standing, stock still, and staring at the house. The bushes near to him rustled gently in the wind, but to look at Phil it could almost have been a photograph. He let the video play for a while before speaking again.</p>
-
-  <p>"Plants do respond well to humans, and so, by chance, you had a good opportunity here. One of the few real jobs that remain. But I'm afraid that we won't be continuing with your contract." He smiled. "I'm sure you understand."</p>
-
-</div>
-
-  <!-- FOOTER NAV -->
-  <div class="reading-footer-nav">
-    <a href="index.html">← Back to Headlines</a>
-    <a href="read-online-2.html" class="cta">Part 2: The Streets →</a>
-  </div>
-
-</div><!-- /reading-wrap -->
-
-<footer class="site-footer">
-  <div class="footer-logo">Circle <span class="amp">&amp;</span> Triangle</div>
-  <div class="footer-info">
-    circleandtriangle.co.uk<br>
-    Promotional site for The Crossroads
-  </div>
-</footer>
-
-</body>
-</html>
