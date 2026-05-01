@@ -137,7 +137,7 @@
       display: flex;
       align-items: center;
       gap: 16px;
-      margin: 0 0 40px;
+      margin: 64px 0 40px;
     }
 
     .chapter-break-line {
@@ -175,7 +175,18 @@
       font-size: 17px;
       line-height: 1.8;
       color: var(--text);
-      margin-bottom: 22px;
+      margin-bottom: 0;
+      text-indent: 1.5em;
+    }
+    
+      .prose p:first-child {
+        text-indent: 0;
+    }
+
+      .passage-break + .prose p:first-child,
+      .standalone-verse + p,
+      .inline-verse + p {
+        text-indent: 0;
     }
 
     /* Drop cap on first paragraph of each chapter */
@@ -200,7 +211,7 @@
 
     /* INLINE VERSE — within prose flow */
     .inline-verse {
-      margin: 24px 0 24px 32px;
+      margin: 0px 0 0px 32px;
       font-family: 'Playfair Display', serif;
       font-style: italic;
     }
@@ -218,9 +229,8 @@
 
     /* STANDALONE VERSE — set apart */
     .standalone-verse {
-      padding: 24px 0 24px 32px;
+      padding: 0px 0 0px 0px;
       margin: 32px 0;
-      border-left: 2px solid var(--rule);
       font-family: 'Playfair Display', serif;
       font-style: italic;
     }
@@ -390,7 +400,7 @@
   <!-- CHAPTER TITLE -->
   <div class="chapter-break">
     <div class="chapter-break-line"></div>
-    <div class="chapter-title">Ch 1: Old Nick</div>
+    <div class="chapter-title">The Bloodhound</div>
     <div class="chapter-break-line"></div>
   </div>
 
@@ -400,6 +410,11 @@
     <!-- =====================
      OLD NICK
      Template A page — includes section title (The Streets) and epigraph
+     Paste after the chapter-break div
+     ===================== -->
+
+<!-- =====================
+     THE BLOODHOUND
      Paste after the chapter-break div
      ===================== -->
 
@@ -447,7 +462,7 @@
 
   <p>"Not a lotta people remember Graham 'all these days," the old man said. "But he was a good lad. An angry man, but a good one."</p>
 
-  <p>"You're a cancer," Phil said, continuing the verse. "Your whiskey burnin' breath, is all you've ever left me with, the summit of your wealth." The old man picked up the song at the end and carried on playing for a few bars.</p>
+  <p>"You're a cancer," Phil said, continuing the verse. "Your whiskey burnin' breath / is all you've ever left me with / the summit of your wealth." The old man picked up the song at the end and carried on playing for a few bars.</p>
 
   <p>"It's The Bloodhound," he said. "It's Graham 'all."</p>
 
@@ -548,7 +563,7 @@
 
   <p>Nick was animated and angry, drunk and shouting. In a moment he opened his arms out wide and slowly spun and screamed: "Burn it all!"</p>
 
-  <p>He suddenly jumped back and started pacing around and animating his arguments with whirling hands: "And let's face it, this ain't fucking new. You got all these new fangled fucking machines but nothing really changes. They're just turning up the power every time and they shit on you again when they can. So you gotta be careful, 'cause pretty soon there won't be no way back for ya. Their grip is getting tight," he squeezed his fist so hard Phil could imagine blood leaking out the sides. "Pretty soon there'll be no turning back. But I will not fucking have it! I will not."</p>
+  <p>He suddenly jumped back and started pacing around and animating his arguments with whirling hands: "And let's face it, this ain't fucking new. You got all these new fangled fucking machines but nothing really changes. They're just turning up the power every time and they're shit on you again when they can. So you gotta be careful, 'cause pretty soon there won't be no way back for ya. Their grip is getting tight," he squeezed his fist so hard Phil could imagine blood leaking out the sides. "Pretty soon there'll be no turning back. But I will not fucking have it! I will not."</p>
 
   <p>"I'll bring it down," Phil said, nodding and keen and ready to bite. Lost in Nick's rage. "I'll bring it down I swear!"</p>
 
@@ -558,7 +573,7 @@
 
   <p>Nick didn't help him avoid it, and confronted him instead: "What? You don't fink ya homeless? Lost ya family, you got no job, got no friends, got no girl: ya ron ya roan my son. You got noffin'! But stick wiv me and we'll change it. We'll change it lad and we'll bring it down and we'll burn it down and then we'll take the ashes and we'll build it new. I swear we will."</p>
 
-  <p>In a moment of ice cold clarity Phil asked the old man an obvious question: "Who are you?"</p>
+  <p>In a moment of ice-cold clarity Phil asked the old man an obvious question: "Who are you?"</p>
 
   <p>"I'm Old Nick, and I'm 'ere to 'elp." Then he slurred and raised his cupped hand in front of Phil: "I'll take ya'rart, and I'll turn it inside-out in song and they'll feel ashamed and we'll turn 'em, and we'll change 'em, and we'll beat 'em and raise them up again and I swear we'll change the fuckin' world." He let that hang, leaning in close enough for Phil to drink the fumes. "You want that boy? You wanna change the world?"</p>
 
@@ -624,7 +639,7 @@
   <!-- CHAPTER TITLE -->
   <div class="chapter-break">
     <div class="chapter-break-line"></div>
-    <div class="chapter-title">Ch 2: Reality's An Onion</div>
+    <div class="chapter-title">She Got Him First</div>
     <div class="chapter-break-line"></div>
   </div>
  
@@ -633,6 +648,11 @@
  
   <!-- =====================
      REALITY'S AN ONION
+     Paste after the chapter-break div
+     ===================== -->
+
+<!-- =====================
+     SHE GETS HIM FIRST
      Paste after the chapter-break div
      ===================== -->
 
@@ -686,9 +706,7 @@
 
   <p>No-one really liked taking Tokens these days, but without his phone he had no access to the last of his Credits. After an awkward moment at the bar she'd agreed and he made it back outside with his drink. He'd had to concentrate hard throughout the experience and it made it clear to him that something wasn't right. There was a space in his head that was so silent it burnt. Like an open wound that throbbed with a pain that was almost enlivening but so horrifically real that it hurt.</p>
 
-  <p>He remembered thinking suicidal thoughts the night before and wondered if he'd died but couldn't remember killing himself. He remembered a film he'd seen years ago about a guy who'd died in Vietnam but refused to accept the fact. He'd ended up being hounded by ghosts of the past until he was ready to move on… <em>Jacob's Ladder</em>, that was it. Purgatory. That's where he was.</p>
-
-  <p>At least he'd made himself a guitarist, he thought with a smile. Then he realised how nuts that thought was and pushed it from his mind. Besides, he didn't feel dead, this felt more real than his life had been. He felt the guitar on his shoulders and wondered if he could play it.</p>
+  <p>He remembered thinking suicidal thoughts the night before and wondered if he'd died but couldn't remember killing himself. He wondered if that was it: he was in purgatory now; the world between worlds… At least he'd made himself a guitarist, he thought with a smile. Then he realised how nuts that thought was and pushed it from his mind. Besides, he didn't feel dead, he felt more alive than he had for years. He felt the guitar hanging from his shoulders and wondered if he could play it.</p>
 
   <p>If he was dead it didn't matter. None of it mattered.</p>
 
@@ -724,9 +742,9 @@
 
   <p>"Do you know why that is?" she asked. "Do you know why you've made me into the most beautiful woman you've ever seen?" Her face was alight with playful emotion, and Phil almost broke into a mindless, childlike, almost stoned giggle. "It's because I only live inside your head Phil." She laughed like it was an in-joke. "I'm a part of your breakdown — the same as Bill, and Nick. We all come from different parts of you but… we're not real, do you understand?"</p>
 
-  <p>It made perfect sense.</p>
+  <p>For a long moment Phil was lost in thought processing this, his mind now nothing but a spinning beach ball of manic stillness.</p>
 
-  <p>"And you know that your mind can sometimes work against you, don't you Phil? So be careful who you trust." She leaned in slightly as though revealing something wonderful. "But you know that you can trust me, don't you," she almost whispered.</p>
+  <p>"And you know that your mind can sometimes work against you, don't you Phil? So be careful who you trust." She leaned in slightly as though revealing something wonderful. "But you know that you can trust me, don't you." She almost whispered that bit.</p>
 
   <p>Phil decided that he wouldn't ever be able to bring himself to betray this woman.</p>
 
@@ -906,7 +924,7 @@
 
   <p>The warden looked at the results and then stared at the two of them, not sure which one he wanted to eyeball more. In the end he just nodded and handed Carl his phone back. "Keep him out of trouble," he said and moved away.</p>
 
-  <p>Carl watched him leave with a clear sense of relief and came back to Phil with an awareness that he didn't want his sense of relief to end up being premature.</p>
+  <p>Carl watched him leave with a clear sense of relief and came back to Phil with a clear awareness that he didn't want his sense of relief to end up being tragically premature.</p>
 
   <p>"You ok?" he asked as he sat back down again.</p>
 
@@ -920,7 +938,11 @@
 
   <p>"Why… what brought you to London?" Carl asked.</p>
 
-  <p>"I think I might have had a breakdown. Or I'm having one. Like a nervous… you know… I don't really know what's happening to me at the moment. I used to have a job though — as a gardener." Phil could feel himself beginning to slouch in confusion, but he didn't want that so he sat up straighter and thought aloud instead: "I might be having a nervous breakdown, and it's something to do with… that." He gestured to the guitar.</p>
+  <p>"I think I might have had a breakdown. Or I might be going through a…" Phil wanted to stop the moment for a minute. "Thank you," he said. "I didn't…. I wouldn't have…" he stared at the warden who still eyed them from across the street. "He would have taken me in."</p>
+
+  <p>Carl nodded. "I think so." Then he tapped Phil. "But look at me. C'mon. Tell me: What's going on?"</p>
+
+  <p>Phil took another breath and felt the moment calm. He could have tried to talk himself out of it, but decided to be open instead: "I think I've had a breakdown. Or I'm having one. Like a nervous… you know… I don't really know what's happening to me at the moment. I used to have a job though — as a gardener." Phil could feel himself beginning to slouch in confusion, but he didn't want that so he sat up straighter and thought aloud instead: "I might be having a nervous breakdown, and it's something to do with… that." He gestured to the guitar.</p>
 
   <p>Carl cleared his throat. "Yeah, you were shouting about that. You were shouting: 'I can play guitar.'"</p>
 
@@ -936,7 +958,7 @@
 
   <p>Carl's face became serious. "Ok. Have you been diagnosed with any mental illness?" In the end he was unable to hold back a slight smile — though he'd later defend that as he told the story, because other than what he was saying Phil seemed reasonably together.</p>
 
-  <p>"No," Phil replied. "No, I've only been like this for a bit. I got sacked the day before yesterday, or was it yesterday? I dunno. But I got sacked because I was just standing around at work and dreaming of burning down all the rich people's houses." Probably a bit too honest, there Phil. Carl laughed though. "So I guess it's fair enough they sacked me," he added as he didn't actually want to seem genuinely mad. "But then I think I had a breakdown." Then he had the breakdown… "But maybe the breakdown happened sooner because there was this guy who said I should remember a singer from the 70s called Graham Hall.</p>
+  <p>"No," Phil replied. "No, I've only been like this for a bit. I got sacked the day before yesterday, or was it yesterday? I dunno. But I got sacked because I was just standing around at work and dreaming of burning down all the rich people's houses." Probably a bit too honest, there Phil; Carl laughed though. "So I guess it's fair enough they sacked me," he added as he didn't actually want to seem genuinely mad. "But then I think I had a breakdown." Oh. Then he had the breakdown… "But maybe the breakdown happened sooner because there was this guy who said I should remember a singer from the 70s called Graham Hall.</p>
 
   <p>"And there was this old guy as well, and he gave me the guitar. And that's the weird bit, because he knew Graham Hall and that woman said that they weren't real. But the guitar must have come from somewhere — 'cause you can see it can't you? I mean I'm not going mad, it is there?" They both knew that the presence of the guitar had absolutely no bearing on Phil's mental health. Everything he'd said up to that point, however, did seem relevant. And it didn't bode well.</p>
 
@@ -1013,6 +1035,8 @@
     <span class="verse-line">You're born and then you die</span>
   </div>
 
+  <p>He liked this one, and could remember something of how it sounded now. It had a big band sound — like a Springsteen style band — with brass, strings and a huge drum and it punched its way through:</p>
+
   <div class="inline-verse">
     <span class="verse-line">I'm sick and tired of caring</span>
     <span class="verse-line i1">Of tryin'a make some sense</span>
@@ -1030,20 +1054,11 @@
 
 </div>
  
-  <!-- DOWNLOAD AD -->
-  <div class="download-ad">
-    <div class="download-ad-eyebrow">CCS Clearance: Permitted · For Now</div>
-    <div class="download-ad-title">Enjoying the story? Take it with you.</div>
-    <div class="download-ad-sub">Download the opening chapters as a PDF or ePub — free, before Pilot shuts it down.</div>
-    <a href="the-book.html" class="download-ad-btn">Download Free →</a>
-    <div class="download-ad-note">No CCS points required. For now.</div>
-  </div>
-
 
  <!-- CHAPTER TITLE -->
   <div class="chapter-break">
     <div class="chapter-break-line"></div>
-    <div class="chapter-title">Ch 3: The Homeless Madman and his Band of Brothers</div>
+    <div class="chapter-title">The Fisherman's Arms</div>
     <div class="chapter-break-line"></div>
   </div>
  
@@ -1052,6 +1067,11 @@
 
   <!-- =====================
      THE HOMELESS MADMAN AND HIS BAND OF BROTHERS
+     Paste after the chapter-break div
+     ===================== -->
+
+<!-- =====================
+     THE FISHERMAN'S ARMS
      Paste after the chapter-break div
      ===================== -->
 
@@ -1105,7 +1125,7 @@
 
   <p>Phil laughed, "Huh, cheers… err…" He faded out and then laughed again because he'd wanted to use Carl's name but had forgotten it. A fact that was clear to everyone around the table. "Basically, I don't really know what's happening to me," Phil said, knowing that honesty was a good way to start but then immediately realising that it wasn't. He had to try and make it sound ok. He didn't know these people and they all looked far more socially adept and successful than him. "Erm, I think I've had a breakdown…" Nope. That didn't sound any better. "I don't know what to say…" he said in the end. "Look: I don't know you guys." He was just trying to say what was on his mind, but it was only making things worse. He laughed. "You'll have to give me a minute actually," he said and looked across their faces, taking each one in.</p>
 
-  <p>Five guys in total: the guy with dreads whose name he now couldn't remember sat next to a beefcake who was dressed in black. He had a strong Roman nose and heavy eyebrows and looked like he could break every bone in your body if the mood took him. Next to him was a nervy one who had the kind of deep-set eyes, hard cheekbones and oily skin that Phil associated with heavy drug use. The next one had a dragon on his t-shirt and a soft, searching gaze. His face was lined and looked worn by the weather, but he had a toughness in his face that suggested he wasn't even nearly done yet.</p>
+  <p>Five guys in total: the guy with dreads whose name he now couldn't remember sat next to a beefcake who was dressed in black. He had a strong Roman nose and heavy eyebrows and looked like he could break every bone in your body if the mood took him. Next to him was a nervy one who had the kind of deep-set eyes, hard cheekbones and oily skin that Phil associated with heavy drug use. The next one had a dragon on his t-shirt and a soft, searching gaze. His face was lined and looked worn by the weather, but he had a toughness that suggested he wasn't even nearly done yet.</p>
 
   <p>The last one was definitely the oldest — he had a thick layer of silver stubble and a receding hairline. He looked a little rough around the edges, but his face was focused and searching and weighing up the scene. For a moment, Phil wasn't sure if he trusted him but the feeling drifted away as he realised he really had no choice.</p>
 
@@ -1141,7 +1161,7 @@
 
   <p>"Prescription medication?" asked the older guy.</p>
 
-  <p>"He's not on coma anyway," said the guy in the dragon top.</p>
+  <p>"He's not on coma anyway," said the guy in the dragon top. "At least he's conscious."</p>
 
   <p>"What's your Score like?" the older one asked and the table paused.</p>
 
@@ -1189,7 +1209,7 @@
 
   <p>"No, no," Carl was clear on this. "He's made him up." He waved his fingers round his ear as if to remind the group that Phil was batshit. They all went silent. "I mean, have you ever heard of Graham Hall?" Carl asked the group. "Rock and blues. 60s, 70s…? How many albums did he do Phil?"</p>
 
-  <p>"I think he did six," Phil said. "<em>Broken Seed</em>? <em>The Kissing Tree</em>?"</p>
+  <p>"I think he did six," Phil said, remembering telling Carl that earlier, though he wasn't sure why he'd said it. "<em>Broken Seed</em>? <em>The Kissing Tree</em>?"</p>
 
   <p>"Never heard of him," said Des.</p>
 
@@ -1255,9 +1275,9 @@
 
 <div class="prose">
 
-  <p>They left for the gig not long after, which was at another pub not far from the first. The Fisherman's Arms was set up as a venue, but you got the sense it wasn't always that way. It was a big space with a stage at one end where the band went away to setup. Either side had huge patio doors that had been opened up to the warm summer breeze, and the crowd spilled out onto the street where there was a square of expensive houses with a green between them. They set Phil to rest on a plastic school chair near to the mixing booth. He sat there like an awkward teenager at a wedding.</p>
+  <p>They left for the gig not long after, which was at another pub not far from the first. The Fisherman's Arms was set up as a venue, but you got the sense it wasn't always that way. It was a big space with a stage at one end where the band went away to set up. Either side had huge patio doors that had been opened up to the warm summer breeze, and the crowd spilled out onto the street where there was a square of expensive houses with a green between them. They set Phil to rest on a plastic school chair near to the mixing booth. He felt like an awkward teenager at a wedding.</p>
 
-  <p>Phil had never been to a place like this before. Carl was right when he said that these people were Coined. They weren't living off their CCS, and they'd never seen a token in their lives. For a moment he remembered his time in the garden, staring at the robot through the window, and remembered who these people were: the rich, the elite. He hated them. Though, at the time he just remembered the fact but didn't feel it.</p>
+  <p>Phil had never been to a place like this before. Carl was right when he said that these people were Coined. They weren't living off their CCS, and they'd never seen a token in their lives. For a moment he remembered his time in the garden, staring at the robot through the window, and remembered who these people were: the rich, the elite. He hated them. Though, at the time, sitting on that stool, he just remembered the fact but didn't feel it.</p>
 
   <p>He breathed deeply and closed his eyes to calm himself down, and let a Hall lyric echo around his head:</p>
 
@@ -1274,15 +1294,7 @@
 
   <p>He opened his eyes again. Maybe he wouldn't sing that one tonight.</p>
 
-  <p>But, strangely, it did make him reflect on the fact that he didn't know these people. He hated them, but he didn't know them. It wasn't their fault that they were rich; so maybe he shouldn't judge them all. And Phil wasn't at the bottom of the ladder by any means. He'd never been to a Slum in his life.</p>
-
-  <p>So could Phil really be angry about these people? Maybe he could be angry about it, but it didn't seem fair to be angry at them. They took the position they were in. It wasn't their fault, was it? It was the system, that was the problem. They just took what it offered. It was the system that needed to change. But wasn't the system supported by the people who'd made it? Or was the system above these people? It was chicken and egg really. The world made us and then we made the world, and then we made the world and it made us… where did it all begin? It was too much. And probably not what he needed to be thinking about before he went on stage.</p>
-
-  <p>Fuck. He was going on stage…</p>
-
-  <p>He breathed again and ignored the idea. That made him feel better. The night with Old Nick had changed him. He felt that he'd expressed himself and it had opened a space inside him, and so much of his anger had poured into it. He breathed and felt, almost physically, the action of releasing his pain and fear and sending it into an infinite pit where it would leave him forever. He breathed again and looked around again.</p>
-
-  <p>No, these people weren't the problem. They weren't him. He felt like he could become more than this. He was worth more than them. It would be ok.</p>
+  <p>But he would sing. To hell with it. He looked around at them — the rich fuckers he hated so much — and they weren't all that different to him. They had a confidence he'd never felt, a sense of entitlement he'd never experienced, but they weren't better than him. And even if he was shit, it was all they deserved.</p>
 
   <p>He breathed again and closed his eyes and promised himself that this would be the last stand. If he was called back — if this euphoria was lost again — he would end it. So his job, as he saw it now, was to keep this alive as long as he could and not care a shit about the consequences. He breathed deeply and calmly and knew that he would do anything to preserve this feeling. He felt his calm settle around him, and felt it straighten his spine, and he only opened his eyes again when he realised that Jonno was speaking at the mic.</p>
 
@@ -1360,17 +1372,17 @@
 
   <p>Before long, Mickey parachuted in with a bass which Jonno picked up on while Carl started fiddling with the piano. There was a sea of silent faces and Phil was supposed to be singing.</p>
 
-  <p>Someone in the crowd shouted. Phil saw a guy in a black t-shirt standing at the back and making encouraging, aggressive movements. Phil tried to breathe deeply but his lungs were tight. He brought the pick up and tried to strum but couldn't quite find the beat.</p>
+  <p>Someone in the crowd shouted. Phil saw a guy in a white t-shirt standing at the back and making encouraging, aggressive movements. Phil tried to breathe deeply but his lungs were tight. He brought the pick up and tried to strum but couldn't quite find the beat.</p>
 
-  <p>The man in the black t-shirt shouted again: "G'won laaaad!" and Phil played a little louder. "The World is Yours!"</p>
+  <p>The man in the white t-shirt shouted again: "G'won laaaad!" and Phil played a little louder. "The World is Yours!"</p>
 
   <p>Phil heard Jonno's guitar line fall away and then raised his own to fill the space.</p>
 
-  <p>"G'won Philly!" the man in the black t-shirt shouted, and Phil growled through it and played a single chord louder and louder until he skipped it, changed it and found the moment again.</p>
+  <p>"G'won Philly!" the man in the white t-shirt shouted, and Phil growled through it and played a single chord louder and louder until he skipped it, changed it and found the moment again.</p>
 
   <p>Then he leant slowly into the mic and spoke lyrics that only slowly morphed into song:</p>
 
-  <div class="standalone-verse">
+  <div class="inline-verse">
     <span class="verse-line">I met a man once in the wilderness</span>
     <span class="verse-line">Who said life don't take you serious</span>
     <span class="verse-line i1">He asked if I wanted to go insane</span>
