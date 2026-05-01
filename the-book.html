@@ -9,6 +9,66 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
+
+
+/* =====================
+   SUPPORT SECTION
+===================== */
+.support-section {
+  margin: 48px 0 0;
+  border-top: 2px solid var(--rule-dark);
+  padding-top: 32px;
+}
+
+.support-intro {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text-mid);
+  margin-bottom: 24px;
+}
+
+.support-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.support-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 12px 20px;
+  border: 1px solid var(--rule);
+  background: var(--bg-light);
+  text-decoration: none;
+  text-align: center;
+  transition: border-color 0.15s, background 0.15s;
+  min-height: 180px;
+}
+
+.support-card:hover {
+  border-color: var(--rule-dark);
+  background: #f0ede8;
+}
+
+.support-card--locked {
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
+}
+
+.download-card-btn--soon {
+  background: var(--rule);
+  color: var(--text-dim);
+}
+
+@media (max-width: 760px) {
+  .support-grid { grid-template-columns: 1fr; }
+}
+
+
+
     :root {
       --bg: #ffffff;
       --bg-light: #f7f5f2;
@@ -432,6 +492,37 @@
 
     </div>
   </div>
+
+<!-- SUPPORT / KO-FI SECTION -->
+<div class="support-section">
+  <div class="download-section-title">Enjoyed it? Here's what you can do next</div>
+  <p class="support-intro">The first part is free, and always will be. If you'd like to read the rest, or simply want to support twenty years of stubborn optimism, here's how.</p>
+
+  <div class="support-grid">
+
+    <a href="https://ko-fi.com/circleandtriangle" target="_blank" class="support-card">
+      <span class="download-card-icon">☕</span>
+      <div class="download-card-title">Buy me a coffee</div>
+      <div class="download-card-desc">Support the author directly — any amount, no strings attached</div>
+      <span class="download-card-btn">Donate via Ko-fi</span>
+    </a>
+
+    <div class="support-card support-card--locked">
+      <span class="download-card-icon">📚</span>
+      <div class="download-card-title">Read the full novel</div>
+      <div class="download-card-desc">The complete manuscript — coming to Ko-fi soon</div>
+      <span class="download-card-btn download-card-btn--soon">Coming Soon</span>
+    </div>
+
+    <div class="support-card support-card--locked">
+      <span class="download-card-icon">✍️</span>
+      <div class="download-card-title">Bonus Edition</div>
+      <div class="download-card-desc">Author notes, deleted scenes &amp; extras — coming soon</div>
+      <span class="download-card-btn download-card-btn--soon">Coming Soon</span>
+    </div>
+
+  </div>
+</div>
 
   <!-- CONTACT FORM -->
   <div class="contact-section">
