@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Wilderness — Circle &amp; Triangle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-light: #f7f5f2;
+      --text: #1a1816;
+      --text-mid: #4a4540;
+      --text-dim: #8a8480;
+      --rule: #c8c0b4;
+      --rule-dark: #2a2520;
+      --accent: #c8000a;
+      --amber: #b8860b;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--bg); color: var(--text); font-family: 'Source Serif 4', serif; font-size: 15px; line-height: 1.5; }
+    a { color: inherit; text-decoration: none; }
+
+    /* TICKER */
+    .ticker-bar { background: var(--text); overflow: hidden; height: 26px; display: flex; align-items: center; position: sticky; top: 0; z-index: 100; }
+    .ticker-label { background: var(--accent); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; padding: 0 12px; height: 100%; display: flex; align-items: center; white-space: nowrap; flex-shrink: 0; }
+    .ticker-track { overflow: hidden; flex: 1; }
+    .ticker-inner { display: flex; animation: ticker 45s linear infinite; white-space: nowrap; }
+    .ticker-inner:hover { animation-play-state: paused; }
+    .ticker-item { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: #c8c0b4; padding: 0 28px; letter-spacing: 0.04em; }
+    .ticker-item .hi { color: #e8d090; }
+    .ticker-item .up { color: #6abf6a; }
+    .ticker-item .sep { color: #555; margin: 0 6px; }
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+    /* TOP BAR */
+    .top-bar { border-bottom: 1px solid var(--rule); padding: 5px 20px; display: flex; align-items: center; justify-content: space-between; }
+    .top-bar-left { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; }
+
+    /* MASTHEAD */
+    .masthead { border-bottom: 3px solid var(--rule-dark); padding: 0 20px; }
+    .masthead-inner { display: flex; align-items: center; justify-content: space-between; padding: 12px 0 8px; gap: 16px; }
+    .logo-img { width: 100px; height: 100px; object-fit: contain; flex-shrink: 0; }
+    .masthead-center { text-align: center; flex: 1; }
+    .masthead-title { font-family: 'Playfair Display', serif; font-size: clamp(34px, 5.5vw, 66px); font-weight: 900; color: var(--text); letter-spacing: -0.01em; line-height: 1; text-transform: uppercase; }
+    .masthead-title .amp { color: var(--accent); font-style: italic; font-weight: 700; }
+    .masthead-rule { width: 100%; height: 1px; background: var(--rule); margin: 5px 0; }
+    .masthead-tagline { font-family: 'Source Serif 4', serif; font-style: italic; font-size: 14px; color: var(--text-dim); letter-spacing: 0.04em; }
+
+    /* NAV */
+    .primary-nav { border-top: 1px solid var(--rule); display: flex; justify-content: center; flex-wrap: wrap; }
+    .nav-item { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; color: var(--text-mid); letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 14px; border-right: 1px solid var(--rule); cursor: pointer; transition: color 0.12s, background 0.12s; }
+    .nav-item:first-child { border-left: 1px solid var(--rule); }
+    .nav-item:hover { color: var(--accent); background: var(--bg-light); }
+    .nav-item.active { color: var(--accent); border-bottom: 2px solid var(--accent); margin-bottom: -1px; }
+
+    /* BREAKING */
+    .breaking-bar { background: var(--accent); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 20px; display: flex; align-items: center; gap: 14px; }
+    .breaking-kicker { background: #fff; color: var(--accent); font-size: 9px; padding: 1px 5px; font-weight: 800; letter-spacing: 0.1em; flex-shrink: 0; }
+
+    /* READING LAYOUT */
+    .reading-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 48px 20px 80px;
+    }
+
+    .story-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 900;
+      color: var(--text);
+      line-height: 1.05;
+      text-align: center;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .story-subtitle {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .story-subtitle a {
+      color: var(--accent);
+      border-bottom: 1px solid var(--accent);
+    }
+
+    /* SECTION BREAK */
+    .section-break {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin: 48px 0 40px;
+    }
+
+    .section-break-line {
+      flex: 1;
+      height: 1px;
+      background: var(--rule);
+      max-width: 120px;
+    }
+
+    .section-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-dim);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    /* PROSE */
+    .prose p {
+      font-size: 17px;
+      line-height: 1.8;
+      color: var(--text);
+      margin-bottom: 22px;
+    }
+
+    .prose p.single {
+      margin-bottom: 8px;
+    }
+
+    /* INLINE VERSE */
+    .inline-verse {
+      margin: 24px 0 24px 32px;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+    }
+
+    .inline-verse .verse-line {
+      font-size: 16px;
+      line-height: 1.9;
+      color: var(--text-mid);
+      display: block;
+    }
+
+    .inline-verse .verse-line.indent-1 { padding-left: 32px; }
+    .inline-verse .verse-line.indent-2 { padding-left: 64px; }
+
+    /* FOOTER NAV */
+    .reading-footer-nav {
+      border-top: 2px solid var(--rule-dark);
+      padding-top: 24px;
+      margin-top: 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .reading-footer-nav a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .reading-footer-nav a:hover { color: var(--accent); }
+    .reading-footer-nav .cta { background: var(--accent); color: #fff; padding: 8px 18px; }
+    .reading-footer-nav .cta:hover { background: #a00008; color: #fff; }
+
+    /* FOOTER */
+    footer { background: var(--text); color: #aaa; padding: 20px; margin-top: 0; display: flex; align-items: center; justify-content: space-between; }
+    .footer-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 900; color: #fff; text-transform: uppercase; }
+    .footer-logo .amp { color: var(--accent); font-style: italic; }
+    .footer-info { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #666; letter-spacing: 0.06em; text-align: right; line-height: 1.6; }
+
+    @media (max-width: 960px) {
+      .masthead-title { font-size: clamp(28px, 8vw, 48px); }
+      .breaking-bar { font-size: 11px; }
+      .reading-wrap { padding: 32px 20px 60px; }
+      .prose p { font-size: 16px; }
+      .inline-verse .verse-line { font-size: 15px; }
+      .inline-verse .verse-line.indent-1 { padding-left: 20px; }
+      .inline-verse .verse-line.indent-2 { padding-left: 40px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker-bar">
+  <div class="ticker-label">LIVE</div>
+  <div class="ticker-track">
+    <div class="ticker-inner" id="ticker"></div>
+  </div>
+</div>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="top-bar-left"><span id="live-date"></span> &nbsp;·&nbsp; circleandtriangle.co.uk</div>
+</div>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-inner">
+    <a href="index.html"><img src="circleandtriangle-500.jpg" alt="Circle and Triangle logo" class="logo-img"></a>
+    <div class="masthead-center">
+      <a href="index.html"><div class="masthead-title">Circle <span class="amp">&amp;</span> Triangle</div></a>
+      <div class="masthead-rule"></div>
+      <div class="masthead-tagline">"There is intelligent design, but we are the designers."</div>
+    </div>
+  </div>
+  <nav class="primary-nav">
+    <a class="nav-item" href="index.html">Headlines</a>
+    <a class="nav-item" href="free-download.html">Beta Readers Needed</a>
+  </nav>
+</header>
+
+<!-- BREAKING -->
+<div class="breaking-bar">
+  <span class="breaking-kicker">Breaking</span>
+  Credit Scores being reduced in response to any involvement with Davidson's flag. | Davidson has connections to organised criminal gangs. Public advised caution. | Stability must prevail.
+</div>
+
+<!-- READING CONTENT -->
+<div class="reading-wrap">
+
+  <h1 class="story-title">The Wilderness</h1>
+  <div class="story-subtitle">Continued from <a href="the-wilderness-2.html">Part Two</a></div>
+
+  <!-- SECTION VI -->
+  <div class="section-break">
+    <div class="section-break-line"></div>
+    <div class="section-number">VI</div>
+    <div class="section-break-line"></div>
+  </div>
+
+  <div class="prose">
+
+    <p>Phil had written a lot when he was younger, scribbling on jotter pads that had remained in his mother's loft until her death, and their destruction. More recently, he'd dedicated hours to free-writing in his diary, to hear the sound of his own voice as much as anything. But remembering Hall was different.</p>
+
+    <p>Hall was found in a feeling that grew in his guts; a rush of adrenaline that set his heart racing. He felt like something had become alive inside of him, and if he didn't feed it, it would eat him up from within.</p>
+
+    <p class="single">It was hungry.</p>
+
+    <p>He was an addict.</p>
+
+    <p>And then — because he was remembering the lyrics to songs — music began taking shape in his mind: an echo of clean-cut strings and an icy guitar line chilled the corridor that ran through his dad's house like a crooked spine. He could smell the damp carpets, smoke and drink. And his dad was silently listening to Hall pluck strings on his guitar like a funeral march, while a single violin rose above it like a phantom.</p>
+
+    <p>It was warlike, but intensely sad; like the sound of impotent rage:</p>
+
+    <div class="inline-verse">
+      <span class="verse-line">Be whoever you are, I can tell you no more,</span>
+      <span class="verse-line">There's trouble out there, we're heading for a fall,</span>
+      <span class="verse-line">But that wasn't your fault</span>
+      <span class="verse-line indent-1">You ain't the world</span>
+      <span class="verse-line">Work for your family, keep hold of your girl</span>
+      <span class="verse-line indent-1">And keep your heart safe,</span>
+      <span class="verse-line indent-2">Given time, it's a pearl</span>
+    </div>
+
+    <p>In spare moments in the gardens, he'd trawl the net looking for any other references to Hall but even the Wikipedia article had been removed. It seemed like he was the only person who remembered him now and it became Phil's mission to preserve this work for the world.</p>
+
+    <p>He went to a local print shop and printed it up on A4 sheets and began cutting round the words and sticking them to the walls of his flat, designing layouts that would highlight ideas or themes.</p>
+
+    <p>Though it was all written by Hall, it seemed like there were whole sections about relationships — and it felt as though the breakdown of his relationship with Madeleine was written in these lines — and reams about his parents (Hall's parents.) The crossover was astonishing. And now that he could see it all, spread out in lines and stanzas, he could see how clearly the collapse of one had led to the inevitable collapse of the other: he'd inherited his parents' mess and it had doomed his chance of love.</p>
+
+    <p>It was all here, in Hall's lyrics:</p>
+
+    <div class="inline-verse">
+      <span class="verse-line">You say I bring it upon myself,</span>
+      <span class="verse-line indent-1">I know but that's my calling,</span>
+      <span class="verse-line">And if I brought it down with my two hands</span>
+      <span class="verse-line indent-1">It don't stop the thing from falling.</span>
+    </div>
+
+    <p>Eventually he ran out of wall space, and so he started sticking string to the ceiling and hanging pieces of verse in the middle of the room that spun gently, like dark dream catchers. As he did this he'd often be reminded of something new, and he'd return to the desk and begin writing again:</p>
+
+    <div class="inline-verse">
+      <span class="verse-line">Who made these eyes I see with?</span>
+      <span class="verse-line indent-1">At what point was I born?</span>
+      <span class="verse-line">Who moved the hands I write with</span>
+      <span class="verse-line indent-1">To choose the clothes that I have worn?</span>
+    </div>
+
+  </div>
+
+    <!-- DOWNLOAD AD -->
+<div style="border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: 28px 0; margin: 48px 0; text-align: center;">
+  <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--accent); letter-spacing:0.14em; text-transform:uppercase; margin-bottom:12px;">CCS Clearance: Permitted · For Now</div>
+  <div style="font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--text); line-height:1.3; margin-bottom:8px;">Enjoying the story?<br>Take it with you.</div>
+  <div style="font-family:'Source Serif 4',serif; font-style:italic; font-size:14px; color:var(--text-mid); margin-bottom:20px;">Download the opening chapters as a PDF or ePub — free, before Pilot shuts it down.</div>
+  <a href="the-book.html" style="display:inline-block; background:var(--accent); color:#fff; font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; padding:10px 28px; text-decoration:none;">Download Free →</a>
+  <div style="font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--text-dim); margin-top:10px; letter-spacing:0.06em;">No CCS points required. For now.</div>
+</div>
+
+
+  <!-- SECTION VII -->
+  <div class="section-break">
+    <div class="section-break-line"></div>
+    <div class="section-number">VII</div>
+    <div class="section-break-line"></div>
+  </div>
+
+  <div class="prose">
+
+    <p>For forty days and nights he worked incessantly; barely sleeping, rarely eating. When the well was dry, he'd stand in his room and perform verse to the wall, remembering the songs that went along with them.</p>
+
+    <p>Over time something changed in Phil, as though the beast he'd awoken was absorbing itself into him and it turned the quiet, uncomfortable, passive man into a quiet, uncomfortable, angry man.</p>
+
+    <p>He began to hate his world.</p>
+
+    <p>Who were these fucking people?</p>
+
+    <p>Who did they think they were?</p>
+
+    <p>He often worked on the gardens in Withdean or Roedean or Tongdean; huge houses with long lawns he manicured, and bushes he carefully pruned. He never saw the residents: their gates were opened automatically, security monitored with AI; he held conversations with housekeeping robots who spoke with an imitation of enthusiasm that made him want to smash them into pieces.</p>
+
+    <p>The wealth he saw was astonishing. And generated from what?</p>
+
+    <p>Everyone knew it was just a matter of luck; thousands of years of economic development had all come down to a game of musical chairs: if you'd ended up rich after the AI Crash, you were set for life on another level.</p>
+
+    <p>Some of these people would have sat on the high end of the Civil Credit Score that determined your monthly payments, though a lot of them wouldn't touch Credit anymore; they were Coined. They worked for the banks, the server centres, and CCTV control rooms; they set the targets, monitored the behaviour, ran the algorithms that monitored compliance. They were the reasons his father's payments had been stopped; the reason his father had died alone, in the Slums.</p>
+
+    <p>On those days he didn't work so well at his job. On some of those days he was so angry that he wouldn't do anything. Why was he here, giving his life over to the demands of excess? He hated them all; and not just the rich, but the whole fucking lot of them. He'd stare at the robotic housecleaners patrolling carefully designed living rooms, imagining them as prison guards, patrolling the perimeter fence.</p>
+
+    <p>Besides, he didn't have to work. He had a score still; it wouldn't last him long, that was true, but long enough that he could do something that would be remembered. He wouldn't turn to anything as petty as Attention Grabbing; he'd rather go down in a blaze of glory.</p>
+
+    <p>On some of those days, he left work feeling ten feet high; his resolution making him a king amongst men. But then he'd get home and Hall would be there waiting for him; his aching heart would be there again, still searching for love amidst the shame. It was a shot of cold truth that reminded him of his place.</p>
+
+    <p>On those days he'd go out walking, and get some distance, and try to forget about Graham Hall.</p>
+
+    <p class="single">He'd remind himself that he couldn't lose this job.</p>
+
+    <p class="single">He had nothing else.</p>
+
+    <p class="single">He had no-one.</p>
+
+    <p class="single">He would remain silent and play the game and then die alone.</p>
+
+    <p>He was his father's son.</p>
+
+  </div>
+
+  <!-- DOWNLOAD AD -->
+<div style="border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: 28px 0; margin: 48px 0; text-align: center;">
+  <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--accent); letter-spacing:0.14em; text-transform:uppercase; margin-bottom:12px;">CCS Clearance: Permitted · For Now</div>
+  <div style="font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--text); line-height:1.3; margin-bottom:8px;">Enjoying the story?<br>Take it with you.</div>
+  <div style="font-family:'Source Serif 4',serif; font-style:italic; font-size:14px; color:var(--text-mid); margin-bottom:20px;">Download the opening chapters as a PDF or ePub — free, before Pilot shuts it down.</div>
+  <a href="the-book.html" style="display:inline-block; background:var(--accent); color:#fff; font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; padding:10px 28px; text-decoration:none;">Download Free →</a>
+  <div style="font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--text-dim); margin-top:10px; letter-spacing:0.06em;">No CCS points required. For now.</div>
+</div>
+
+
+  <!-- SECTION VIII -->
+  <div class="section-break">
+    <div class="section-break-line"></div>
+    <div class="section-number">VIII</div>
+    <div class="section-break-line"></div>
+  </div>
+
+  <div class="prose">
+
+    <p>In the end, the decision was made for him.</p>
+
+    <p>His manager was young, with a head of curls like a wire brush. He was clean-shaven and wore a suit. His hands were soft and had never touched dirt in their lives. He didn't smile as Phil entered the room, and throughout their interview never once looked like anyone other than someone who enjoyed what they do.</p>
+
+    <p>"Your work is simply below par," he said. "When you do anything at all."</p>
+
+    <p>He gestured to a monitor and tapped his keyboard. The video showed Phil, in one of the gardens in Withdean. Phil was standing, stock still, and staring at the house. The bushes near to him rustled gently in the wind, but to look at Phil it could almost have been a photograph. Dominic let the video play for a while before speaking again.</p>
+
+    <p>"Plants do respond well to humans, and so, by chance, you had a good opportunity here. One of the few real jobs that remain. But I'm afraid that we won't be continuing with your contract." He smiled. "I'm sure you understand."</p>
+
+  </div>
+
+  <!-- FOOTER NAV -->
+  <div class="reading-footer-nav">
+    <a href="read-online-2.html">← Part Two</a>
+    <a href="the-book.html" class="cta">Become a Beta Reader →</a>
+  </div>
+
+</div><!-- /reading-wrap -->
+
+<footer>
+  <div>
+    <div class="footer-logo">Circle <span class="amp">&amp;</span> Triangle</div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#555;margin-top:6px;letter-spacing:0.06em;">circleandtriangle.co.uk &nbsp;·&nbsp; promotional site for The Crossroad by [the author]</div>
+  </div>
+  <div class="footer-info">
+    FICTION = from the world of the novel &nbsp;·&nbsp; REAL = from ours<br>
+    CLASSIFIED = could be either. You decide.<br>
+    CCS score updates every 24 hours. Compliance is not optional.
+  </div>
+</footer>
+
+<script>
+  const d = new Date();
+  document.getElementById('live-date').textContent =
+    d.toLocaleDateString('en-GB', {weekday:'long', year:'numeric', month:'long', day:'numeric'}).toUpperCase();
+
+  window.addEventListener('load', function() {
+    const items = [
+      'CCS PAYOUT REACH RECORD HIGHS. WEEKLY AVERAGE: <span class="hi">1,225 CCS</span> <span class="up">↑2</span>',
+      'COIN TO CCS<span class="sep">·</span>SECTOR 4<span class="sep">·</span>UNVERIFIED',
+      'COIN VALUE 24hrs: <span class="up">+3.1%</span>',
+      'CCS VALUE 24hrs: <span class="up">+0.3%</span>',
+      'TOKEN VALUE 24hrs: <span class="hi">-7.6%</span>',
+      'STABILITY INDEX: <span class="hi">94.7%</span>',
+      'NEXT REVIEW CYCLE: <span class="hi">12 DAYS</span>',
+      'PILOT ALGORITHM: <span class="hi">OPERATIONAL</span>',
+      'ENGAGEMENT CONTINUES TO GROW. OUTLOOK POSITIVE.',
+    ];
+    const inner = document.getElementById('ticker');
+    const html = items.map(t => `<span class="ticker-item">${t}</span>`).join('');
+    inner.innerHTML = html + html;
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>When Phil Met Bill — Circle &amp; Triangle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+      --bg: #ffffff;
+      --bg-light: #f7f5f2;
+      --text: #1a1816;
+      --text-mid: #4a4540;
+      --text-dim: #8a8480;
+      --rule: #c8c0b4;
+      --rule-dark: #2a2520;
+      --accent: #c8000a;
+      --amber: #b8860b;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--bg); color: var(--text); font-family: 'Source Serif 4', serif; font-size: 15px; line-height: 1.5; }
+    a { color: inherit; text-decoration: none; }
+
+    /* MINIMAL HEADER */
+    .site-header {
+      border-bottom: 3px solid var(--rule-dark);
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      text-decoration: none;
+    }
+
+    .logo-img {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(20px, 3vw, 32px);
+      font-weight: 900;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .logo-text .amp {
+      color: var(--accent);
+      font-style: italic;
+      font-weight: 700;
+    }
+
+    .header-nav {
+      display: flex;
+      gap: 0;
+    }
+
+    .header-nav a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      padding: 6px 16px;
+      border: 1px solid var(--rule);
+      border-right: none;
+      transition: color 0.12s, background 0.12s;
+    }
+
+    .header-nav a:last-child { border-right: 1px solid var(--rule); }
+    .header-nav a:hover { color: var(--accent); background: var(--bg-light); }
+
+    /* READING LAYOUT */
+    .reading-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 56px 20px 80px;
+    }
+
+    /* SECTION TITLE */
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 6vw, 58px);
+      font-weight: 900;
+      color: var(--text);
+      line-height: 1.05;
+      text-align: center;
+      margin-bottom: 32px;
+      letter-spacing: -0.01em;
+    }
+
+    /* EPIGRAPH */
+    .epigraph {
+      padding: 20px 0;
+      margin: 0 auto 56px;
+      max-width: 480px;
+      text-align: center;
+    }
+
+    .epigraph-text {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--text-mid);
+      margin-bottom: 12px;
+    }
+
+    .epigraph-attr {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* CHAPTER BREAK — decorative lines either side of title */
+    .chapter-break {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 64px 0 40px;
+    }
+
+    .chapter-break-line {
+      flex: 1;
+      height: 1px;
+      background: var(--rule);
+    }
+
+    .chapter-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-mid);
+      letter-spacing: 0.04em;
+      font-style: italic;
+      white-space: nowrap;
+      padding: 0 8px;
+    }
+
+    /* SECTION BREAK — *** between passages */
+    .passage-break {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 40px 0;
+      color: var(--text-dim);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 14px;
+      letter-spacing: 0.3em;
+    }
+
+    /* PROSE */
+    .prose p {
+      font-size: 17px;
+      line-height: 1.8;
+      color: var(--text);
+      margin-bottom: 0;
+      text-indent: 1.5em;
+    }
+    
+      .prose p:first-child {
+        text-indent: 0;
+    }
+
+      .passage-break + .prose p:first-child,
+      .standalone-verse + p,
+      .inline-verse + p {
+        text-indent: 0;
+    }
+
+    /* Drop cap on first paragraph of each chapter */
+    .prose.chapter-open p:first-child::first-letter {
+      font-family: 'Playfair Display', serif;
+      font-size: 52px;
+      font-weight: 900;
+      float: left;
+      line-height: 0.85;
+      margin-right: 6px;
+      margin-top: 6px;
+      color: var(--text);
+    }
+
+    /* Italic passages — journal, internal monologue */
+    .prose p.journal {
+      font-style: italic;
+      color: var(--text-mid);
+      font-size: 16px;
+      padding: 0 24px;
+    }
+
+    /* INLINE VERSE — within prose flow */
+    .inline-verse {
+      margin: 0px 0 0px 32px;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+    }
+
+    .inline-verse .verse-line {
+      font-size: 16px;
+      line-height: 1.9;
+      color: var(--text-mid);
+      display: block;
+    }
+
+    .inline-verse .verse-line.i1 { padding-left: 32px; }
+    .inline-verse .verse-line.i2 { padding-left: 64px; }
+    .inline-verse .verse-line.i3 { padding-left: 96px; }
+
+    /* STANDALONE VERSE — set apart */
+    .standalone-verse {
+      padding: 0px 0 0px 0px;
+      margin: 32px 0;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+    }
+
+    .standalone-verse .verse-line {
+      font-size: 16px;
+      line-height: 1.9;
+      color: var(--text);
+      display: block;
+    }
+
+    .standalone-verse .verse-line.i1 { padding-left: 32px; }
+    .standalone-verse .verse-line.i2 { padding-left: 64px; }
+    .standalone-verse .verse-line.i3 { padding-left: 96px; }
+
+    /* DOWNLOAD AD */
+    .download-ad {
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      padding: 28px 0;
+      margin: 48px 0;
+      text-align: center;
+    }
+
+    .download-ad-eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .download-ad-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+
+    .download-ad-sub {
+      font-family: 'Source Serif 4', serif;
+      font-style: italic;
+      font-size: 14px;
+      color: var(--text-mid);
+      margin-bottom: 20px;
+    }
+
+    .download-ad-btn {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 10px 28px;
+      text-decoration: none;
+    }
+
+    .download-ad-note {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      color: var(--text-dim);
+      margin-top: 10px;
+      letter-spacing: 0.06em;
+    }
+
+    /* FOOTER NAV */
+    .reading-footer-nav {
+      border-top: 2px solid var(--rule-dark);
+      padding-top: 24px;
+      margin-top: 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .reading-footer-nav a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .reading-footer-nav a:hover { color: var(--accent); }
+    .reading-footer-nav .cta { background: var(--accent); color: #fff; padding: 8px 18px; }
+    .reading-footer-nav .cta:hover { background: #a00008; color: #fff; }
+
+    /* FOOTER */
+    .site-footer {
+      border-top: 1px solid var(--rule);
+      padding: 24px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 60px;
+    }
+
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--text);
+      text-transform: uppercase;
+    }
+
+    .footer-logo .amp { color: var(--accent); font-style: italic; }
+
+    .footer-info {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.06em;
+      text-align: right;
+      line-height: 1.8;
+    }
+
+    @media (max-width: 760px) {
+      .site-header { padding: 16px 20px; flex-wrap: wrap; gap: 12px; }
+      .header-nav { display: none; }
+      .reading-wrap { padding: 36px 20px 60px; }
+      .prose p { font-size: 16px; }
+      .inline-verse .verse-line { font-size: 15px; }
+      .standalone-verse .verse-line { font-size: 15px; }
+      .site-footer { flex-direction: column; gap: 16px; padding: 20px; text-align: center; }
+      .footer-info { text-align: center; }
+    }
+
+/* ── SCRIVENER CLASS ALIASES ── */
+/* Allows direct copy-paste from ePub to website */
+
+.paragraph-style {
+  font-size: 1.05em;
+  line-height: 1.8;
+  margin: 0;
+  text-indent: 1.5em;
+}
+
+.paragraph-style + .paragraph-style {
+  text-indent: 1.5em;
+}
+
+.roman-numerals {
+  text-align: center;
+  font-size: 1.5em;
+  font-weight: bold;
+  text-indent: 0;
+  margin: 1em 0;
+}
+
+.blake-quotes {
+  text-align: center;
+  font-style: italic;
+  font-size: 1.5em;
+  line-height: 1.9;
+  text-indent: 0;
+}
+
+.blakes-name {
+  text-align: center;
+  font-style: italic;
+  font-size: 1em;
+  line-height: 1.9;
+  text-indent: 0;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2em;
+  font-weight: bold;
+  line-height: 1.15;
+  text-indent: 0;
+}
+
+.separator { display: block; margin: 1.5em 0; }
+.br { display: block; line-height: 1em; }
+
+.indent1 { text-indent: 0; margin-left: 2em; } 
+.indent2 { text-indent: 0; margin-left: 4em; } 
+.indent3 { text-indent: 0; margin-left: 6em; }
+.indent4 { text-indent: 0; margin-left: 8em; }
+
+/* pilot-report */
+.pilot-report {
+    font-family: sans-serif;
+    font-size: 0.95em;
+    margin-left: 2em;
+    margin-right: 2em;
+    text-indent: 0;
+  line-height: 1.15;}
+
+    /* names */
+.newspaper {
+    font-family: sans-serif;
+    font-size: 1em;
+    margin-left: 1em;
+    margin-right: 1em;
+    text-indent: 1.5em;
+  line-height: 1.15;}
+
+  .names {
+    font-family: sans-serif;
+    font-size: 1.5em;
+    text-align: center;}
+
+
+  </style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-JJXZRY10RH');
+</script>
+
+
+</head>
+<body>
+
+<!-- MINIMAL HEADER -->
+<header class="site-header">
+  <a href="index.html" class="header-logo">
+    <img src="circleandtriangle-500.jpg" alt="Circle and Triangle" class="logo-img">
+    <div class="logo-text">Circle <span class="amp">&amp;</span> Triangle</div>
+  </a>
+  <nav class="header-nav">
+    <a href="index.html">← Headlines</a>
+    <a href="the-book.html">Download</a>
+  </nav>
+</header>
+
+<!-- READING CONTENT -->
+<div class="reading-wrap">
+
+ <p class="roman-numerals" id="doc5">Part 1:</p>
+<h1 class="section-title">The Wilderness</h1>
+<p class="br"><br /></p>
+<p class="blake-quotes"><em>And so I walked through the fires of hell</em></p>
+<p class="blake-quotes"><em>delighted with the enjoyment of genius</em></p>
+<p class="blake-quotes"><em>which to Angels look like torment and insanity</em></p>
+<p class="br"><br /></p>
+<p class="blakes-name">- William Blake, <em>The Marriage of Heaven and Hell</em> -</p>
+<p class="br"><br /></p>
+<p class="br"><br /></p>
+<p class="separator"><br /></p>
+<div class="section">
+<p id="doc6"><br /></p>
+<p class="br"><br /></p>
+<p class="br"><br /></p>
+<p class="br"><br /></p>
+<p class="br"><br /></p>
+<p class="roman-numerals">- When Phil Met Bill -</p>
+<p class="br"><br /></p>
+<p class="paragraph-style">Phil first met Bill in a record shop on the North Laines, in Brighton. He’d just finished work and he stamped the soil off his boots before he entered the shop, glad to leave the noise of the street behind.</p>
+<p class="paragraph-style">The Laines had been busy that day. The heat was manageable, and there was a rainbow of hippies and street performers practicing circus tricks for Attention. He didn’t mind that lot, they stayed busy and kept out of his way - and mostly off their phones - and Phil felt there was at least some purpose in what they did. It didn’t do any harm, anyway; and it wasn’t easy to make a living these days. </p>
+<p class="paragraph-style">Three others approached him for Attention, each preaching their own sense of progress. These were the ones he didn’t like:</p>
+<p class="paragraph-style">The first one popped up from behind and patted his stomach: “What’s that! Mate, give us a Follow: I’ll get these rock solid in three weeks!” Phil brushed him off. “Guaranteed to raise your CCS!” He shouted after him.</p>
+<p class="paragraph-style">The second appeared in front of him then walked alongside and put his arm around Phil’s shoulder, almost trying to pull him away. He spoke conspiratorially: “You want to know the truth about Kai Fassard - send me a Like!” He winked. “Everything the mainstream press won’t tell ya!” Phil turned away again. </p>
+<p class="paragraph-style">Though homelessness was now a thing of the past, begging was still doing very well for itself.</p>
+<p class="paragraph-style">“Wanna know how to get around Pilot?” This one went so far as to block Phil’s path. “I’m your man! I know the algorithm and I’ll turn your posts into paydays!” Phil went to move around him, but he kept in his way and gently held his shoulder. “Listen, mate: you want Credit?” He leant in close. “I got a system. Guaranteed. Enough to get you some good pussy, eh…? Bet it’s been a while…”</p>
+<p class="paragraph-style">That was enough. Phil wanted to tell him to go fuck himself and call him a twat. He wanted to tell him that his behaviour was the reason why the Creative Economy was destroying society instead of saving it. But instead he pushed him away and carried on toward the shop. Then he felt his phone vibrate and knew that he’d been reported. Whoever else the guy was, he was in enough Credit for a negative Engagement to impact Phil and he got annoyed at himself for losing his temper. A warden glanced across. Phil gestured with his hands, acknowledging that he’d made a mistake, and they both let it be.</p>
+<p class="paragraph-style">Phil hated this world, and the way everyone pretended it was all ok. He hated the Creative Economy and everything it had done. He hated the endless badgering and fear-mongering and profiteering, and the desperate need for Attention. Life had somehow been reduced to a constant scream of look at me; a guttural human need that now drove the economy. It could be withdrawn or gorged upon and it was this process that created the strange combination of egotists and neurotics that seemed to make up most of the post-Crash society.</p>
+<p class="paragraph-style">Phil didn’t Connect with any of them. He hardly reached out at all, which is why he still topped up his minimum Civil Credit Score with a job as a gardener. It was the only way to get by, but he also enjoyed the work. It kept him outside - which was still refreshing, despite the heat - and he was largely left alone.</p>
+<p class="paragraph-style">It was also why he still spent time in record shops listening to old music, from back in the days when people used to dream that the world could still become a better place.</p>
+<p class="paragraph-style">He was slowly flicking through some scuffed Leonard Cohen records and listening to an MP3 player on shuffle when Bill suddenly appeared at his shoulder. </p>
+<p class="paragraph-style">“Cohen's great,” Bill said; and though the line came out of nowhere, Phil didn’t react. In fact, he barely even looked across; it was as though the voice had come from somewhere inside of him. </p>
+<p class="paragraph-style">“But you’re similar,” Bill continued. “Bitter searching of your hearts.”</p>
+<p class="paragraph-style">Phil laughed, though the line took him close to a part of himself where he kept memories of his father and he was lost momentarily. When he did look across, the man was almost leaning into him and staring, deeply and strangely at Phil. For a long time his mind became empty; and then - for the briefest moment - memories of his father came back to him in a form so real they burnt at his insides… and then they were gone. </p>
+<p class="paragraph-style">“You gonna ring them bells Phil?” Bill asked, stepping back and squaring up slightly. “Let in the light?”</p>
+<p class="paragraph-style">Phil withdrew, suddenly aware of how strange this was. He was about to step away when Bill grabbed his arm and held it tight.</p>
+<p class="paragraph-style">Suddenly, Bill changed and a glimpse of rage sparked in him; his eyes burnt and Phil could feel heat where his arm was being gripped. “Remember Graham Hall, Phil,” Bill growled, through clenched teeth. Then he let go of Phil’s arm and something like regret washed across his face. “Remember Graham Hall…” he repeated. “And there is still a chance that we can save your people.”</p>
+<p class="paragraph-style">Phil stared at him, wide eyed and fearful. Bill looked around the shop, like someone who’d suddenly realised he wasn’t supposed to be here. He turned to look back at Phil and smiled briefly, sadly, and then left in a hurry.</p>
+<p class="paragraph-style">Despite the strangeness of the situation - it wasn’t until after he’d left that Phil realised that the whole conversation had taken place while he was still wearing his headphones - the name was what remained. </p>
+<p class="paragraph-style">He <em>did</em> remember Graham Hall. </p>
+<p class="paragraph-style">Where did he remember him from? </p>
+<p class="paragraph-style">The name touched something deep and painful, and although he couldn't quite grasp it, he wanted to.</p>
+<p class="passage-break"><img src="images/circletriangle.png" alt="*" style="width: 100px; height: auto; display: block; margin: 0 auto;"/></p>
+<p class="paragraph-style">Graham Hall… Graham Hall… who the fuck was Graham Hall? </p>
+<p class="paragraph-style">He’d searched up the name a half hour later, after he’d got back home again. The only reference was a Wikipedia entry about a little known musician from the 60s with a gravelly voice and anger issues. That made sense - and it meant it <em>was</em> from his dad. There was a list of albums in the entry - <em>Broken Seed</em>, <em>The Rabid Monk</em>, <em>Traveller Scholar Poet</em> - but not much more.</p>
+<p class="paragraph-style">He started his computer and opened his journal and stared at the cursor for a while. Then he went to the fridge and poured a glass of wine (it wasn’t actually wine, but it was alcoholic and flavoured and coloured and the bottle was the right shape so it had kept the name.) The sun was setting and he didn’t have work the next day so maybe he had some time to remember. For the first time in a while, he felt like he had a purpose.</p>
+<p class="paragraph-style"><em>Broken Seed</em>, that had done it.</p>
+<p class="paragraph-style"><em>I’m your broken seed…</em> it was a line from one of his songs.</p>
+<p class="paragraph-style">He stared out of the window, across a line of grey roofs. <em>I’m your broken seed… you’re nothing but an… animal? And I’m your broken seed…?</em></p>
+<p class="paragraph-style">He shook his head. He didn’t like it, so he picked up his phone and began to scroll. </p>
+<p class="paragraph-style">Though he never engaged, he regularly swiped through life with the detachment of the serial scroller. It was almost like a form of meditative state that he fell into as he glazed through images and video and mindless words of encouragement. He didn’t enjoy scrolling, he hated it, but for him this was a chance to meditate on his loathing. </p>
+<p class="paragraph-style">In the hour he sat there he must have swiped through a thousand posts, promoting anything from the benefits of hiking to the fun that could be had after fifteen beers; one in five was a healthy cooking recipe or an exercise regime - they’d increased as Phil had grown older; there were the standard pictures of food or a nice view, that were really just requests for a Like; a diminishing few were AI-generated videos or images that used to be entertaining at times, but had drifted into a kind of generic oddness that always gave Phil a rush of hate. Every dozen-or-so swipes Phil would see another advert to encourage him to join the Wardens, or sign up for Border Patrol, and he swiped past them with a bitter snarl and a feeling of superiority.</p>
+<p class="paragraph-style">He took a break to go to the toilet and open a bottle of whiskey, then he turned to his journal (it wasn’t actually whiskey, but it was alcoholic and flavoured and the bottle was the right shape so it had kept the name.) Within a few hours, he was halfway through the whiskey and back to writing about his ex-girlfriend, Madeleine. </p>
+<p class="paragraph-style"><em>I’m so sorry that I wasn’t more. I’d wanted to reach out, I’d wanted to connect, but I couldn’t find the heart to love myself much less face someone else. If there was only a way back… but this world is not a place for livers, lovers, brothers or children with mothers…</em> </p>
+<p class="paragraph-style">It was gone three am before he fell into bed.</p>
+<p class="paragraph-style">Though he couldn’t remember when or how he’d done it, amidst the incoherent rambling, he wrote a single verse in his journal:</p>
+<p class="paragraph-style"><em>You broke me</em> </p>
+<p class="paragraph-style indent1"> <em>Then asked where I went wrong</em> </p>
+<p class="paragraph-style"><em>You cracked my fucking windpipe</em> </p>
+<p class="paragraph-style indent1"> <em>Then asked me where’s my song?</em></p>
+<p class="paragraph-style"><em>You tell me the time’s come to rise and be a man</em> </p>
+<p class="paragraph-style indent2"> <em>But I saw you break my knees while still holding my hand.</em></p>
+<p class="passage-break"><img src="images/circletriangle.png" alt="*" style="width: 100px; height: auto; display: block; margin: 0 auto;"/></p>
+<p class="paragraph-style">During the next day, while he cleared gardens in Queen’s Park he was constantly distracted by fragments of lyrics that came back to him, sometimes with sudden clarity, sometimes fading into awareness: </p>
+<p class="paragraph-style"><em>Our world was built out of so many mirrors </em></p>
+<p class="paragraph-style indent1"><em>We’ve lost which face is our own …</em> </p>
+<p class="paragraph-style"> <em>Don’t ask me for nothing and you won’t be disappointed …</em> </p>
+<p class="paragraph-style indent1"><em>I ain't the king of nothing, I ain't never been anointed...</em>…</p>
+<p class="paragraph-style"> <em>You spend too much time alone and it’s bound to affect you</em></p>
+<p class="paragraph-style indent1"><em> You lose the ability to know or recognise truth</em>…</p>
+<p class="paragraph-style">On their own they were nothing… but they came from a feeling, and he knew they connected to something bigger and so he was always looking for more.</p>
+<p class="paragraph-style">For a long time he stood by a rose bed and had a profound and very real memory of Hall: acoustic guitar, wandering poet; spoke from the heart, wrote from the hip. He remembered him: a man with a life so like his own but blessed with the ability to make the pain somehow beautiful. </p>
+<p class="paragraph-style">On the way home, he bought his usual wine and noodles with a strange kind of determination and then went back to his flat and tried to remember his house and his dad's records… and his dad, and he tried to place Graham Hall in the middle of it.</p>
+<p class="paragraph-style">Phil’s dad had died a few months earlier, alone and in poverty; and although they’d rarely spoken in the years beforehand, the manner of his death - he’d been dead for a week before anyone found him - had hit Phil hard. They weren’t bitter, but there was so much left unsaid that they’d grown apart. His dad was deeply resentful, and so was Phil. And although they weren’t angry at each other - they both agreed that the mother was the issue - a mutual resentment wasn’t enough to keep them together.</p>
+<p class="paragraph-style">Phil’s mum had always maintained that Phil shouldn’t have expected anything different. His father was always going to leave, it was in his DNA. But Phil knew that wasn’t true. As far as he was concerned, she was the abuser: tyrannical, bitterly disappointed by them both, and full of blame. She’d wanted her life to turn out differently and had never been afraid of expressing it to either of them. </p>
+<p class="paragraph-style">And so, despite the fact that Phil spent his teenage years living with her, while she cooked his meals and washed his clothes and attended the occasional parents’ evening and poked her head around the door to check he hadn’t died in the night when he was still in bed at 3pm, he never really forgave her. </p>
+<p class="paragraph-style">Years later, he visited her a number of times while she was in the hospice. He’d told her he loved her and that he was sorry for what she was going through, and he soothed her where he could. But if he’d been honest with himself, he didn’t really think she deserved it. He was sorry she was dying, that was only human, but he wasn’t sorry he wouldn’t have to deal with her again.</p>
+<p class="paragraph-style">Phil had barely responded to the news of his father’s death, delivered to him by a long forgotten uncle, over the phone one rainy day in November. He said he wouldn’t be going to the funeral because of the distance that had grown between them, but the truth was that he didn’t want to speak to anyone about his dad. He had his own version of events and he was sticking to them: It wasn’t his father’s fault, it was hers. She’d worked to be rid of him for years, and had, as far as Phil was concerned, succeeded almost two decades ago. She hated him because he’d tried to stand up for himself, and she simply couldn’t have that. </p>
+<p class="paragraph-style">He’d been cold to the fact that he was now an orphan for months. </p>
+<p class="paragraph-style">He’d barely known his parents when they were alive and was determinedly nonplussed now they were both dead.</p>
+<p class="paragraph-style">But as he sat and drank, late at night, and searched for Graham Hall amidst the memories, his mind touched on a sadness that became the most powerful thing he’d ever felt. The feeling was accompanied by a rush of adrenaline that was painful but enlivening, and for a long moment he was lost in it.</p>
+<p class="paragraph-style">Despite having his journal, he started a new document in Word. He stared at the blank screen for so long it grew out of focus, his hands lightly brushing the letters on the keyboard.</p>
+<p class="paragraph-style">He could remember his dad’s old house in Bristol as being always in shadow, and he moved through it in search of his father: down the blue-walled, purple-carpeted corridor – his mind’s eye like a cinematic tracking shot – toward the smoke of the living room, to where his dad was drinking and thinking and listening to Graham Hall.</p>
+<p class="paragraph-style">Then he wrote the word: <em>I</em></p>
+<p class="paragraph-style indent1">Then: <em>don’t</em> </p>
+<p class="paragraph-style indent2"> Then: <em>want</em></p>
+<p class="paragraph-style indent3"> Then: <em>nothing</em></p>
+<p class="paragraph-style indent4"> And then: <em>more</em></p>
+<p class="paragraph-style">He wrote them out slowly and deliberately, without thinking about the previous one. They were just five words that felt right. </p>
+<p class="paragraph-style">He looked it back over: <em>I don’t want nothing more</em></p>
+<p class="paragraph-style">He wondered if it was anymore, <em>I don’t want nothing anymore</em> but he knew it wasn’t. Hall wasn’t like him. Hall was braver than him. Hall wanted things, he hadn’t given up.</p>
+<p class="paragraph-style">What did Hall want?</p>
+<p class="paragraph-style indent1"> <em>A home</em> he wrote</p>
+<p class="paragraph-style indent2"> <em>And a hearth</em></p>
+<p class="paragraph-style">And then he stopped and sat back and took a drink.</p>
+<p class="paragraph-style">Then he arranged the lines and added a word and read:</p>
+<p class="paragraph-style indent1"> <em>I don’t want nothing more</em> </p>
+<p class="paragraph-style indent1"> <em>Than a home and a hearth</em></p>
+<p class="paragraph-style">And although that was right – he could almost remember the song now: it was just Hall and his guitar with some strings in the background… ah, but that was what was missing: the strings. </p>
+<p class="paragraph-style">Because Hall was a romantic; like a broken romantic.</p>
+<p class="paragraph-style"><em>And a woman to share in the magic,</em> Phil wrote, and his stomach momentarily reeled from the realisation. It was almost enough for him to lose the flow, but before he stopped he tipped over the moment and wrote:</p>
+<p class="paragraph-style"> <em>And a red wall to paint</em> </p>
+<p class="paragraph-style indent1"> <em>And a life without shame</em></p>
+<p class="paragraph-style indent2"> <em>Don’t tell me that that’s all too much</em></p>
+<p class="paragraph-style">After he finished he stayed still for a long time, feeling his body acclimatise itself to a gentle pain that moved around his core. He sat back and read it through twice.</p>
+<p class="paragraph-style">It was Graham Hall. They were real lyrics, he was sure. He finished his beer so he could open the bottle of red he’d bought and lit another cigarette, reading the lines over and over, and searching inside himself for what came next.</p>
+<p class="paragraph-style">It was the feeling he chased. He was touching a place deep inside himself, a place he hadn’t felt for years, and the desire to acknowledge it again became all-powerful. It was painful to touch but the pain felt keen and enlivening, and he wanted more.</p>
+<p class="paragraph-style">He stayed up writing until he was so drunk he couldn't see properly and then crashed into bed, pulling the blinds shut to keep out the daylight.</p>
+<p class="paragraph-style"><em>I don’t want nothing more</em></p>
+<p class="paragraph-style indent1"><em>Than a home and a hearth</em></p>
+<p class="paragraph-style"><em>And a woman to share in the magic</em></p>
+<p class="paragraph-style indent1"> <em>And a red wall to paint</em></p>
+<p class="paragraph-style indent1"> <em>And a life without shame</em></p>
+<p class="paragraph-style indent2"> <em>Don’t tell me that that’s all too much</em></p>
+<p class="passage-break"><img src="images/circletriangle.png" alt="*" style="width: 100px; height: auto; display: block; margin: 0 auto;"/></p>
+
+<p class="paragraph-style">The pattern repeated itself, night after night… but remembering Graham Hall was different to any of the other writing Phil had done before. Hall was found in a feeling that grew in his guts; a rush of adrenaline that set his heart racing. He felt like something had become alive inside of him, and if he didn't feed it, it would eat him up from within. </p>
+<p class="paragraph-style">And all the while he was writing, because he was remembering the lyrics to songs, music began taking shape in his mind: an echo of clean-cut strings and an icy guitar line chilled the corridor that ran through his dad’s house like a crooked spine. He could smell the damp carpets, smoke and drink. And his dad was silently listening to Hall pluck strings on his guitar like a funeral march, while a single violin rose above it like a phantom. </p>
+<p class="paragraph-style">It was warlike, but intensely sad; like the sound of impotent rage:</p>
+<p class="paragraph-style"><em>Be whoever you are, I can tell you no more,</em></p>
+<p class="paragraph-style indent1"><em>There’s trouble out there, we’re heading for a fall,</em></p>
+<p class="paragraph-style indent1"><em>But that wasn’t your fault</em></p>
+<p class="paragraph-style indent2"><em>You ain’t the world</em></p>
+<p class="paragraph-style indent2"><em>Work for your family, keep hold of your girl</em></p>
+<p class="paragraph-style indent3"><em>And keep your heart safe,</em></p>
+<p class="paragraph-style indent4"><em>Given time, it’s a pearl</em></p>
+<p class="paragraph-style">In spare moments in the gardens, he’d trawl the net looking for any other references to Hall but even the Wikipedia article had been removed. It seemed like Phil was the only person who remembered him now and it became his mission to preserve this work for the world. </p>
+<p class="paragraph-style">One day he went out and bought some paper and coloured pens and began writing them out on A4 sheets and then he cut around the words and stuck them to the walls of his flat, designing layouts that would highlight ideas or themes. </p>
+<p class="paragraph-style">Though it was all written by Hall, it seemed like there were whole sections about relationships and it felt as though the breakdown of his relationship with Madeleine was written in these lines; and there were reams about his parents, or Hall’s parents, Phil couldn’t tell the difference anymore. But now that he could see it all, spread out in lines and stanzas, he could see how clearly the collapse of his parents’ relationship had led inevitably to the collapse of his relationship with Madeleine: he’d inherited his parents’ mess and it had doomed his chance of love. It was all here, in Hall’s lyrics:</p>
+<p class="paragraph-style"><em>You say I bring it upon myself,</em></p>
+<p class="paragraph-style indent1"> <em>I know but that’s my calling,</em></p>
+<p class="paragraph-style"><em>And if I brought it down with my two hands</em></p>
+<p class="paragraph-style indent1"> <em>It don’t stop the thing from falling.</em></p>
+<p class="paragraph-style">Eventually he ran out of wall space, and so he started sticking string to the ceiling and hanging pieces of verse in the middle of the room that spun gently, like dark dream catchers. As he did this he’d often be reminded of something new, and he’d return to the desk and begin writing again:</p>
+<p class="paragraph-style"><em>Who made these eyes I see with?</em></p>
+<p class="paragraph-style indent1"> <em>At what point was I born?</em></p>
+<p class="paragraph-style"> <em>Who moved the hands I write with</em></p>
+<p class="paragraph-style indent1"> <em>To choose the clothes that I have worn?</em></p>
+</div>
+<p class="passage-break"><img src="images/circletriangle.png" alt="*" style="width: 100px; height: auto; display: block; margin: 0 auto;"/></p>
+<div class="section">
+<div class="vignette">
+<p class="names" id="doc7">Anthony Wright</p>
+<p class="paragraph-style"><br /></p>
+<p class="newspaper">Not far from where Phil was writing - three doors along, and two stories down, in a basement - sat Anthony Wright. He’d been 13 when the AI Crash had collapsed the economy and, like a lot of people, he’d stopped attending school. </p>
+<p class="newspaper">At that time, he’d been a big gamer and that hadn’t changed in the decade that had passed. He made enough credit to feed himself and pay his rent by streaming to a little over a thousand followers, who mostly spent their time streaming to more or less the same group. </p>
+<p class="newspaper">Anthony had eight screens, tiled on top of each other, each of which displayed another gamer he followed, and, when not playing himself, he would Like his friends’ streams so that they too could earn their rent and eat.</p>
+<p class="newspaper">He ordered his food online and had it delivered to the front door. </p>
+<p class="newspaper">Anthony hadn’t left his house for almost six weeks.</p>
+<p class="newspaper">Like so many others, Anthony would be dead in a little under three months.</p>
+<p class="newspaper">Before he died, he went to stand on the seafront and watched the sun rise and - like someone on a heavy dose of mushrooms or a mild dose of MDMA - wondered why he hadn’t done that every day of his only life. </p>
+<p class="newspaper">His death went largely unnoticed until his body was taken out and burnt on a pyre near the Palace Pier.</p>
+</div></div>
+
+ <p id="doc8"><br /></p>
+<p class="br"><br /></p>
+<p class="roman-numerals"><br /></p>
+<p class="roman-numerals"><br /></p>
+<p class="roman-numerals"><br /></p>
+<p class="roman-numerals"><br /></p>
+<p class="roman-numerals"><br /></p>
+<p class="roman-numerals">- The Graveyard Shift -</p>
+<p class="br"><br /></p>
+<p class="paragraph-style">The second time he saw Bill, Phil was sitting on a bench in Preston Cemetery at sunset. He’d spent the morning tending to the plots, clearing them of bramble and nettles. He liked this work: it was simple and repetitive and he could see the difference he’d made at the end of the shift. His father was never far from his thoughts that day, and for the morning remembering him had even eclipsed his search for Graham Hall. At one point his memories had become so vivid that he’d caught himself having a full-blown conversation with him. Not just the mumbling he’d been doing for the hour leading up to it, but a full-throated chat with a memory. He stopped when he realised someone was watching him and sheepishly went back to his work.</p>
+<p class="paragraph-style">Though he was only paid up until 5pm, he worked until almost sunset. He’d allowed himself a longer lunch-break than he was strictly allowed and he preferred to work in the cool of the evening. </p>
+<p class="paragraph-style">As a result, at a little after 8pm, he was sitting with the remains of his lunch and staring into the distance and dreaming about changing the world while the sun went down. His current fantasy had been running for a couple of weeks, on and off. He replayed large parts of it like a film he edited as he watched.</p>
+<p class="paragraph-style">In it, he’d been declared a wanted man by the Government for expressing dangerously liberal views and garnering so much support that it seemed revolution wouldn’t be far off. In one last-ditch attempt to stop him he was captured by idealistic young thugs (who he suspected were Wardens in disguise) who tortured him, streaming the video live on the internet. He escaped moments before an execution that would have been seen by millions. After killing his captors he drove cross-country to London, where, with helicopter cameras circling, he was reunited tearfully with Madeleine, who told him she loved him, and only him, and always had, and always would. And then he died in her arms, because he couldn’t imagine a better way to end it.</p>
+<p class="paragraph-style">Phil was just building up to the big reunion – he was driving the truck and nursing a bullet wound in his side – when Bill suddenly piped up: “Amazing places, cemeteries,” he said. This time, Phil did jump, like he’d been caught out. </p>
+<p class="paragraph-style">“I honestly think,” Bill went on, “that the world would be a better place if people spent a little longer reflecting on the condition of the dead.” Then he looked across at Phil and smiled. And despite his outfit - he was dressed in a rough woollen jumper and jeans, and short wellington boots with a ring of fur around the top (he looked like he should be reading the Sunday papers in a country pub somewhere in Surrey) - Bill’s smile did nothing to soften the strange fire that still burnt in his eyes. </p>
+<p class="paragraph-style">“You ok?” Bill asked, after Phil had stared for long enough to establish that he wasn’t.</p>
+<p class="paragraph-style">Bill waited.</p>
+<p class="paragraph-style">Phil stared some more. </p>
+<p class="paragraph-style">“You remembered Graham Hall yet?” Bill asked brightly. Then he smiled and waited for Phil to pull himself together.</p>
+<p class="paragraph-style">“Yeah, I…” He was about to start answering questions when it occurred to him to ask: “Who are you?” </p>
+<p class="paragraph-style">“You can call me Bill,” he said. “I’m just… visiting some old friends.” He gestured indiscriminately at the graves. “Don’t worry.” Then he breathed deeply and that seemed to settle the discussion. Then he repeated his question: “Have you remembered Graham Hall yet?”</p>
+<p class="paragraph-style"><code>“</code>Well, yeah, maybe…” Phil was unable to shake the feeling that he was still in the middle of a dream. “I wrote this… I remembered it earlier today.” He opened the notes app on his phone. “I think it’s him…”</p>
+<p class="paragraph-style">Bill smiled and took the phone: </p>
+<p class="paragraph-style"><em>I been walkin' for days</em></p>
+<p class="paragraph-style indent1"> <em>Down buttercup lanes</em></p>
+<p class="paragraph-style"><em>Looking for ways</em></p>
+<p class="paragraph-style indent1"> <em>To ease my pain</em></p>
+<p class="paragraph-style"><em>But it ain’t gonna go</em></p>
+<p class="paragraph-style indent1"> <em>I’ve accepted that now</em></p>
+<p class="paragraph-style"><em>It won’t ever be gone</em> </p>
+<p class="paragraph-style indent1"> <em>I can see the truth now</em></p>
+<p class="paragraph-style">Bill looked up when he'd finished but seemed to roll his eyes a little with a strange kind of disappointment. “That’s him alright.” He sat forward and rested his elbows on his knees. “But don’t dwell on… that side of things, you know.” He looked like he checked himself in thought and then sat back. “There’s a lot of Graham Hall that was very hurt; and sometimes he dwelt on it for longer than he should have done. But don’t turn it all inwards. Don’t blame yourself, son. You were born perfect, and then…” he wafted a hand around at the world, “all this happened… and that’s what broke you, really. I understand the pain, Phil, I really do… but don’t blame yourself.” He looked across at Phil and the fire in his eyes was now a warming Christmas hearth: “It’s the world that needs to change, you see, not you.”</p>
+<p class="paragraph-style">Phil hung his head. “Yeah,” was all he said.</p>
+<p class="paragraph-style">“No, I mean it Phil,” Bill pushed. “If you go through your life blaming yourself all the time, you’ll do nothing. And you haven’t got the time for that anymore. It’s self-indulgent. It’s lazy and it’s selfish.”</p>
+<p class="paragraph-style">That seemed a bit harsh. ”What are you talking about?”</p>
+<p class="paragraph-style">“You sit around crying about everything… Madeleine left you, boo-fucking-hoo; your mum never loved you, boo-fucking-hoo; your dad’s dead - who gives a shit!” A bit rude. “You gotta move on, Phil. You were <em>designed</em> to deal with these things. Now you <em>can</em> get over them, and be the great man you were meant to be, but you need to get your shit together.”</p>
+<p class="paragraph-style">“I’m doing alright,” Phil was getting defensive now. “I’m working… I mean… who the fuck are you anyway…”</p>
+<p class="paragraph-style">“You are a shadow,” Bill whispered, leaning across. “A shadow of who you could be.”</p>
+<p class="paragraph-style">“Fucking hell man…” Who was this guy anyway? “Who the fuck are you?”</p>
+<p class="paragraph-style">Bill shoved him. ”Your father was broken by what happened to him.” Phil was frozen. “But he was a <em>great</em> man. A kind man. And the world… ate him up and spat him out. You need to fix this shit!”</p>
+<p class="paragraph-style">Phil laughed at the ridiculousness of it. “What am <em>I</em> supposed to do?”</p>
+<p class="paragraph-style">“It’s not about <em>you</em>, Phil, it’s <em>Hall</em>. Find his rage and channel it. Forget about yourself. His voice will speak for both of you.”</p>
+<p class="paragraph-style">Phil had been doing that - it was all he was doing these days. “I’ve been doing that. It’s all I do!”</p>
+<p class="paragraph-style">“Keep looking,” Bill said, throwing Phil’s phone back on the bench. “Because I’m telling you: dark days are coming. You know it. I know it. Everyone knows it. You’ve got the chance to change this, but I need you to <em>wake up</em>.” </p>
+<p class="paragraph-style">Bill looked down the hill, towards the graves, to where two mourners eyed them back, curiously.</p>
+<p class="paragraph-style">“You haven’t got the time for self-pity anymore,” Bill said, then looked across at him. “Remember: <em>you</em> don’t need to change, Phil… you need to change the <em>world</em>.”</p>
+<p class="paragraph-style">Phil didn’t reply. The whole thing was just too weird. And, strangely, even more than Bill’s appearance, the idea that Phil might be the one who could do something about the state of the world was what really took him by surprise.</p>
+<p class="paragraph-style">“Keep looking,” Bill said and left in a hurry.</p>
+<p class="paragraph-style">Phil watched him go, slightly dizzy in confusion. The moment had come and gone almost before he’d had the wherewithal to react. For a second he wanted to shout out after Bill, but instead he watched him disappear behind a tree and then… no. He just disappeared behind that tree. Phil mussed his hair. This couldn’t be real. </p>
+<p class="passage-break"><img src="images/circletriangle.png" alt="*" style="width: 100px; height: auto; display: block; margin: 0 auto;"/></p>
+<p class="paragraph-style">The encounter changed things for Phil, though; he continued to fall into the pit of verse but left behind the pity. He worked incessantly, barely sleeping, rarely eating, but when he wrote it was with the bitter rage of a man empowered by his hatred. </p>
+<p class="paragraph-style">When the well was dry, he’d stand in his room and perform verse to the wall, imagining a world hanging on his every word, and almost hearing the songs that went along with them.</p>
+<p class="paragraph-style">The quiet, uncomfortable, passive man was growing into a noisy, confident, angry one. </p>
+<p class="paragraph-style">He fucking hated his world. He’d always hated it, that was clear, but over the course of those weeks his hate morphed into something with a venom and a purpose that he’d never felt before. It was like a moment of sobriety, or an epiphany - something he’d always known but never fully understood - and his eyes turned outward with Bill’s fire in them.</p>
+<p class="paragraph-style">Who were these <em>fucking</em> people?</p>
+<p class="paragraph-style">Not just the influencers - the shallow, narcissistic, vain, egotistical beggars, desperate to be seen and accepted - but their ring-masters as well. The luxurious rich who watched over it all and pretended it was ok and they were deserving of their wealth by virtue of the fact that they were simply so adept at spending it. </p>
+<p class="paragraph-style">He often worked on the gardens in Withdean or Roedean or Tongdean; huge houses with long lawns he manicured, and bushes he carefully pruned. He never saw the residents: their gates were opened automatically, security monitored with AI; he held conversations with housekeeping robots who spoke with an imitation of enthusiasm that made him want to smash them into pieces.</p>
+<p class="paragraph-style">The wealth he saw was astonishing. While he worked he ran it over in his head: he earned about two hundred and fifty tokens a day for what he did, and a dozen tokens was a Credit, and about fifty of them was a Sat and a hundred million of them was a Coin. </p>
+<p class="paragraph-style">A hundred million… he did the maths as he sifted the soil and removed the pebbles and trimmed the bushes and looked at the blades of grass… He got about twenty credits a day for what he did… a Sat every two days… two-hundred-million days work was a Coin. How many years was that? Three-hundred-and-fifty-five-million days was a million years. Maybe half that… half a million years to earn a Coin. If he spent nothing, on anything, ever… There were people out there with fifty or a hundred Coins.</p>
+<p class="paragraph-style">That was astonishing.</p>
+<p class="paragraph-style">And generated from what?</p>
+<p class="paragraph-style">Everyone knew it was just a matter of luck; thousands of years of economic development had all come down to a game of musical chairs: if you’d ended up Coined after the Crash, you were set for life on another level.</p>
+<p class="paragraph-style">Admittedly, some of his gardens would be owned by people who sat on the high end of the Civil Credit Score, but most of them were Coined and this was just their seaside pad. These guys worked for the banks, the server centres, and CCTV control rooms; they set the targets, monitored behaviour, and ran the algorithms that ensured compliance. They were the reason his father’s payments had been stopped; the reason his father had died alone, in the Slums.</p>
+<p class="paragraph-style"> He’d died alone, and in the Slums. </p>
+<p class="paragraph-style"> The fucking Slums.</p>
+<p class="paragraph-style"> They’d left his father to die in the Slums.</p>
+<p class="paragraph-style">Whatever else he’d done, he hadn’t deserved that. </p>
+<p class="paragraph-style">On those days he didn't work so well at his job. On some of those days he was so angry that he either wouldn't do anything, he’d just stand and stare at a rose bush as though he was going to smash it in the face, or he’d work at small pieces of horticultural sabotage. It was pathetic really, but he’d over-trim the bushes or mis-plant the bulbs, or feed weedkiller into the wrong patch of flowers, or lay rodent bait with no trap. He’d pull healthy shoots or leave stems he should have cut, dreaming strange revenge fantasies of Triffid style plants strangling the home-owners with bloody, thorny arms.</p>
+<p class="paragraph-style">Why was he here anyway, giving his life over to the demands of excess? </p>
+<p class="paragraph-style">He hated them all. Not just the rich, but the whole fucking lot of them. He'd stare at the robotic housecleaners patrolling carefully designed living rooms, imagining them as prison guards, patrolling the perimeter fence.</p>
+<p class="paragraph-style">Besides, he didn’t have to work. He had a score still; it wouldn’t last him long, that was true, but long enough that he could do something that would be remembered. He wouldn’t turn to anything as petty as Attention Grabbing for Credit; he’d rather go down in a blaze of glory and burn the fucking lot of them.</p>
+<p class="paragraph-style">On some of those days, he left work feeling ten feet high, his resolution making him a king amongst men. But then he’d get home and Hall would be there waiting for him; his aching heart would be there again, still searching for love amidst the shame. It worked like a shot of cold truth that reminded him of his place.</p>
+<p class="paragraph-style">On some of those days he'd go out walking, and get some distance, and try to forget about Graham Hall.</p>
+<p class="passage-break"><img src="images/circletriangle.png" alt="*" style="width: 100px; height: auto; display: block; margin: 0 auto;"/></p>
+
+<p class="paragraph-style">On one of those days, he climbed up into the flat’s loft area. He’d been up there before, moving some boxes around, and there was a beam that he thought could work. He was never sure about the drop space though - you needed to pick up enough speed to break it, but had to make sure you didn’t hit the ground first. He needed to measure the gap and get a rope that was just the right length to leave a small gap between his feet and the floor. He thought about beginning to organise this.</p>
+<p class="paragraph-style">But was that right? He had nothing left to give, he didn’t believe anything would change, and it seemed like a waste of a life to have him here in this strange limbo. Life meant nothing to him anymore. But wasn’t that a gift? Couldn’t he use that power to do something amazing before he was gone? He had no need for regret, no fear of the end; that made him powerful. And maybe Hall was a path to somewhere… </p>
+<p class="paragraph-style">That evening, he went out and he walked all across Brighton - along Hove lawns and up Kingsway and then North into Aldrington and past Hove station, Denmark Villas, and along the Shoreham Road to Seven Dials. He knew these streets well, he’d driven along them to jobs. A lot of the blocks there used to be flats, but more recently they’d been converted back into town houses for the London wealthy to visit when the mood took them. </p>
+<p class="paragraph-style">He dropped down New England Road and past the old Duke of York’s Picturehouse - the oldest cinema in the country apparently. When he’d first arrived in Brighton it was famous for still showing old movies, 20th Century classics, but it was bought out a few years ago and now screened the same shit as everywhere else: AI-generated hero films. They had some posters up, but even he knew that no-one went anymore and it was just a space in limbo until someone could decide what to do with it.</p>
+<p class="paragraph-style">He turned away from town and walked up Ditchling Rise and down the other side, then doubled back towards the Level. He stopped for a long time by St Peter’s Church, staring up at it and lost in thought. It was empty now. Derelict. They’d tried to turn it into a performance area a few years ago, but there was no-one left to perform and the only time anything had happened in it recently was when some kids had broken in for a stunt. They’d been fined, but the fine wasn’t anything compared to what they’d made in exposure. </p>
+<p class="paragraph-style">There was nothing left here, in this wilderness. Nothing had value anymore. He looked around him, in the black of night, amidst the plastic glow of streetlights, at a barren wasteland of a space. Inside every building he’d walked past, people would have been eagerly generating digital distractions, but the space itself - the real world - was lost to them. There was an alien kind of silence about it all that made Phil feel alone but exalted, because he did see it. He walked to a tree and put a hand on its trunk. He fucking loved trees. They just did their thing; there was no desire to be any more than they were. He laughed at himself as he thought that, but he believed in it enough to bring himself back to sobriety and think the thought again.</p>
+<p class="paragraph-style">Suddenly there was a shout from across the street and he looked across and saw a lone male, dressed in torn jeans, with a dirty top on and no shoes. He was shouting at himself and then he screamed into the night and then he punched himself in the chest and collapsed to his knees. In a moment, he looked behind him and then scrambled to his feet and ran. A car pulled up and two wardens exited and grabbed him and dragged him, kicking and shouting, into the car. A few windows cracked light as curtains were parted and then the car drove off and the windows were blacked out again. Phil was left with his hand on the trunk still, in the silent darkness again. </p>
+<p class="paragraph-style">Was that what awaited him?</p>
+<p class="paragraph-style indent1"> He had nothing. </p>
+<p class="paragraph-style indent2"> He had no-one. </p>
+<p class="paragraph-style indent3"> He would remain silent and return to his job and then die alone.</p>
+<p class="paragraph-style"> Sometimes he hated the fact, but the fact remained: he was his father’s son.</p>
+<p class="passage-break"><img src="images/circletriangle.png" alt="*" style="width: 100px; height: auto; display: block; margin: 0 auto;"/></p>
+
+<p class="paragraph-style">In the end, the decision was made for him. </p>
+<p class="paragraph-style">His manager was young, with a head of curls like a wire brush. He was clean shaven and wore a suit. His hands were soft and had never touched dirt in their lives. He didn’t smile as Phil entered the room, and throughout their interview never once looked like anyone other than someone who enjoyed what they did.</p>
+<p class="paragraph-style">“Your work is simply below par,” he said. “When you do anything at all.”</p>
+<p class="paragraph-style">He gestured to a monitor and tapped his keyboard. The video showed Phil, in one of the gardens in Withdean. Phil was standing, stock still, and staring at the house. The bushes near to him rustled gently in the wind, but to look at Phil it could almost have been a photograph. He let the video play for a while before speaking again.</p>
+<p class="paragraph-style">“Plants do respond well to humans, and so, by chance, you had a good opportunity here. One of the few real jobs that remain. But I’m afraid that we won’t be continuing with your contract.” He smiled. “I’m sure you understand.”</p>
+<p class="passage-break"><img src="images/circletriangle.png" alt="*" style="width: 100px; height: auto; display: block; margin: 0 auto;"/></p>
+<div class="vignette-pilot">
+
+<div class="section">
+<p class="pilot-report" id="doc9"><strong>WARDEN INCIDENT REPORT</strong></p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">Incident ID: BRI-34-8821-771</p>
+<p class="pilot-report">Location: St Peter's District, Brighton</p>
+<p class="pilot-report">Date: 10th April 203x</p>
+<p class="pilot-report">Reporting Officers: WPO James McGuinney and WPO Daniel Mercer</p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">SUBJECT</p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">Name: Leon Arthur Ellery</p>
+<p class="pilot-report">Age: 34</p>
+<p class="pilot-report">Housing: Single Occupancy Unit with meals</p>
+<p class="pilot-report">Dependents: None<br/>
+</p>
+<p class="pilot-report">CCS: -1,528 (negative)</p>
+<p class="pilot-report">Weekly Attention: -47 (negative)<br/>
+</p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">INCIDENT SUMMARY</p>
+<p class="pilot-report">At approximately 03:14 the subject was observed shouting incoherently in a public thoroughfare. Subject demonstrated (please select from the drop-down menus):</p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">
+<ul>
+<li>Verbal outbursts</li>
+<li>Self-directed aggression</li>
+<li>Societal aggression</li>
+<li>Paranoia</li>
+<li>Attempted flight from approaching Wardens</li>
+<li>Attempted physical assault of Wardens at the scene</li>
+<li>Physical assault of Wardens at the station</li>
+<li>Resisting arrest</li>
+</ul></p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">No aggression directed toward members of the public was recorded. Subject was detained without significant injury and transported to Assessment Facility 12: Preston Park Ward. No civilians harmed. No property damage recorded.</p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">PILOT ASSESSMENT SUMMARY:</p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">Social Participation Index:</p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">Followers: 22<br/>
+ Following: 1,841</p>
+<p class="pilot-report">Average Followers CCS Score: -324.2<br/>
+</p>
+<p class="pilot-report">Average Weekly Posts: 0.7</p>
+<p class="pilot-report">Average Weekly Comments: 2.1<br/>
+ Average Weekly Likes Given: 487.3<br/>
+ Average Weekly Likes Received: 0.3</p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">Reciprocal Relationship Score: 0.02%</p>
+<p class="pilot-report">Community Participation Rating: 11/100</p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">Engagement History: </p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">Last Positive Engagement: 143 days ago<br/>
+ Last Shared Achievement: 211 days ago<br/>
+ Last Recorded Social Event: 287 days ago</p>
+<p class="pilot-report"> Average Sentiment Rating:<br/>
+ Year -3: +0.14<br/>
+ Year -2: -0.09<br/>
+ Year -1: -0.33<br/>
+ Current: -0.78</p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">Trend: Decline / Concern</p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">PUBLIC INTERACTION RECORD</p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">Last 7 days:</p>
+<p class="pilot-report"> Positive Reports Received: 0<br/>
+ Negative Reports Received: 81</p>
+<p class="pilot-report"> Negative Reports Issued: 47</p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">Online Flags YTD: </p>
+<p class="pilot-report"> Harassment for Attention: 42<br/>
+ Active Spread of Fake News: 34<br/>
+ Aggressive and/or Threatening Posts: 29<br/>
+ Failure to Reciprocate: 43</p>
+<p class="pilot-report"> Not Specified: 39</p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">In-Real-World (IRW) Flags YTD:</p>
+<p class="pilot-report"> Anti-social conduct: 17<br/>
+ Verbal hostility: 457<br/>
+ Public intoxication: 2<br/>
+ Suspicious loitering: 11</p>
+<p class="pilot-report"> Not Specified: 52</p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">Behavioural Metrics of Note: </p>
+<p class="pilot-report"> Average Daily Screen Time: 2.4 hours (<em>Down 78% year-on-year</em>)<br/>
+ Average Daily Steps: 12,532 (<em>Up 82% year-on-year</em>)<br/>
+ Heart rate: </p>
+<p class="pilot-report"> - Resting: 98 bpm</p>
+<p class="pilot-report"> - High: 158 bpm</p>
+<p class="pilot-report"> - Average: 104 bpm (<em>97th percentile for age cohort</em>)</p>
+<p class="pilot-report"> Sleep Health: 23/100</p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">Purchasing Patterns:</p>
+<p class="pilot-report"> Alcohol Consumption: +37% year-on-year<br/>
+ Prepared Meals: +62% year-on-year<br/>
+ Fresh Produce: -71% year-on-year</p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">Complete Report Available <span style="text-decoration: underline">Here</span>.</p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">PILOT CONCLUSION:</p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">Historical indicators suggest long-term social withdrawal leading to significant change in behaviour at the start of the year. Notes of concern:</p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">
+<ul class="pilot-report">
+<li>Reduced engagement activity</li>
+<li>Sustained decline in CCS over past 27 months</li>
+<li>Dramatic increase in negative behaviours since start of year</li>
+<li>Historic non-compliance with wellbeing interventions</li>
+<li>Elevated anti-social sentiment markers</li>
+<li>Chronic isolation</li>
+</ul></p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">Current risk classification:</p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">Self Harm Risk: HIGH</p>
+<p class="pilot-report">Public Disorder Risk: HIGH</p>
+<p class="pilot-report">Radicalisation Risk: LOW</p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">Analysis:</p>
+<p class="pilot-report">Subject demonstrates advanced symptoms of psychosis, likely the result of long-term social isolation. No evidence of organised political activity. No evidence of extremist affiliation. No evidence of coordinated anti-system behaviour. No evidence of positive social interactions. No evidence of long term relationships being maintained. No evidence of meaningful social or creative activity. </p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">Recommended Action:</p>
+<ul class="pilot-report">
+<li>Transfer to Assisted Reintegration Programme at Facility 351, Norwich.</li>
+<li>Suspend independent housing allocation indefinitely.</li>
+<li>Apply mandatory social participation targets on simulated network.</li>
+<li>Monitor for 90 days.</li>
+</ul></p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">Projected Outcome:</p>
+<ul class="pilot-report">
+<li>68% likelihood of continued decline.</li>
+<li>21% likelihood of stabilisation.</li>
+<li>11% likelihood of successful reintegration.</li>
+</ul></p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">INTERNAL NOTES (<em>Classification Level: High</em>)</p>
+<p class="pilot-report"><br /></p>
+<p class="pilot-report">Subject should be moved to Facility 351, Norwich. </p>
+<p class="pilot-report">Social interaction monitored for 90 days.</p>
+<p class="pilot-report">If no meaningful social contact achieved within the monitoring period, subject can be disposed of as per directive 742.1a</p>
+
+
+  <!-- FOOTER NAV -->
+  <div class="reading-footer-nav">
+    <a href="index.html">← Back to Headlines</a>
+    <a href="read-online-2.html" class="cta">Section 2 →</a>
+  </div>
+
+</div><!-- /reading-wrap -->
+
+<footer class="site-footer">
+  <div class="footer-logo">Circle <span class="amp">&amp;</span> Triangle</div>
+  <div class="footer-info">
+    circleandtriangle.co.uk<br>
+    Promotional site for The Crossroads
+  </div>
+</footer>
+
+</body>
+</html>

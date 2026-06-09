@@ -1,0 +1,40 @@
+/* ── SCRIVENER CLASS ALIASES ── */
+/* Allows direct copy-paste from ePub to website */
+
+.paragraph-style {
+  font-size: 1.05em;
+  line-height: 1.8;
+  margin: 0;
+  text-indent: 1.5em;
+}
+
+.paragraph-style + .paragraph-style {
+  text-indent: 1.5em;
+}
+
+.roman-numerals {
+  text-align: center;
+  font-size: 1em;
+  font-weight: bold;
+  text-indent: 0;
+  margin: 1em 0;
+}
+
+.blake-quotes {
+  text-align: center;
+  font-style: italic;
+  font-size: 0.95em;
+  line-height: 1.9;
+  text-indent: 0;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2em;
+  font-weight: bold;
+  line-height: 1.15;
+  text-indent: 0;
+}
+
+.separator { display: block; margin: 1.5em 0; }
+.br { display: block; line-height: 1em; }
