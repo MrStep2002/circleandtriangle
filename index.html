@@ -1,10 +1,308 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta http-equiv="refresh" content="0; url=/crossroads/index.html" />
-    <link rel="canonical" href="/crossroads/index.html" />
-  </head>
-  <body>
-    <p>Redirecting… <a href="/crossroads/index.html">Click here if not redirected.</a></p>
-  </body>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/x-icon" href="crossroads/favicon.ico">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Circle &amp; Triangle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="crossroads/site.css">
+
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-JJXZRY10RH');
+</script>
+
+</head>
+<body>
+
+  <!-- POPUP -->
+<div id="popup-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; display:flex; align-items:center; justify-content:center;">
+  <div style="background:#fff; max-width:480px; width:90%; padding:40px; position:relative; border-top: 4px solid #c8000a; text-align:center;">
+    <div style="font-family:'Playfair Display',serif; font-size:22px; font-weight:900; margin-bottom:16px;"><b>A note before you read</b></div>
+    <div style="font-family:'Source Serif 4',serif; font-size:15px; line-height:1.7; color:#4a4540; margin-bottom:24px;">
+      <p style="margin-bottom:12px;">This is a promotional site for a novel.</p> 
+      <p style="margin-bottom:12px;">Everything here exists in the world of the book.</p>
+      <p style="margin-bottom:12px;">The novel and the all site-text was written <b>by a human.</b></p> 
+      <p style="margin-bottom:12px;">The code and images were AI but <b>nothing else.</b></p>
+    </div>
+    <button onclick="document.getElementById('popup-overlay').style.display='none'" style="background:#c8000a; color:#fff; font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; padding:10px 24px; border:none; cursor:pointer;">I understand →</button>
+  </div>
+</div>
+
+
+<!-- MASTHEAD -->
+<header class="masthead">
+    <div class="masthead-center">
+    <a href="crossroads/the-book.html"><img src="crossroads/masthead4.jpg" alt="The Crossroads — A new novel" class="masthead-title-img"></a>
+  </div>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="top-bar-left">
+    <span id="live-date"></span> &nbsp;·&nbsp;
+    <a href="mailto:theauthor@circleandtriangle.co.uk">theauthor@circleandtriangle.co.uk</a>
+  </div>
+  <div class="ccs-pill">CCS AVG: <span class="score" id="ccs-number">847</span> <span class="up">↑2</span> &nbsp;·&nbsp; COMPLIANCE: 94.7% &nbsp;·&nbsp; NEXT REVIEW: 14 DAYS</div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker-bar">
+  <div class="ticker-label">LIVE</div>
+  <div class="ticker-track">
+    <div class="ticker-inner" id="ticker"></div>
+  </div>
+</div>
+
+
+  <nav class="primary-nav">
+    <a class="nav-item active" href="crossroads/index.html">Headlines</a>
+    <a class="nav-item" href="crossroads/the-book.html">FREE DOWNLOAD</a>
+     <a class="nav-item" href="crossroads/read-online.html">Read Online</a>
+    <a class="nav-item" href="crossroads/the-feed.html">Gallery</a>
+  </nav>
+</header>
+
+
+<!-- CONTENT -->
+<div class="content-wrap">
+
+  <!-- LEAD GRID -->
+  <div class="lead-grid">
+
+    <!-- LEFT: lead story + two secondaries -->
+    <div class="lead-main">
+
+      <!-- COMPACT LEAD: slideshow left, text right -->
+      <div class="lead-top">
+        <div class="lead-slideshow">
+          <div class="slide-track" id="slideTrack">
+
+            <div class="slide-item">
+              <img src="crossroads/images/phil-guitar-street.jpg" class="lead-top-img" alt="Phil Davidson">
+              <div class="slide-caption">Despite success, Davidson has not found peace.</div>
+            </div>
+
+            <div class="slide-item">
+              <img src="crossroads/images/lyrics-cropped.jpg" class="lead-top-img" alt="A Songwriter at work">
+              <div class="slide-caption">His songs have changed lives - but who is Graham Hall?</div>
+            </div>
+
+            <div class="slide-item">
+              <img src="crossroads/images/the-gospels-cropped.jpg" class="lead-top-img" alt="The Gospels">
+              <div class="slide-caption">The men behind the myth: Matty, Mickey, Carl and Jonno.</div>
+            </div>
+
+            <div class="slide-item">
+              <img src="crossroads/images/des-magazine-small.jpg" class="lead-top-img" alt="Des Judd">
+              <div class="slide-caption">His manager has connections to the criminal underworld</div>
+            </div>
+
+          </div><!-- /slide-track -->
+          <button class="slide-btn slide-prev" onclick="moveSlide(-1)">&#8249;</button>
+          <button class="slide-btn slide-next" onclick="moveSlide(1)">&#8250;</button>
+          <div class="slide-counter" id="slideCounter">1 / 4</div>
+        </div><!-- /lead-slideshow -->
+
+        <div class="lead-top-text">
+          <span class="tag tag-fiction">The Crossroads</span>
+          <a href="crossroads/who-is-phil.html"><h1 class="hl-lead">He was homeless. Now he's the most dangerous man in the country...</h1></a>
+          <a href="crossroads/who-is-phil.html"><p class="dek">A month ago, Phil Davidson burst onto the scene with a series of albums that have given him the kind of influence that could change the world. But he also says he's never played guitar before, and claims he can speak to the Gods. <br><br>We explore the damage he's doing and ask where he's taking us...</p></a>
+
+          <div class="byline">The Crossroads &nbsp;·&nbsp; Novel Trailer &nbsp;·&nbsp; 4 min read</div>
+        </div>
+
+      </div><!-- /lead-top -->
+
+      <!-- TWO SECONDARY STORIES -->
+      <div class="lead-secondary">
+        <div class="lead-sec-story">
+          <a href="crossroads/ai-and-work.html">
+            <img src="crossroads/images/ai-work-image.jpg" alt="Why we work so hard" class="sec-img" onerror="this.style.minHeight='100px';">
+          </a>
+          <span class="tag tag-real">Society</span>
+          <h3 class="hl-small"><a href="crossroads/ai-and-work.html">AI Ended Work: So why are we still doing so much of it?</a></h3>
+          <p class="dek" style="font-size:12.5px">Ten years after the AI Crash, we ask what happened to the dream of liberation and explore how life really looks while living under an AI Overlord...</p>
+          <div class="byline">Society &nbsp;·&nbsp; 6 min read</div>
+        </div>
+        <div class="lead-sec-story">
+          <a href="crossroads/war-in-heaven.html">
+            <img src="crossroads/images/thrones.png" alt="Jo and Bill" class="sec-img" onerror="this.style.minHeight='100px';">
+          </a>
+          <span class="tag tag-classified">Theology</span>
+          <h3 class="hl-small"><a href="crossroads/war-in-heaven.html">The War in Heaven: Divorce Terms Almost Agreed</a></h3>
+          <p class="dek" style="font-size:12.5px">Jo and Bill's divorce has torn the west apart for two-thousand years. With its end in sight, we look back over the damage it's caused and ask whether the scars will ever heal...</p>
+          <div class="byline">Theology &nbsp;·&nbsp; 4 min read</div>
+        </div>
+      </div>
+
+    </div><!-- /lead-main -->
+
+    <!-- RIGHT SIDEBAR -->
+    <div class="lead-sidebar">
+
+      <!-- SIDEBAR AD -->
+      <a href="crossroads/the-book.html" style="display:block; text-decoration:none;">
+        <div class="sidebar-ad" style="padding:0; min-height:545px; position:relative; overflow:hidden; border:2px solid var(--rule-dark); cursor:pointer;">
+          <div class="sidebar-ad-bg" style="position:absolute; top:0; left:0; width:100%; height:100%; background-image:url('crossroads/phil-ad-390x545.jpg'); background-size:cover; background-position:center top;"></div>
+          <div style="position:relative; z-index:2; display:flex; flex-direction:column; justify-content:space-between; height:100%; min-height:545px; padding:20px 16px; text-align:center;">
+            <div>
+              <div class="ad-eyebrow">READ IT FOR FREE<br>While you still can</div>
+            </div>
+            <div>
+              <div class="ad-btn" style="display:inline-block; margin-bottom:10px;">Read Now</div>
+              <div class="ad-small">No CCS points required. For now.<br>REQUIRED READING</div>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- BLAKE EPIGRAPH BOX -->
+      <div class="blake-box">
+        <span class="blake-box-label">PHILosophy</span>
+        <p class="blake-quote" id="blake-quote">No bird soars too high if he soars with his own wings.</p>
+        <div class="blake-attr">— William Blake, <em>The Proverbs of Hell</em></div>
+        <a href="crossroads/william-blake.html" class="blake-cta">Read the full argument →</a>
+      </div>
+
+    </div><!-- /lead-sidebar -->
+
+  </div>
+  
+  <!-- RANDOM IMAGE GALLERY -->
+<div class="section-header">
+  <span class="section-title">See the World</span>
+  <button onclick="loadGallery()" style="font-family:'Barlow Condensed',sans-serif; font-size:14px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; background:none; border:1px solid var(--rule); color:var(--text-dim); padding:4px 10px; cursor:pointer; flex-shrink:0;">↻ Refresh</button>
+    <button onclick="window.location.href='crossroads/the-feed.html'" style="font-family:'Barlow Condensed',sans-serif; font-size:14px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; background:none; border:1px solid var(--rule); color:var(--text-dim); padding:4px 10px; cursor:pointer; flex-shrink:0;">Gallery</button>
+  <div class="section-line"></div>
+</div>
+
+<div class="three-col" id="random-gallery"></div>
+
+</div><!-- /content-wrap -->
+
+<footer>
+  <div>
+    <div class="footer-logo">Circle <span class="amp">&amp;</span> Triangle</div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#555;margin-top:6px;letter-spacing:0.06em;">
+      <a href="mailto:theauthor@circleandtriangle.co.uk">theauthor@circleandtriangle.co.uk</a><br>
+      Promotional site for The Crossroads
+    </div>
+  </div>
+</footer>
+
+
+<script>
+// Date
+const d = new Date();
+document.getElementById('live-date').textContent =
+  d.toLocaleDateString('en-GB', {weekday:'long', year:'numeric', month:'long', day:'numeric'}).toUpperCase();
+
+// Blake quotes
+const blakeQuotes = [
+  "No bird soars too high if he soars with his own wings.",
+  "The road of excess leads to the palace of wisdom.",
+  "Energy is eternal delight.",
+  "You never know what is enough unless you know what is more than enough.",
+  "The tigers of wrath are wiser than the horses of instruction.",
+  "Eternity is in love with the productions of time.",
+  "If the fool would persist in his folly, he would become wise.",
+  "The pride of the peacock is the Glory of God.",
+  "Always be ready to speak your mind and a base man will avoid you.",
+  "Everything possible to be believed is an image of truth.",
+  "Sooner murder an infant in its cradle than nurse unacted desires.",
+];
+const randomQuote = blakeQuotes[Math.floor(Math.random() * blakeQuotes.length)];
+document.getElementById('blake-quote').textContent = randomQuote;
+
+// Random image gallery — global so button can access it
+const allImages = [
+  { src: 'crossroads/images/for web/scene-london-street.jpg', thumb: 'crossroads/images/for web/thumbnails/scene-london-street.jpg', label: 'Scene' },
+  { src: 'crossroads/images/for web/scene-phil-alone-logo.jpg', thumb: 'crossroads/images/for web/thumbnails/scene-phil-alone-logo.jpg', label: 'Scene' },
+  { src: 'crossroads/images/for web/scene-crossroads-london-graffiti.jpg', thumb: 'crossroads/images/for web/thumbnails/scene-crossroads-london-graffiti.jpg', label: 'Scene' },
+  { src: 'crossroads/images/for web/scene-pilot-underground.jpg', thumb: 'crossroads/images/for web/thumbnails/scene-pilot-underground.jpg', label: 'Scene' },
+  { src: 'crossroads/images/for web/music-facing-pain.jpg', thumb: 'crossroads/images/for web/thumbnails/music-facing-pain.jpg', label: 'Music' },
+  { src: 'crossroads/images/for web/music-broken-seed-logo2.jpg', thumb: 'crossroads/images/for web/thumbnails/music-broken-seed-logo2.jpg', label: 'Music' },
+  { src: 'crossroads/images/for web/blake-better-land-logo.jpg', thumb: 'crossroads/images/for web/thumbnails/blake-better-land-logo.jpg', label: 'Blake' },
+  { src: 'crossroads/images/for web/blake-palace-of-wisdom-logo.jpg', thumb: 'crossroads/images/for web/thumbnails/blake-palace-of-wisdom-logo.jpg', label: 'Blake' },
+  { src: 'crossroads/images/for web/thumbnails/character-old-nick-logo.jpg', thumb: 'crossroads/images/for web/thumbnails/character-old-nick-logo.jpg', label: 'Character' },
+  { src: 'crossroads/images/for web/thumbnails/character-cernunnos-logo.jpg', thumb: 'crossroads/images/for web/thumbnails/character-cernunnos-logo.jpg', label: 'Character' },
+];
+
+function loadGallery() {
+  const shuffled = allImages.sort(() => Math.random() - 0.5).slice(0, 3);
+  const gallery = document.getElementById('random-gallery');
+  gallery.innerHTML = '';
+  shuffled.forEach((img, i) => {
+    const padding = i === 0 ? 'padding: 20px 20px 20px 0' : i === 1 ? 'padding: 20px' : 'padding: 20px 0 20px 20px';
+    gallery.innerHTML += `
+      <div class="col-story" style="${padding}">
+        <img src="${img.thumb}" style="width:100%; height:400px; object-fit:cover; display:block; margin-bottom:10px;">
+        <span class="tag tag-fiction">${img.label}</span>
+      </div>`;
+  });
+}
+
+window.addEventListener('load', function() {
+
+  // Ticker
+  const items = [
+    'CCS PAYOUT REACH RECORD HIGHS. WEEKLY AVERAGE: <span class="hi">1,225 CCS</span> <span class="up">↑2</span>',
+    'COIN TO CCS<span class="sep">·</span>SECTOR 4<span class="sep">·</span>UNVERIFIED',
+    'COIN VALUE 24hrs: <span class="up">+3.1%</span>',
+    'CCS VALUE 24hrs: <span class="up">+0.3%</span>',
+    'TOKEN VALUE 24hrs: <span class="hi">-7.6%</span>',
+    'STABILITY INDEX: <span class="hi">94.7%</span>',
+    'NEXT REVIEW CYCLE: <span class="hi">12 DAYS</span>',
+    'PILOT ALGORITHM: <span class="hi">OPERATIONAL</span>',
+    'ENGAGEMENT CONTINUES TO GROW. OUTLOOK POSITIVE.',
+  ];
+  const inner = document.getElementById('ticker');
+  const html = items.map(t => `<span class="ticker-item">${t}</span>`).join('');
+  inner.innerHTML = html + html;
+
+  // Slideshow
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.slide-item');
+  const total = slides.length;
+
+  function moveSlide(dir) {
+    currentSlide = (currentSlide + dir + total) % total;
+    const width = document.querySelector('.slide-item').offsetWidth;
+    document.getElementById('slideTrack').style.transform = `translateX(-${currentSlide * width}px)`;
+    document.getElementById('slideCounter').textContent = `${currentSlide + 1} / ${total}`;
+  }
+
+  setInterval(() => moveSlide(1), 5000);
+  window.moveSlide = moveSlide;
+
+  // CCS score animation
+  let ccs = 847;
+  setInterval(() => {
+    ccs = Math.max(820, Math.min(980, ccs + (Math.random() > 0.65 ? (Math.random() > 0.5 ? 1 : -1) : 0)));
+    const el = document.getElementById('ccs-number');
+    if (el) el.textContent = ccs;
+  }, 4000);
+
+  // Load gallery on page load
+  loadGallery();
+
+}); // end of load listener
+
+</script>
+
+<script>
+  if (sessionStorage.getItem('popupSeen')) {
+    document.getElementById('popup-overlay').style.display = 'none';
+  } else {
+    sessionStorage.setItem('popupSeen', 'true');
+  }
+</script>
+
+</body>
 </html>
