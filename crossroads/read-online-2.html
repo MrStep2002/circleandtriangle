@@ -429,17 +429,51 @@
 
     /* names */
 .newspaper {
-    font-family: sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 1em;
-    margin-left: 1em;
-    margin-right: 1em;
-    text-indent: 1.5em;
-  line-height: 1.15;}
+    margin-left: 0em;
+    margin-right: 2em;
+    text-indent: 0 !important;
+    margin-bottom: 0.8em;
+}
 
   .names {
     font-family: sans-serif;
     font-size: 1.5em;
     text-align: center;}
+
+.ps3 { margin-left: 0rem; text-indent: 0rem; text-align: center; line-height: 1.1em; }
+
+
+.vignette {
+  margin: 2em 0;
+  padding-top: 1.5em;
+  border-top: 1px solid #aaa;
+  font-size: 0.92em;
+  text-indent: 0;
+  line-height: 1.9;
+}
+
+/* INLINE BANNER — end of article */
+.inline-banner { display: block; text-decoration: none; margin: 28px 0; }
+.inline-banner-inner { background: #1a1816; border: 1px solid #2a2520; padding: 24px 28px; display: flex; align-items: center; justify-content: space-between; gap: 24px; position: relative; overflow: hidden; }
+.inline-banner-inner::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: #c8000a; }
+.inline-banner-text { flex: 1; min-width: 0; }
+.inline-banner-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: #c8000a; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px; }
+.inline-banner-headline { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 900; color: #ffffff; line-height: 1.1; margin-bottom: 6px; }
+.inline-banner-headline em { color: #c8000a; }
+.inline-banner-sub { font-family: 'Source Serif 4', serif; font-style: italic; font-size: 13px; color: #8a8480; line-height: 1.5; }
+.inline-banner-cta { flex-shrink: 0; text-align: center; }
+.inline-banner-btn { display: inline-block; background: #c8000a; color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; padding: 12px 24px; white-space: nowrap; }
+.inline-banner-note { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: #444; margin-top: 6px; letter-spacing: 0.06em; }
+
+
+/* indents */
+.indent1 { text-indent: 0; margin-left: 2em; } 
+.indent2 { text-indent: 0; margin-left: 4em; } 
+.indent3 { text-indent: 0; margin-left: 6em; }
+.indent4 { text-indent: 0; margin-left: 8em; }
+
   </style>
 
 <!-- Google tag (gtag.js) -->
@@ -486,20 +520,17 @@
 <p class="br"><br /></p>
 <p class="separator"><br /></p>
 <div class="section">
-<p class="roman-numerals" id="doc11"><br /></p>
-<p class="br"><br /></p>
-<p class="roman-numerals"><br /></p>
-<p class="roman-numerals"><br /></p>
-<p class="roman-numerals"><br /></p>
+<p class="vignette" id="doc12"></p>
+<p class="roman-numerals">- Chapter 3 -</p>
 <p class="roman-numerals">- The Bloodhound -</p>
 <p class="br"><br /></p>
-<p class="paragraph-style">After the meeting, Phil returned home a broken man. There was no way back from this. He’d end up alone in the Slums, where UBI took the form of processed food from soup kitchens and housing in damp-riddled, rodent-infested estates. He knew there was joy there, influencers often posted videos of singalongs and football games - working class pursuits that kept the middle classes’ spirits high. But he also believed that they were mostly lies.</p>
-<p class="paragraph-style">People were people, they found a way to get by, but that wasn’t what he wanted. He didn’t want to get by and survive and smile through the pain; he wanted the place to burn. For a while he allowed himself to dream that he could… that he was a renegade voice in the darkness, that the State Department hunted down and killed for being a threat to the Establishment. For a moment, he soared. </p>
+<p class="paragraph-style">After being sacked, Phil returned home a broken man. There was no way back from this. He’d end up alone in the Slums, where UBI took the form of processed food from soup kitchens and housing in damp-riddled, rodent-infested estates. He knew there was joy there, influencers often posted videos of singalongs and football games - working class pursuits that kept the middle classes’ spirits high. But he also believed that they were mostly lies.</p>
+<p class="paragraph-style">People were people, they found a way to get by, but that wasn’t what he wanted. He didn’t want to get by and survive and smile through the pain; he wanted the place to burn for what it had done to his father, and now to him. For a while he allowed himself to dream that he could… that he was a renegade voice in the darkness, that the State Department hunted down and killed for being a threat to the Establishment. And for that moment, he soared. </p>
 <p class="paragraph-style">But then he looked around at the flat, at the walls of ranting lyrics and the pile of empty whiskey bottles and wine boxes and beer cans and saw the stain in his bed where he’d once pissed himself in his sleep and he knew that he wasn’t that man and this wasn’t that life. He was a waste of space, like his dad; a drunken rant that screamed into the void and then fell over and died. </p>
 <p class="paragraph-style">He took one last look around and allowed himself one more moment to dream that someone would find it and see him for who he was and then he left the flat and walked to the seafront where he could watch the waves and smoke. The thought that was clearest to him was that he didn't have to go on. He couldn't change the world, it wasn't his to change, but it was his life and he had the right to end it. If he couldn’t find peace in life, he could still find peace.</p>
-<p class="paragraph-style">It was a hot night and although the wind was strong he was protected by the awning of the Victorian shelter. He listened to the wind rattle the structure and watched the sea throw itself to the shore, and with each relentless oceanic breath he felt his mind grow clearer and he felt the fear recede. It was his life, the only thing he truly owned, and it was his right to end it; that was one right that they couldn’t take away. He’d go back to the flat, he’d accessed the loft already and knew the beam that he’d choose. </p>
+<p class="paragraph-style">It was a hot night and although the wind was strong he was protected by the awning of Madeira Drive. He listened to the wind rattle the structure and watched the sea throw itself to the shore, and with each relentless oceanic breath he felt his mind grow clearer and he felt the fear recede. It was his life, the only thing he truly owned, and it was his right to end it; that was one right that they couldn’t take away. He’d go back to the flat, he’d accessed the loft already and knew the beam that he’d choose. A bedsheet would do in place of a rope. </p>
 <p class="paragraph-style">“Ya's fuckin’ think…” growled a voice from beside him. “Ya's fuckin’ think that they… fuckit. Don’t think too much.” </p>
-<p class="paragraph-style">Phil heard a strong breath of smoke and saw the plumes but only very slowly looked around. </p>
+<p class="paragraph-style">Phil heard a strong breath and saw the plumes of smoke but only very slowly looked around. </p>
 <p class="paragraph-style">In front of him was an ageing drunk with skin the colour of a blood orange and a beard like a bed of nails. He growled from somewhere deep in his throat in agreement with himself. He was sitting on the next bench along – a gap of less than half a metre – with a guitar around his neck and no shoes on his black, tarred feet. He had the end of a hand-rolled cigarette hanging out of his mouth, stuck to his bottom lip. It looked like his entire frame was held up by a bottle of whiskey that rested on his knee.</p>
 <p class="paragraph-style">“Drink,” he barked, in a voice like Father Jack, and gestured to Phil, before swigging from his whiskey.</p>
 <p class="paragraph-style">Phil felt slightly out of body as he raised his bottle of wine. </p>
@@ -534,51 +565,60 @@
 <p class="paragraph-style indent1"> <em>It’s a sign-post to a quick buck;</em></p>
 <p class="paragraph-style"><em>I’m a mystic sage showin’ you the way,</em></p>
 <p class="paragraph-style indent1"> <em>I’m a guardian angel who works without pay,</em></p>
-<p class="paragraph-style"> <em>I’m inviting you down to your destination:</em></p>
+<p class="paragraph-style indent2"> <em>I’m inviting you down to your destination:</em></p>
 <p class="paragraph-style indent2"> <em>I’m serendipity – not temptation…</em></p>
 <p class="paragraph-style">And that was Graham Hall as well. Phil had written the verses down a couple of weeks before, and here was someone who could remember the tune. Phil pounded the strings, gradually becoming aware of his left hand that moved deftly up and down the neck. The old man started the next verse, with Phil slowly beginning to mumble along:</p>
 <p class="paragraph-style"><em>I di’n’t believe in nothing</em></p>
 <p class="paragraph-style indent1"><em>And the world di’n’t make no sense;</em></p>
 <p class="paragraph-style"> <em>What’s the point of action</em></p>
 <p class="paragraph-style indent1"> <em>When it’s got no consequence?</em></p>
-<p class="paragraph-style"> <em>So start something new,</em></p>
-<p class="paragraph-style indent1"> <em>Engage in creation:</em></p>
-<p class="paragraph-style indent2"> <em>Become serendipity – not temptation</em></p>
+<p class="paragraph-style indent2"> <em>So start something new,</em></p>
+<p class="paragraph-style indent2"> <em>Engage in creation:</em></p>
+<p class="paragraph-style"> <em>Become serendipity – not temptation</em></p>
 <p class="paragraph-style">They were singing together, until Phil realised that the old guy wasn't singing anymore, he was just slapping his thigh, and beaming his toothless grin.</p>
 <p class="paragraph-style">The old man reached around and pulled out another guitar and began plucking at the strings so hard and taut and clean, and he stretched notes so thin that they cut. Phil wanted that. And so the old man picked up on Phil's strumming, taking over the rhythm section.</p>
-<p class="paragraph-style">Phil softened his chords a little in response. He plucked a simple scale, and then a progression, and then a more complex one, and then he began hanging the notes when it felt right and then he began to sing again. </p>
+<p class="paragraph-style">Phil softened his chords a little in response. Then he plucked a simple scale, and then a progression, and then a more complex one, and then he began hanging the notes when it felt right and then he began to sing again. </p>
 <p class="paragraph-style">They played together until the grey dawn turned into a grey day. </p>
 <p class="paragraph-style">The man introduced himself as Old Nick.</p>
-<p class="passage-break"><img src="images/circletriangle.png" alt="*" style="width: 100px; height: auto; display: block; margin: 0 auto;"/></p>
-
+<p class="br"><br /></p>
+<p class="paragraph-style"><br /></p>
+<div class="ps3"><img src="images/circletriangle.png" alt="" id="circletriangle" style="height:25px;width:75px;" /></div>
+<p class="paragraph-style"><br /></p>
+<p class="paragraph-style"><br /></p>
 <p class="paragraph-style">In the morning Nick took Phil to the station where they caught a train to London. </p>
 <p class="paragraph-style">Phil was talking constantly about how much he’d enjoyed playing and he didn’t know guitar was so easy and it was just like when he was remembering Graham Hall and he didn’t know that it was so easy to learn stuff and everyone should do it and why didn’t everyone play guitar if it was so easy, and everyone should write as well and who was Graham Hall and did Nick have any of his albums?</p>
 <p class="paragraph-style">“Calm down!” Nick drawled, ushering him down the train until they found a seat in a half empty carriage.</p>
 <p class="paragraph-style">“I’m not even tired,” Phil was saying, though he was clearly very wired. “I feel alive, you know! For the first time!”</p>
-<p class="paragraph-style">“Don’t sleep,” Nick replied, softly. “Stay awake. But shut up. And calm the fuck down.”</p>
+<p class="paragraph-style">“Don’t sleep,” Nick replied, softly. “Stay awake. But the fuck shut up. And calm down.”</p>
 <p class="paragraph-style">“I'm buskin'!” Phil laughed and repeated himself: “I'll be a busker. That’s what I’ll do! <em>A Beggin’ I Will Go</em>!” He slapped his thigh and sang a line from the Martin Carthy song.</p>
 <p class="paragraph-style">Nick hushed Phil gently, and said it’d be alright. </p>
 <p class="paragraph-style">Gradually Phil stopped talking, though his leg still rocked constantly. Before long he was silent, with wide eyes darting around the carriage, staring at people who wouldn’t look back. </p>
 <p class="paragraph-style">Nick got them off the train quickly when they arrived in Victoria and headed for Pimlico, and then along the south side of the Thames, towards Parliament and the South Bank.</p>
-<p class="passage-break"><img src="images/circletriangle.png" alt="*" style="width: 100px; height: auto; display: block; margin: 0 auto;"/></p>
-
+<p class="br"><br /></p>
+<p class="paragraph-style"><br /></p>
+<div class="ps3"><img src="images/circletriangle.png" alt="" id="circletriangle-1" style="height:25px;width:75px;" /></div>
+<p class="paragraph-style"><br /></p>
+<p class="paragraph-style"><br /></p>
 <p class="paragraph-style">“It’s about power, man, it’s always been about power.” Nick growled his words, in a concrete corner behind the National Theatre. “They don’t care about you! They just want control!” Phil understood him completely.</p>
 <p class="paragraph-style">“I know, I know… We used to work all the time, and then fucking AI came along… but we’re still fucking slaves.”</p>
-<p class="paragraph-style">“Fuck AI! Fuckit! Fucking clever little toy they’ve brought into being but has it made your lives any better? They made the machines and now they’re your masters, that’s all. Robotic fucking drill instructors sent to manage you down. I’ve seen fucking <em>slaves</em> with better lives than most of you’ve got!” Then he threw himself back and threw his hands in the air: “Of course, <em>some</em> of you are doing ticketty-<em>fucking</em>-boo. Nice fucking lives, but I’m telling you Phil: you leave your little bubble and there are millions of them, no hope of payments, no hope of a job, no hope for meaning and I’m telling you: They are your <em>army</em>. This place is fucked, and we’re gonna bring it down my son.”</p>
+<p class="paragraph-style">“Fuck AI! Fuckit! Fucking clever little toy they’ve brought into being but has it made your lives any better? They made the machines and now they’re your masters, that’s all. Robotic fucking drill instructors sent to manage you down. I’ve seen fucking <em>slaves</em> with better lives than most of you’ve got!” Then he threw himself back and threw his hands in the air: “Of course, <em>some</em> of you are doing ticketty-<em>fucking</em>-boo. Nice fucking lives, but I’m telling you Phil: you leave your little bubble and there are millions of them: no hope of payments, no hope of a job, no hope for meaning and I’m telling you: they are an <em>army</em> waiting to be led. This place is fucked, and we’re gonna bring it down my son.”</p>
 <p class="paragraph-style">Nick was animated and angry, drunk and shouting. In a moment he opened his arms out wide and slowly spun and screamed: “Burn it all!”</p>
-<p class="paragraph-style">He suddenly jumped back and started pacing around and animating his arguments with whirling hands: “And let’s face it, this ain’t fucking new. You got all these new fangled fucking machines but nothing really changes. They’re just turning up the power every time and they’re shit on you again when they can. So you gotta be careful, ‘cause pretty soon there won’t be no way back for ya. Their <em>grip</em> is getting tight,” he squeezed his fist so hard Phil could imagine blood leaking out the sides. “Pretty soon there’ll be no turning back. But I will not fucking have it! I <em>will not</em>.”</p>
-<p class="paragraph-style">“I’ll bring it down,” Phil said, nodding and keen and ready to bite. Lost in Nick’s rage. “I’ll bring it down I swear!”</p>
+<p class="paragraph-style">He suddenly jumped back and started pacing around and animating his arguments with whirling hands: “And let’s face it, this ain’t fucking new. You got all these new fangled fucking machines but nothing really changes. They’re just turning up the power every time and they’ll shit on you again when they can. So you gotta be careful, ‘cause pretty soon there won’t be no way back for ya. Their <em>grip</em> is getting tight,” he squeezed his fist so hard Phil could imagine blood leaking out the sides. “Pretty soon there’ll be no turning back. But I will not fucking have it! I <em>will not</em>.”</p>
+<p class="paragraph-style">“I’ll bring it down,” Phil said, nodding and keen and ready to bite; lost in Nick’s rage. “I’ll bring it down I swear!”</p>
 <p class="paragraph-style">“You got this chance lad,” Nick said, roughly slapping him on the chest. “You’re the one. No’ne fights the system that feeds ‘em. But it’s done you good and proper. You’re fuckin’ <em>homeless</em> now.”</p>
 <p class="paragraph-style">He delivered that last bit hard, and it threw Phil with a burst of something like reality that threatened to bring him down. </p>
 <p class="paragraph-style">Nick didn’t help him avoid it, and confronted him instead: “What? You don’t fink ya homeless? Lost ya family, you got no job, got no friends, got no girl: <em>ya ron ya roan my son</em>. You got noffin’! But stick wiv me and we’ll change it. We’ll change it lad and we’ll bring it down and we’ll burn it down and then we’ll take the ashes and we’ll build it new. I swear we will.”</p>
 <p class="paragraph-style">In a moment of ice-cold clarity Phil asked the old man an obvious question: “Who are you?”</p>
-<p class="paragraph-style">“I’m Old Nick, and I’m ‘ere to ‘elp.” Then he slurred and raised his cupped hand in front of Phil: “I’ll take ya’rart, and I’ll turn it inside-out in song and they’ll feel ashamed and we’ll turn ‘em, and we’ll change ‘em, and we’ll beat ‘em and raise them up again and I swear we’ll change the <em>fuckin’</em> world.” He let that hang, leaning in close enough for Phil to drink the fumes. “You want that boy? You wanna change the world?”</p>
+<p class="paragraph-style">“I’m Old Nick, and I’m ‘ere to ‘elp.” Then he slurred and raised his cupped hand in front of Phil: “I’ll take ya’rart, and I’ll turn it inside-out in song and they’ll feel ashamed and we’ll turn ‘em, and we’ll change ‘em, and we’ll beat ‘em and raise ’em up again and I swear we’ll change the <em>fuckin’</em> world.” He let that hang, leaning in close enough for Phil to drink the fumes. “You want that son? You wanna change the world?”</p>
 <p class="paragraph-style">Phil’s body was reeling and his stomach was churning as wave upon wave of adrenaline was pumped into his guts.</p>
-<p class="paragraph-style">“You wanna teach the world to sing, Philip, my son?” Nick asked with a wicked grin.</p>
+<p class="paragraph-style">“You wanna teach the world to sing, Philip, my boy?” Nick asked with a wicked grin.</p>
 <p class="paragraph-style">“Yes,” Phil replied, knowing that the burning would only ease if he followed.</p>
 <p class="paragraph-style">“Then come wi’ me,” Nick said and led Phil towards the Thames.</p>
-<p class="passage-break"><img src="images/circletriangle.png" alt="*" style="width: 100px; height: auto; display: block; margin: 0 auto;"/></p>
-
+<p class="br"><br /></p>
+<p class="paragraph-style"><br /></p>
+<div class="ps3"><img src="images/circletriangle.png" alt="" id="circletriangle-2" style="height:25px;width:75px;" /></div>
+<p class="paragraph-style"><br /></p>
+<p class="paragraph-style"><br /></p>
 <p class="paragraph-style">Later that evening, they were dancing by the South Bank, with Phil leading them in Graham Hall's back-catalogue. Nick had fashioned a sign that read: <em>Happy and Homeless</em> and people threw tokens onto it. By half ten they had enough for some more whiskey, but Nick took him to buy chips first.</p>
 <p class="paragraph-style">“The food’ll make you tired,” he said. “But you gotta eat,” he added, almost reminding himself. “Make sure you eat. You can't drink that much and not eat.”</p>
 <p class="paragraph-style">Phil ate the chips as they walked down towards London Bridge. </p>
@@ -594,36 +634,55 @@
 <p class="paragraph-style">“I'm gonna help ya Phil. We're gonna help ya.” Nick was developing alcoholic shakes, and looking around himself like someone under threat. “But I gotta find Bill. We need Bill.”</p>
 <p class="paragraph-style">Phil’s body was shutting down.</p>
 <p class="paragraph-style">The last thing Phil saw was Nick, curled into a ball, hugging his knees, rocking and staring into the darkness, mumbling: “Gotta get help. Where the fuck is Bill? I gotta find Bill… or she’ll get him first.”</p>
-<p class="passage-break"><img src="images/circletriangle.png" alt="*" style="width: 100px; height: auto; display: block; margin: 0 auto;"/></p>
-
+<p class="br"><br /></p>
+<p class="paragraph-style"><br /></p>
+<div class="ps3"><img src="images/circletriangle.png" alt="" id="circletriangle-3" style="height:25px;width:75px;" /></div>
+<p class="paragraph-style"><br /></p>
+<p class="paragraph-style"><br /></p>
 <p class="paragraph-style">Earlier that night, another drunk had watched Phil and Nick stumble along the South Bank. </p>
 <p class="paragraph-style">Through bleary eyes he saw them both pass through a puddle left over from the afternoon’s rains, and he smiled at the strangeness of the fact that they left only a single trail of footprints along the banks of the river.</p>
 <p class="paragraph-style"><br /></p>
 <p class="br"><br /></p>
+<p class="paragraph-style"><br /></p>
+<div class="ps3"><img src="images/circletriangle.png" alt="" id="circletriangle-4" style="height:25px;width:75px;" /></div>
 </div>
-<p class="passage-break"><img src="images/circletriangle.png" alt="*" style="width: 100px; height: auto; display: block; margin: 0 auto;"/></p>
+<p class="separator"><br /></p>
 <div class="section">
-<div class="vignette">
+<p class="vignette" id="doc12"></p>
 <p class="names" id="doc12">Alison Grealish</p>
 <p class="paragraph-style"><br /></p>
 <p class="newspaper">While Phil had been playing that evening, he’d been watched by a woman called Alison Grealish. She was in her early sixties and still went to work, five-days-a-week, at a secondary school in Camberwell. </p>
-<p class="newspaper">She’d been a teacher before the crash and believed that education was the surest way to help society. That day, she’d had seven students turn up to her literature class. Ten years previously, class-sizes were topping out at a little over forty. </p>
+<p class="newspaper">She’d been a teacher before the crash and believed that education was the surest way to help society. </p>
+<p class="newspaper">On the day she’d watched Phil, she’d had seven students turn up to her literature class. Ten years previously, class-sizes were topping out at a little over forty. </p>
 <p class="newspaper">For the first few years after the crash, a lot of students still attended lessons, but the younger generation - the post-crash kids - didn’t see the need; there was nothing school could teach them that would help them earn Likes, so what was the point?</p>
-<p class="newspaper">Her seven students that day had been aged between thirteen and sixteen. Some of them could read, though their reading ages - by the metrics of her youth - would have put them on the Special Needs register. She’d read some poetry to them, and then continued with a novel - <em>Flowers for Algernon</em> - but she was losing them. They couldn’t follow it, and didn’t really want to. </p>
-<p class="newspaper">The only kid in class who cared was a thirteen-year-old girl called Isla whose parents had banned the internet from their house. She still read at home, at night, under the duvet, with a torch.</p>
+<p class="newspaper">Her seven students that day had been aged between thirteen and sixteen. Some of them could read, though their reading ages - by the metrics of her youth - would have put them on the Special Needs register. She’d read some poetry to them, and then continued with a novel - <em>Flowers for Algernon</em> - but she knew she was losing them. They couldn’t follow it, and didn’t really want to. </p>
+<p class="newspaper">The only kid in class who cared was a thirteen-year-old girl called Isla whose parents had banned the internet from their house. Isla still read at home, at night, under the duvet, with a torch.</p>
 <p class="newspaper">The new world saddened Alison deeply, and she’d stood and watched Phil for almost an hour and remembered her youth, in the 90s, when live music had been so central to her coming of age.</p>
 <p class="newspaper">She gave him all the tokens she had and then went home and cried, alone, on her sofa.</p>
 <p class="newspaper">Alison Grealish would be dead in a little under three months.</p>
 <p class="newspaper">Isla, however, would survive.</p>
-</div></div>
 
+
+    <!-- INLINE BANNER — end of article -->
+      <a href="the-book.html" class="inline-banner">
+        <div class="inline-banner-inner">
+          <div class="inline-banner-text">
+            <div class="inline-banner-eyebrow">CCS Clearance: Permitted · For Now</div>
+            <div class="inline-banner-headline">Read <em>The Crossroads</em><br>before Pilot shuts it down.</div>
+            <div class="inline-banner-sub">The novel that could get this website banned. Free. While it lasts.</div>
+          </div>
+          <div class="inline-banner-cta">
+            <div class="inline-banner-btn">Free Download →</div>
+            <div class="inline-banner-note">No CCS points required</div>
+          </div>
+        </div>
+      </a>
+
+<p class="vignette" id="doc12"></p>
 <p id="doc13"><br /></p>
 <p class="br"><br /></p>
 <p class="roman-numerals"><br /></p>
-<p class="roman-numerals"><br /></p>
-<p class="roman-numerals"><br /></p>
-<p class="roman-numerals"><br /></p>
-<p class="roman-numerals"><br /></p>
+<p class="roman-numerals">- Chapter 4 -</p>
 <p class="roman-numerals">- She Gets Him First -</p>
 <p class="br"><br /></p>
 <p class="paragraph-style">By the time Phil awoke, under London Bridge and with his arm draped around his guitar, it was past noon and the bustle of London was above him. He sat up and tried to remember what had happened. He remembered meeting Nick and he remembered playing music on the South Bank and getting paid for it, which was nuts because he couldn’t play the guitar - he didn’t even own one.</p>
@@ -645,12 +704,15 @@
 <p class="paragraph-style">Everyone was drinking.</p>
 <p class="paragraph-style">He was in London. </p>
 <p class="paragraph-style">He'd get a pint.</p>
-<p class="passage-break"><img src="images/circletriangle.png" alt="*" style="width: 100px; height: auto; display: block; margin: 0 auto;"/></p>
-
+<p class="br"><br /></p>
+<p class="paragraph-style"><br /></p>
+<div class="ps3"><img src="images/circletriangle.png" alt="" id="circletriangle" style="height:25px;width:75px;" /></div>
+<p class="paragraph-style"><br /></p>
+<p class="paragraph-style"><br /></p>
 <p class="paragraph-style">No-one really liked taking Tokens these days, but without his phone he had no access to the last of his Credits. After an awkward moment at the bar she’d agreed and he made it back outside with his drink. He’d had to concentrate hard throughout the experience and it made it clear to him that something wasn’t right. There was a space in his head that was so silent it burnt. Like an open wound that throbbed with a pain that was almost enlivening but so horrifically real that it hurt.</p>
 <p class="paragraph-style">He remembered thinking suicidal thoughts the night before and wondered if he’d died but couldn’t remember killing himself. He wondered if that was it: he was in purgatory now; the world between worlds… At least he’d made himself a guitarist, he thought with a smile. Then he realised how nuts that thought was and pushed it from his mind. Besides, he didn’t feel dead, he felt more alive than he had for years. He felt the guitar hanging from his shoulders and wondered if he could play it. </p>
 <p class="paragraph-style">If he was dead it didn’t matter. None of it mattered.</p>
-<p class="paragraph-style">He sipped his beer and wondered how hard he could push this dream. There was evidence for it, after all. He sat on the curb and rested the guitar on his knee, closing his eyes and breathing and reminding himself that no-one would notice him as long as he didn’t act weird. He wasn’t out of place.</p>
+<p class="paragraph-style">He sipped his beer and wondered how hard he could push this dream. There was evidence for it, after all. He sat on the curb and rested the guitar on his knee, closing his eyes and breathing and reminding himself that no-one would notice him as long as he didn’t act weird. This wasn’t out of place.</p>
 <p class="paragraph-style">The instrument felt comfortable and as he held it he remembered playing more vividly. He gently stroked the strings, hearing each one ring. Then he did it again and bent his head down so he could play as quietly as possible. He strummed it ever so slightly, causing a perfect ripple of sound that warmed him. Then he moved his left to another position and strummed it again, and again the sound was safe and secure. He continued to wander slowly between chords, before he fell back to plucking individual strings in a way that wasn’t tuneful but was rhythmic and seemed to mirror some part of himself perfectly.</p>
 <p class="paragraph-style">Then a female voice, that seemed far too close, asked: “Are you alright? Do you mind if I join you?”</p>
 <p class="paragraph-style">Phil looked up and lost his breath as he stared straight into the eyes of the most beautiful woman he’d ever seen: pale skin, dark hair, deep eyes and full lips that smiled with a warmth that he wanted to be embraced by. She wore a pink afghan jumper that revealed the shape of a wonderful curve of breast and she sat next to him on the curb with a confidence that didn’t push or pull but simply was.</p>
@@ -659,8 +721,8 @@
 <p class="paragraph-style">Her smile was warm as she said, very clearly: “You’re having a breakdown, Phil. Do you understand what that means?”</p>
 <p class="paragraph-style">Phil was frozen.</p>
 <p class="paragraph-style">“You can’t play the guitar,” she shook her head gently. “You just <em>think</em> you can. It sounds awful.” The insult was delivered with the smoothness of stirred ice-cream.</p>
-<p class="paragraph-style">Phil looked around him and someone laughed, loudly, and Phil was hit with a wash of paranoia. He was breaking down. </p>
-<p class="paragraph-style">“Do you understand?” she asked him, almost with a warning, and his fear tightened. “You’ve been on your own for months. Your father died. And now you’ve finally had the breakdown that’s been inevitable for years.”</p>
+<p class="paragraph-style">Phil looked around him and someone laughed, loudly, and Phil was hit with a wash of paranoia. </p>
+<p class="paragraph-style">“Do you understand?” she asked him, almost with a warning, and his fear tightened. “You’ve been on your own for months. You mistreated your mother, and then your father died. And now you’ve finally had the breakdown that’s been inevitable for years.”</p>
 <p class="paragraph-style">He felt himself spinning, like he was living in the moment before faint but his body wouldn't shut down. The clarity she spoke with brought each obvious conclusion crashing home: Life wasn’t a movie: Nothing unusual happened: He’d had a breakdown, that was all.</p>
 <p class="paragraph-style">She laughed a little and Phil knew she was right. </p>
 <p class="paragraph-style">“You look tired Phil,” she said with a sympathetic smile. </p>
@@ -701,7 +763,7 @@
 <p class="paragraph-style">“I <em>can</em> play guitar…” Phil said, suddenly charging after his instinct to attack, with the relish of an angry teenager. “And I’ll <em>fucking</em> play it!”</p>
 <p class="paragraph-style">“This isn’t real!” She looked shaken now. “You're having a breakdown.” She reached out for him.</p>
 <p class="paragraph-style">He moved away quickly, not wanting to be touched, and stumbled into the road, scrabbling across the floor.</p>
-<p class="paragraph-style">“We’re not real Phil,” she said repeated, but her voice was now almost a phlegmy growl - it was almost hideous.</p>
+<p class="paragraph-style">“We’re not real Phil,” she repeated, but her voice was now almost a phlegmy growl - it was almost hideous.</p>
 <p class="paragraph-style">Phil looked back at her, and felt himself turn to ice as she rose to her feet and moved her arm gracefully through a parked car. Phil panicked and shuffled backwards on his elbows and then rose to his feet to defend himself. In a second she moved across the road and now stood in front of him.</p>
 <p class="paragraph-style">“Get away from me!” He turned to run, but she was in front of him again and he fell back in shock.</p>
 <p class="paragraph-style">“I’ll love you still. But come back home.”</p>
@@ -719,8 +781,11 @@
 <p class="paragraph-style">“You’ll suffer and you’ll fail,” she said, and he felt fingers against his back. “Just like before.”</p>
 <p class="paragraph-style">And Phil snapped and turned, ready to hit her. </p>
 <p class="paragraph-style">A man in a suit ducked, and pushed himself away and Phil heard a shout, and a gasp and he realised that the woman was gone and a small crowd of people were standing around him, some cautious, some concerned, a few laughing.</p>
-<p class="passage-break"><img src="images/circletriangle.png" alt="*" style="width: 100px; height: auto; display: block; margin: 0 auto;"/></p>
-
+<p class="br"><br /></p>
+<p class="paragraph-style"><br /></p>
+<div class="ps3"><img src="images/circletriangle.png" alt="" id="circletriangle-1" style="height:25px;width:75px;" /></div>
+<p class="paragraph-style"><br /></p>
+<p class="paragraph-style"><br /></p>
 <p class="paragraph-style">They formed a neat circle around him. Some kids were making a video on their phones.</p>
 <p class="paragraph-style">“Jesus fucking Christ!” the man in the suit screamed, having backed off so quickly he’d almost fallen. </p>
 <p class="paragraph-style">Phil was in the centre of the circle, panting and looking like he was ready for another attack. The guitar was next to him on the roadway. There were people everywhere, and they were all staring.</p>
@@ -812,12 +877,12 @@
 <p class="paragraph-style"> <em>I’m sick and tired of looking</em></p>
 <p class="paragraph-style indent1"> <em>The truth’s a fuckin’ lie</em></p>
 <p class="paragraph-style"> <em>Here’s something I believe in:</em></p>
-<p class="paragraph-style indent1"> <em>You’re born and then you die</em></p>
+<p class="paragraph-style indent2"> <em>You’re born and then you die</em></p>
 <p class="paragraph-style">He liked this one, and could remember something of how it sounded now. It had a big band sound – like a Springsteen style band – with brass, strings and a huge drum and it punched its way through:</p>
 <p class="paragraph-style"> <em>I’m sick and tired of caring</em></p>
 <p class="paragraph-style indent1"> <em>Of tryin’a make some sense</em></p>
 <p class="paragraph-style"> <em>Life’s so fucking simple:</em></p>
-<p class="paragraph-style indent1"> <em>Just an action and a consequence</em></p>
+<p class="paragraph-style indent2"> <em>Just an action and a consequence</em></p>
 <p class="paragraph-style">The lads started acting like flier boys and singing Phil's praises to the crowd. One of them was trying to show off the video before he realised his viral moment was still happening, and he turned the camera back on Phil.</p>
 <p class="paragraph-style">Phil began shifting seamlessly between tracks while Carl moved off to make a phone call and the cameraman stood stock still, preserving the moment.</p>
 <p class="paragraph-style">Carl wrapped up his call and sat alongside Phil for a while, finishing his beer. </p>
@@ -825,13 +890,25 @@
 <p class="paragraph-style"><br /></p>
 
 
-<p id="doc14"><br /></p>
-<p class="br"><br /></p>
+
+    <!-- INLINE BANNER — end of article -->
+      <a href="the-book.html" class="inline-banner">
+        <div class="inline-banner-inner">
+          <div class="inline-banner-text">
+            <div class="inline-banner-eyebrow">CCS Clearance: Permitted · For Now</div>
+            <div class="inline-banner-headline">Read <em>The Crossroads</em><br>before Pilot shuts it down.</div>
+            <div class="inline-banner-sub">The novel that could get this website banned. Free. While it lasts.</div>
+          </div>
+          <div class="inline-banner-cta">
+            <div class="inline-banner-btn">Free Download →</div>
+            <div class="inline-banner-note">No CCS points required</div>
+          </div>
+        </div>
+      </a>
+
+<p class="vignette" id="doc12"></p>
 <p class="roman-numerals"><br /></p>
-<p class="roman-numerals"><br /></p>
-<p class="roman-numerals"><br /></p>
-<p class="roman-numerals"><br /></p>
-<p class="roman-numerals"><br /></p>
+<p class="roman-numerals">- Chapter 5 -</p>
 <p class="roman-numerals">- The Fisherman’s Arms -</p>
 <p class="br"><br /></p>
 <p class="paragraph-style">The pub they went to was classic London hipster: a great big bar served proper beers while punters relaxed on old mismatched chairs and pews. Across the ceilings air ducts ran like metallic worms in a way that reminded Phil of <em>Dune</em>, a book that had been like a religious text to his dad. Phil closed his eyes and repeated Paul’s mantra, something he’d been taught as a child: <em>I must not fear. Fear is the mind killer. Fear is the little death that brings total obliteration…</em></p>
@@ -850,8 +927,11 @@
 <p class="paragraph-style">“Thanks,” Phil said.</p>
 <p class="paragraph-style">Then Carl added, with a calm grin, as they began crossing the road: “But stop talking to yourself – and if you start shouting at anyone I'll take you in. So…” He wasn’t sure what else to say and ended up just adding: “Ok?”</p>
 <p class="paragraph-style">They walked in silence to the pub.</p>
-<p class="passage-break"><img src="images/circletriangle.png" alt="*" style="width: 100px; height: auto; display: block; margin: 0 auto;"/></p>
-
+<p class="br"><br /></p>
+<p class="paragraph-style"><br /></p>
+<div class="ps3"><img src="images/circletriangle.png" alt="" id="circletriangle" style="height:25px;width:75px;" /></div>
+<p class="paragraph-style"><br /></p>
+<p class="paragraph-style"><br /></p>
 <p class="paragraph-style">Carl introduced Phil to four people who sat around a table, drinking. The guys obviously knew each other well, and at first they spoke amongst themselves, almost ignoring him.</p>
 <p class="paragraph-style">After a moment, Phil heard Carl call him by name: “I was just saying that I found you near London Bridge.” Phil had been staring at the grain in the wood of the table, wondering where the tree that had made it had grown. “You alright?” Carl asked.</p>
 <p class="paragraph-style">“Yeah, I'm fine.” Phil realised he’d said that defensively and apologised. “Sorry.”</p>
@@ -902,7 +982,7 @@
 <p class="paragraph-style">“No, no,” Carl was clear on this. “He’s made him up.” He waved his fingers round his ear as if to remind the group that Phil was batshit. They all went silent. “I mean, have you ever heard of Graham Hall?” Carl asked the group. “Rock and blues. 60s, 70s…? How many albums did he do Phil?”</p>
 <p class="paragraph-style">“I think he did six,” Phil said, remembering telling Carl that earlier, though he wasn’t quite sure why he’d said it. “<em>Broken Seed</em>? <em>The Kissing Tree</em>?”</p>
 <p class="paragraph-style">“Never heard of him,” said Des.</p>
-<p class="paragraph-style">“He was on Wikipedia.” Phil said, then added: “But he got deleted.” Internally even he conceded that, given the current state of his mental health, the fact that he’d once thought he’d seen Graham Hall on Wikipedia wasn’t strong evidence of anything except that his faith in his own evidence was unrealistically high.</p>
+<p class="paragraph-style">“He was on Britopedia.” Phil said, then added: “But he got deleted.” Internally even he conceded that, given the current state of his mental health, the fact that he’d once thought he’d seen Graham Hall on Britopedia wasn’t strong evidence of anything except that his faith in his own evidence was unrealistically high.</p>
 <p class="paragraph-style">“I’m telling you: he made him up,” Carl addressed the group with confidence. “It’s like a fucking… projection or something. Is that fair to say, Phil?” he turned to Phil who had to concede the point:</p>
 <p class="paragraph-style">“I might have made up Graham Hall. Though the old man knew him.”</p>
 <p class="paragraph-style">“What?” The beefcake laughed. “You mean your dad?”</p>
@@ -931,19 +1011,22 @@
 <p class="paragraph-style">Carl could sense the group turn. “Let's get him a drink, and give him ten minutes later on,” he said.</p>
 <p class="paragraph-style">Phil was grateful for his faith.</p>
 <p class="paragraph-style">Des sniffed and scratched his nose and said: “Alright. I mean, what’s the worst that could happen, eh?” </p>
-<p class="passage-break"><img src="images/circletriangle.png" alt="*" style="width: 100px; height: auto; display: block; margin: 0 auto;"/></p>
-
+<p class="br"><br /></p>
+<p class="paragraph-style"><br /></p>
+<div class="ps3"><img src="images/circletriangle.png" alt="" id="circletriangle-1" style="height:25px;width:75px;" /></div>
+<p class="paragraph-style"><br /></p>
+<p class="paragraph-style"><br /></p>
 <p class="paragraph-style">They left for the gig not long after, which was at another pub not far from the first. <em>The Fisherman’s Arms</em> was set up as a venue, but you got the sense it wasn’t always that way. It was a big space with a stage at one end where the band went away to set up. Either side had huge patio doors that had been opened up to the warm summer breeze, and the crowd spilled out onto the street where there was a square of expensive houses with a green between them. They set Phil to rest on a plastic school chair near to the mixing booth; he felt like an awkward teenager at a wedding.</p>
 <p class="paragraph-style">Phil had never been to a place like this before. Carl was right when he said that these people were Coined. They weren’t living off their CCS, and they’d never seen a token in their lives. For a moment he remembered his time in the garden, staring at the robot through the window, and remembered who these people were: the rich, the elite. He hated them. Though, at the time, sitting on that stool, he just remembered the fact but didn’t feel it.</p>
 <p class="paragraph-style">He breathed deeply and closed his eyes to calm himself down, and let a Hall lyric echo around his head: </p>
 <p class="paragraph-style"><em>You know I can see you</em></p>
 <p class="paragraph-style"><em>You know what I think.</em></p>
 <p class="paragraph-style indent1"> <em>You know I can smell you</em></p>
-<p class="paragraph-style indent1"> <em>Your money stinks.</em></p>
-<p class="paragraph-style indent2"> <em>You think you can stand off</em></p>
-<p class="paragraph-style indent2"> <em>And stamp my soul,</em></p>
-<p class="paragraph-style indent3"> <em>But I’m gonna start singing</em></p>
-<p class="paragraph-style indent3"> <em>And then heads will roll.</em></p>
+<p class="paragraph-style"> <em>Your money stinks.</em></p>
+<p class="paragraph-style indent1"> <em>You think you can stand off</em></p>
+<p class="paragraph-style"> <em>And stamp my soul,</em></p>
+<p class="paragraph-style indent1"> <em>But I’m gonna start singing</em></p>
+<p class="paragraph-style indent2"> <em>And then heads will roll.</em></p>
 <p class="paragraph-style">He opened his eyes again. Maybe he wouldn’t sing that one tonight.</p>
 <p class="paragraph-style">But he would sing. To hell with it. He looked around at them - the rich fuckers he hated so much - and they weren’t all that different to him. They had a confidence he’d never felt, a sense of entitlement he’d never experienced, but they weren’t better than him. And even if he was shit, it was all they deserved.</p>
 <p class="paragraph-style">He breathed again and closed his eyes and promised himself that this would be the last stand. If he was called back - if this euphoria was lost again - he would end it. So his one job, as he saw it now, was to keep this alive as long as he could and not care a shit about the consequences. He breathed deeply and calmly and knew that he would do anything to preserve this feeling. He felt his calm settle around him, and felt it straighten his spine, and he only opened his eyes again when he realised that Jonno was speaking at the mic.</p>
@@ -990,18 +1073,19 @@
 <p class="paragraph-style">“G’won Philly!” the man in the white t-shirt shouted, and Phil growled through it and played a single chord, louder and louder, until he skipped it, changed it and found the moment again. </p>
 <p class="paragraph-style">Then he leant slowly into the mic and spoke lyrics that only slowly morphed into song:</p>
 <p class="paragraph-style"><em>I met a man once in the wilderness</em></p>
-<p class="paragraph-style indent1"><em>Who said life don’t take you serious</em></p>
-<p class="paragraph-style indent2"> <em>He asked if I wanted to go insane</em></p>
-<p class="paragraph-style indent3"> <em>I said nothing ventured, nothing gained</em></p>
+<p class="paragraph-style"><em>Who said life don’t take you serious</em></p>
+<p class="paragraph-style"> <em>He asked if I wanted to go insane</em></p>
+<p class="paragraph-style"> <em>I said nothing ventured, nothing gained</em></p>
 <p class="paragraph-style">And so it was that the homeless madman announced himself to the world…</p>
-<p class="passage-break"><img src="images/circletriangle.png" alt="*" style="width: 100px; height: auto; display: block; margin: 0 auto;"/></p>
+<p class="paragraph-style"><br /></p>
+<p class="separator"><br /></p>
 <div class="section">
-<div class="vignette">
+<p class="vignette" id="doc12"></p>
 <p class="names" id="doc15">Michael Chapman</p>
 <p class="paragraph-style"><br /></p>
 <p class="newspaper">One of the people listening to Phil that evening was Michael Chapman. He wasn’t that fussed by the performance but the girl he was with had loved it, so he’d made an effort to sound like he cared.</p>
-<p class="newspaper">Michael was 43 and had spent most of his life making money. His father had been rich before the crash and Michael had been smart enough to start buying Coin in the late ’20s. As a result, while most of Britain spent the next decade chasing Credits, Michael invested in international trade - for which Coin was the only currency accepted - and had watched his wealth multiply until numbers stopped meaning anything anymore. </p>
-<p class="newspaper">Alongside trading, he also owned property. Like a lot of people who had Coins, he invested heavily in houses once trade in land became an Sats-only affair. No amount of Credit would buy you a house anymore. As a result, his business owned something like fifteen thousand homes, mostly in the Midlands, which he rented out for Credit. This was used to pay the staff who ran the businesses. The rest was transferred into Sats and Coin which he kept. He knew very little - and cared even less - about his business but he had the wealth to own it and that was enough.</p>
+<p class="newspaper">Michael was 43 and had spent most of his life making money. His father had been rich before the crash and Michael had been smart enough to start buying Coin in the late ’20s. As a result, while most of Britain spent the next half-decade chasing Credits, Michael invested in international trade - for which Coin was the only currency accepted - and had watched his wealth multiply until numbers stopped meaning anything anymore. </p>
+<p class="newspaper">Alongside trading, he also owned property. Like a lot of people who had Coins, he invested heavily in houses once trade in land became an Sats-only affair. No amount of Credit would buy you a house anymore. As a result, his business owned something like fifteen thousand homes, mostly in the Midlands, which he rented out, mostly for Credit. This was used to pay the staff who ran the businesses. The rest was transferred into Sats and Coin which he kept and then traded internationally. He knew very little - and cared even less - about his business but he had the wealth he needed to own it and that was enough.</p>
 <p class="newspaper">He’d sent the band twenty Sats for the performance, which impressed the girl enough for her to sleep with him later that night - though it also resulted in her charging twice her normal rate. </p>
 <p class="newspaper">Michael would also die in a little less than three months, though not for the same reason as Alison and Anthony. </p>
 <p class="newspaper">Michael would watch it all unfold, perfectly healthy, perfectly safe, and then, feeling more alone than he could have ever imagined, he would take his father’s pistol from the locked drawer in his study and put the barrel in his mouth.</p>
