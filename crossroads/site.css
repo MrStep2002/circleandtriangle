@@ -273,7 +273,7 @@ footer { background: var(--text); color: #aaa; padding: 20px; margin-top: 40px; 
   .lead-sec-story { padding-right: 0; padding-left: 0; border-right: none; border-bottom: 1px solid var(--rule); padding-bottom: 16px; margin-bottom: 16px; }
   .lead-sec-story:last-child { padding-left: 0; }
   .lead-slideshow { width: 100%; }
-  .slide-item { width: 100vw; }
+  .slide-item { width: 100%; }
   .three-col { grid-template-columns: 1fr; }
   .col-story { border-right: none; border-bottom: 1px solid var(--rule); }
   .ccs-pill { display: none; }
