@@ -285,11 +285,15 @@ function loadGallery() {
   const shuffled = allImages.sort(() => Math.random() - 0.5).slice(0, 3);
   const gallery = document.getElementById('random-gallery');
   gallery.innerHTML = '';
+  const isMobile = window.innerWidth <= 960;
+  const imgStyle = isMobile
+    ? 'width:100%; aspect-ratio:1/1; object-fit:contain; display:block; margin-bottom:10px; background:#000;'
+    : 'width:100%; height:400px; object-fit:cover; display:block; margin-bottom:10px;';
   shuffled.forEach((img, i) => {
     const padding = i === 0 ? 'padding: 20px 20px 20px 0' : i === 1 ? 'padding: 20px' : 'padding: 20px 0 20px 20px';
     gallery.innerHTML += `
       <div class="col-story" style="${padding}">
-        <img src="${img.thumb}" style="width:100%; height:400px; object-fit:cover; display:block; margin-bottom:10px;">
+        <img src="${img.thumb}" style="${imgStyle}">
         <span class="tag tag-fiction">${img.label}</span>
       </div>`;
   });

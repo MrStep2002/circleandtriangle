@@ -127,12 +127,19 @@ a { color: inherit; text-decoration: none; }
 }
 
 @media (max-width: 960px) {
+  .download-grid {
+    grid-template-columns: 1fr;
+  }
   .section-header {
     flex-wrap: wrap;
     gap: 8px;
   }
   .section-line {
     display: none;
+  }
+  #random-gallery .col-story img {
+    aspect-ratio: 1/1 !important;
+    height: auto;
   }
 }
 
