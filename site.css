@@ -136,7 +136,7 @@ a { color: inherit; text-decoration: none; }
   }
   .section-line {
     display: none;
-  }
+  } 
   #random-gallery .col-story img {
     aspect-ratio: 1/1 !important;
     height: auto;
