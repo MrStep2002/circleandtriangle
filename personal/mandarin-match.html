@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mandarin Match</title>
+
+<!-- ============================================================
+     MANDARIN MATCH — a tile-matching game
+     ------------------------------------------------------------
+     HOW TO ADD OR EDIT WORDS:
+     Edit the WORDS list just below. Each entry looks like:
+
+        { pinyin: "yī", english: "one" },
+
+     Add as many as you like (keep the comma after each entry).
+     Every game randomly picks 10 of them, so a longer list
+     means more variety. That's the only part you need to touch.
+     ============================================================ -->
+
+<script>
+const WORDS = [
+  { pinyin: "yī",  english: "one"   },
+  { pinyin: "èr",  english: "two"   },
+  { pinyin: "sān", english: "three" },
+  { pinyin: "sì",  english: "four"  },
+  { pinyin: "wǔ",  english: "five"  },
+  { pinyin: "liù", english: "six"   },
+  { pinyin: "qī",  english: "seven" },
+  { pinyin: "bā",  english: "eight" },
+  { pinyin: "jiǔ", english: "nine"  },
+  { pinyin: "shí", english: "ten"   },
+];
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --felt: #17453a;
+    --tile-face: #f7f2e4;
+    --tile-side: #cfe3b8;
+    --tile-shadow: rgba(0, 0, 0, 0.3);
+    --ink: #232019;
+    --pinyin-red: #a4232b;
+    --gold: #d9a441;
+    --bad: #b03636;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+      radial-gradient(ellipse at 50% 15%, rgba(255,255,255,0.06), transparent 60%),
+      var(--felt);
+    font-family: "Nunito", sans-serif;
+    color: var(--tile-face);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 14px 12px 32px;
+  }
+
+  header { text-align: center; }
+
+  h1 {
+    font-family: "Ma Shan Zheng", cursive;
+    font-weight: 400;
+    font-size: clamp(1.6rem, 5vw, 2.2rem);
+    margin: 0;
+    color: var(--gold);
+    letter-spacing: 0.04em;
+  }
+
+  .hud {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    margin: 10px 0 14px;
+    font-size: 0.85rem;
+  }
+
+  .hud .stat strong { color: var(--gold); font-weight: 800; }
+
+  button.action {
+    font-family: inherit;
+    font-weight: 800;
+    font-size: 0.85rem;
+    color: var(--ink);
+    background: var(--gold);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+    box-shadow: 0 3px 0 #a8792a;
+    transition: transform 0.08s ease, box-shadow 0.08s ease;
+  }
+  button.action:hover { transform: translateY(-1px); }
+  button.action:active { transform: translateY(2px); box-shadow: 0 1px 0 #a8792a; }
+  button.action:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+
+  /* ---------- Study view (correctly matched pairs) ---------- */
+
+  .study {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .study[hidden] { display: none; }
+
+  .study .hint { font-size: 0.85rem; opacity: 0.85; margin: 0 0 4px; text-align: center; }
+
+  .pair {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .pair .chip { cursor: default; }
+  .pair .dash { color: var(--gold); font-weight: 800; }
+
+  .study button.action { margin-top: 12px; }
+
+  /* ---------- Tiles / chips ---------- */
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--tile-face);
+    color: var(--ink);
+    border: none;
+    border-radius: 7px;
+    padding: 6px 12px;
+    font-family: "Nunito", sans-serif;
+    font-size: 0.95rem;
+    font-weight: 800;
+    box-shadow:
+      0 3px 0 var(--tile-side),
+      0 5px 7px var(--tile-shadow);
+    transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.3s ease;
+  }
+
+  .chip.pinyin { color: var(--pinyin-red); }
+
+  /* ---------- Game board ---------- */
+
+  .board {
+    display: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 9px;
+    width: 100%;
+    max-width: 420px;
+  }
+  .board.show { display: flex; }
+
+  .board .chip { cursor: pointer; }
+  .board .chip:hover:not(:disabled) { transform: translateY(-2px); }
+  .board .chip:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+  .chip.selected {
+    transform: translateY(-2px);
+    box-shadow:
+      0 3px 0 var(--gold),
+      0 6px 8px var(--tile-shadow),
+      0 0 0 2px var(--gold);
+  }
+
+  .chip.matched {
+    opacity: 0;
+    transform: scale(0.6) rotate(6deg);
+    pointer-events: none;
+  }
+
+  .chip.wrong {
+    animation: shake 0.35s ease;
+    box-shadow: 0 3px 0 var(--bad), 0 5px 7px var(--tile-shadow), 0 0 0 2px var(--bad);
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-3px); }
+  }
+
+  .win {
+    display: none;
+    text-align: center;
+    margin-top: 20px;
+    animation: pop 0.4s ease;
+  }
+  .win.show { display: block; }
+  .win .big {
+    font-family: "Ma Shan Zheng", cursive;
+    font-size: 2rem;
+    color: var(--gold);
+    margin: 0;
+  }
+  .win p { margin: 4px 0 0; font-size: 0.9rem; }
+
+  @keyframes pop {
+    from { transform: scale(0.7); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>配对 · Mandarin Match</h1>
+</header>
+
+<div class="hud">
+  <span class="stat" id="score" hidden>Matched: <strong id="matched">0</strong>/<strong id="total">10</strong></span>
+  <span class="stat" id="tries" hidden>Attempts: <strong id="attempts">0</strong></span>
+  <button class="action" id="newGame" hidden>New game</button>
+</div>
+
+<!-- Study view: the pairs shown correctly matched before play -->
+<div class="study" id="study">
+  <p class="hint">Here are this round's pairs. When you're ready, start the game and they'll be muddled up.</p>
+  <div id="pairList"></div>
+  <button class="action" id="startGame">I know these — start</button>
+</div>
+
+<div class="board" id="board" aria-label="Matching board"></div>
+
+<div class="win" id="win">
+  <p class="big">好极了！</p>
+  <p>hǎo jí le — Excellent! You matched every pair.</p>
+</div>
+
+<script>
+(function () {
+  const PAIRS_PER_GAME = 10;
+
+  const board = document.getElementById("board");
+  const study = document.getElementById("study");
+  const pairList = document.getElementById("pairList");
+  const matchedEl = document.getElementById("matched");
+  const attemptsEl = document.getElementById("attempts");
+  const totalEl = document.getElementById("total");
+  const scoreEl = document.getElementById("score");
+  const triesEl = document.getElementById("tries");
+  const winEl = document.getElementById("win");
+  const newGameBtn = document.getElementById("newGame");
+  const startBtn = document.getElementById("startGame");
+
+  let picked = [];
+  let selected = null;
+  let locked = false;
+  let matched = 0;
+  let attempts = 0;
+
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function makeChip(text, kind, pairId, clickable) {
+    const chip = document.createElement(clickable ? "button" : "span");
+    chip.className = "chip " + kind;
+    chip.textContent = text;
+    if (clickable) {
+      chip.type = "button";
+      chip.dataset.pair = pairId;
+      chip.dataset.kind = kind;
+      chip.addEventListener("click", () => onChipClick(chip));
+    }
+    return chip;
+  }
+
+  function onChipClick(chip) {
+    if (locked || chip.classList.contains("matched")) return;
+
+    if (chip === selected) {
+      chip.classList.remove("selected");
+      selected = null;
+      return;
+    }
+
+    if (!selected) {
+      chip.classList.add("selected");
+      selected = chip;
+      return;
+    }
+
+    if (chip.dataset.kind === selected.dataset.kind) {
+      selected.classList.remove("selected");
+      chip.classList.add("selected");
+      selected = chip;
+      return;
+    }
+
+    attempts++;
+    attemptsEl.textContent = attempts;
+
+    if (chip.dataset.pair === selected.dataset.pair) {
+      selected.classList.remove("selected");
+      selected.classList.add("matched");
+      chip.classList.add("matched");
+      selected = null;
+      matched++;
+      matchedEl.textContent = matched;
+      if (matched === picked.length) winEl.classList.add("show");
+    } else {
+      locked = true;
+      const first = selected;
+      first.classList.remove("selected");
+      first.classList.add("wrong");
+      chip.classList.add("wrong");
+      setTimeout(() => {
+        first.classList.remove("wrong");
+        chip.classList.remove("wrong");
+        selected = null;
+        locked = false;
+      }, 400);
+    }
+  }
+
+  // Phase 1: pick words and show them correctly matched
+  function newRound() {
+    picked = shuffle(WORDS).slice(0, Math.min(PAIRS_PER_GAME, WORDS.length));
+
+    pairList.innerHTML = "";
+    picked.forEach(word => {
+      const row = document.createElement("div");
+      row.className = "pair";
+      row.appendChild(makeChip(word.pinyin, "pinyin", null, false));
+      const dash = document.createElement("span");
+      dash.className = "dash";
+      dash.textContent = "—";
+      row.appendChild(dash);
+      row.appendChild(makeChip(word.english, "english", null, false));
+      pairList.appendChild(row);
+    });
+
+    study.hidden = false;
+    board.classList.remove("show");
+    winEl.classList.remove("show");
+    scoreEl.hidden = true;
+    triesEl.hidden = true;
+    newGameBtn.hidden = true;
+  }
+
+  // Phase 2: muddle the chips and play
+  function startGame() {
+    board.innerHTML = "";
+    selected = null;
+    locked = false;
+    matched = 0;
+    attempts = 0;
+    matchedEl.textContent = "0";
+    attemptsEl.textContent = "0";
+    totalEl.textContent = picked.length;
+
+    const chips = [];
+    picked.forEach((word, i) => {
+      chips.push(makeChip(word.pinyin, "pinyin", i, true));
+      chips.push(makeChip(word.english, "english", i, true));
+    });
+    shuffle(chips).forEach(c => board.appendChild(c));
+
+    study.hidden = true;
+    board.classList.add("show");
+    scoreEl.hidden = false;
+    triesEl.hidden = false;
+    newGameBtn.hidden = false;
+  }
+
+  startBtn.addEventListener("click", startGame);
+  newGameBtn.addEventListener("click", newRound);
+  newRound();
+})();
+</script>
+
+</body>
+</html>
