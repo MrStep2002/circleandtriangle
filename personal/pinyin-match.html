@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pīnyīn Match — Mandarin Vocabulary Game</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --celadon: #EAF0E6;      /* pale jade ceramic background */
+    --ink: #26312A;          /* green-black ink */
+    --jade: #3E7C59;         /* correct / primary */
+    --jade-deep: #2C5C42;
+    --cinnabar: #C0392B;     /* mistakes, sparingly */
+    --gold: #C9A227;         /* stars & highlights */
+    --card: #FFFFFF;
+    --line: #CBD8C6;
+    --radius: 14px;
+    --shadow: 0 2px 6px rgba(38, 49, 42, 0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: 'Nunito', system-ui, sans-serif;
+    background: var(--celadon);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 560px;
+    padding: 20px 16px 48px;
+  }
+
+  /* ---------- Header ---------- */
+  header {
+    text-align: center;
+    padding: 12px 0 20px;
+  }
+  .logo {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 2rem;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .logo .tone {
+    color: var(--jade);
+  }
+  .tagline {
+    font-size: 0.95rem;
+    color: #5C6B5E;
+    margin-top: 2px;
+  }
+
+  /* ---------- Screens ---------- */
+  .screen { display: none; }
+  .screen.active { display: block; animation: rise 0.35s ease both; }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  h2 {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.35rem;
+    margin-bottom: 4px;
+  }
+  .hint {
+    color: #5C6B5E;
+    font-size: 0.95rem;
+    margin-bottom: 18px;
+  }
+
+  /* ---------- Topic menu ---------- */
+  .topics { display: grid; gap: 12px; }
+  .topic-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    background: var(--card);
+    border: 2px solid transparent;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--ink);
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.12s ease, border-color 0.12s ease;
+  }
+  .topic-btn:hover, .topic-btn:focus-visible { border-color: var(--jade); transform: translateY(-2px); }
+  .topic-btn:active { transform: translateY(0); }
+  .topic-emoji {
+    font-size: 1.6rem;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    background: var(--celadon);
+    border-radius: 12px;
+  }
+  .topic-name {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+  .topic-sub { font-size: 0.85rem; color: #5C6B5E; }
+  .topic-best {
+    margin-left: auto;
+    font-size: 0.85rem;
+    color: var(--gold);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  /* ---------- Study screen ---------- */
+  .study-list {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .study-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    padding: 13px 16px;
+  }
+  .study-row + .study-row { border-top: 1px solid var(--line); }
+  .study-pinyin {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--jade-deep);
+  }
+  .study-english { color: var(--ink); text-align: right; }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: block;
+    width: 100%;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 15px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    transition: transform 0.12s ease, background 0.12s ease;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--jade); color: #fff; }
+  .btn-primary:hover, .btn-primary:focus-visible { background: var(--jade-deep); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--jade-deep);
+    border: 2px solid var(--jade);
+    margin-top: 10px;
+  }
+  .btn-ghost:hover, .btn-ghost:focus-visible { background: rgba(62, 124, 89, 0.08); }
+  .btn:focus-visible, .topic-btn:focus-visible, .tile:focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 2px;
+  }
+
+  /* ---------- Match screen ---------- */
+  .match-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    font-weight: 700;
+  }
+  .match-status .mistakes { color: var(--cinnabar); }
+  .match-status .matched { color: var(--jade-deep); }
+
+  .board {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .col { display: grid; gap: 10px; align-content: start; }
+
+  .tile {
+    width: 100%;
+    min-height: 52px;
+    padding: 10px 8px;
+    border-radius: 12px;
+    border: 2px solid var(--line);
+    background: var(--card);
+    box-shadow: var(--shadow);
+    font-family: inherit;
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+    transition: border-color 0.12s ease, background 0.12s ease, opacity 0.3s ease, transform 0.12s ease;
+    word-break: break-word;
+  }
+  .tile.pinyin {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--jade-deep);
+  }
+  .tile:hover { border-color: var(--jade); }
+  .tile.selected {
+    border-color: var(--jade);
+    background: #E3EFE7;
+    transform: scale(1.03);
+  }
+  .tile.matched {
+    border-color: var(--jade);
+    background: var(--jade);
+    color: #fff;
+    cursor: default;
+    opacity: 0.55;
+    transform: none;
+  }
+  .tile.wrong { animation: shake 0.4s ease; border-color: var(--cinnabar); }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+  }
+
+  /* ---------- Results ---------- */
+  .results-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px 20px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .results-stars { font-size: 2rem; letter-spacing: 6px; margin-bottom: 8px; }
+  .results-title {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    margin-bottom: 6px;
+  }
+  .results-detail { color: #5C6B5E; }
+
+  footer {
+    margin-top: 28px;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #7A8A7C;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">P<span class="tone">ī</span>ny<span class="tone">ī</span>n Match</div>
+    <div class="tagline">Learn Mandarin words, ten at a time</div>
+  </header>
+
+  <!-- ===== Menu screen ===== -->
+  <section id="screen-menu" class="screen active" aria-label="Choose a topic">
+    <h2>Pick a topic</h2>
+    <p class="hint">Study ten words, then match the pinyin to the English.</p>
+    <div class="topics" id="topic-list"></div>
+  </section>
+
+  <!-- ===== Study screen ===== -->
+  <section id="screen-study" class="screen" aria-label="Study the words">
+    <h2 id="study-title"></h2>
+    <p class="hint">Take your time — these are the pairs you'll be matching.</p>
+    <div class="study-list" id="study-list"></div>
+    <button class="btn btn-primary" id="btn-start-match">Start matching</button>
+    <button class="btn btn-ghost" id="btn-study-back">Back to topics</button>
+  </section>
+
+  <!-- ===== Match screen ===== -->
+  <section id="screen-match" class="screen" aria-label="Match the words">
+    <div class="match-status">
+      <span class="matched" id="match-progress">0 / 10 matched</span>
+      <span class="mistakes" id="match-mistakes">0 mistakes</span>
+    </div>
+    <div class="board">
+      <div class="col" id="col-pinyin"></div>
+      <div class="col" id="col-english"></div>
+    </div>
+    <button class="btn btn-ghost" id="btn-match-quit">Give up &amp; study again</button>
+  </section>
+
+  <!-- ===== Results screen ===== -->
+  <section id="screen-results" class="screen" aria-label="Results">
+    <div class="results-card">
+      <div class="results-stars" id="results-stars"></div>
+      <div class="results-title" id="results-title"></div>
+      <div class="results-detail" id="results-detail"></div>
+    </div>
+    <button class="btn btn-primary" id="btn-replay">Play this topic again</button>
+    <button class="btn btn-ghost" id="btn-menu">Back to topics</button>
+  </section>
+
+  <footer>Made for learning — pinyin only, no characters required.</footer>
+</div>
+
+<script>
+  // ---------- Vocabulary ----------
+  const TOPICS = [
+    {
+      id: "numbers", name: "Numbers", emoji: "🔢", sub: "One to ten",
+      words: [
+        ["yī", "one"], ["èr", "two"], ["sān", "three"], ["sì", "four"],
+        ["wǔ", "five"], ["liù", "six"], ["qī", "seven"], ["bā", "eight"],
+        ["jiǔ", "nine"], ["shí", "ten"]
+      ]
+    },
+    {
+      id: "adjectives", name: "Basic adjectives", emoji: "✨", sub: "Big, small, hot, cold…",
+      words: [
+        ["dà", "big"], ["xiǎo", "small"], ["hǎo", "good"], ["rè", "hot"],
+        ["lěng", "cold"], ["duō", "many"], ["kuài", "fast"], ["màn", "slow"],
+        ["xīn", "new"], ["lèi", "tired"]
+      ]
+    },
+    {
+      id: "verbs", name: "Basic verbs", emoji: "🏃", sub: "Eat, drink, go, want…",
+      words: [
+        ["chī", "to eat"], ["hē", "to drink"], ["qù", "to go"], ["lái", "to come"],
+        ["yào", "to want"], ["yǒu", "to have"], ["kàn", "to look / see"],
+        ["shuō", "to speak"], ["mǎi", "to buy"], ["ài", "to love"]
+      ]
+    },
+    {
+      id: "food", name: "Food & drink", emoji: "🍜", sub: "Rice, tea, noodles…",
+      words: [
+        ["mǐfàn", "rice"], ["chá", "tea"], ["shuǐ", "water"], ["miàntiáo", "noodles"],
+        ["kāfēi", "coffee"], ["píjiǔ", "beer"], ["jī", "chicken"], ["yú", "fish"],
+        ["niúnǎi", "milk"], ["píngguǒ", "apple"]
+      ]
+    },
+    {
+      id: "greetings", name: "Greetings & basics", emoji: "👋", sub: "Hello, thank you, sorry…",
+      words: [
+        ["nǐ hǎo", "hello"], ["xièxie", "thank you"], ["zàijiàn", "goodbye"],
+        ["duìbuqǐ", "sorry"], ["qǐng", "please"], ["zǎoshang hǎo", "good morning"],
+        ["wǎn'ān", "good night"], ["bù kèqi", "you're welcome"],
+        ["hǎo de", "OK / sure"], ["méi guānxi", "no problem"]
+      ]
+    }
+  ];
+
+  // ---------- State ----------
+  let currentTopic = null;
+  let selectedPinyin = null;
+  let selectedEnglish = null;
+  let matchedCount = 0;
+  let mistakes = 0;
+  const bestScores = {}; // topicId -> fewest mistakes (session only)
+
+  // ---------- Helpers ----------
+  const $ = (id) => document.getElementById(id);
+
+  function show(screenId) {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    $(screenId).classList.add("active");
+    window.scrollTo({ top: 0 });
+  }
+
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  // ---------- Menu ----------
+  function renderMenu() {
+    const list = $("topic-list");
+    list.innerHTML = "";
+    TOPICS.forEach(topic => {
+      const btn = document.createElement("button");
+      btn.className = "topic-btn";
+      btn.innerHTML =
+        '<span class="topic-emoji">' + topic.emoji + '</span>' +
+        '<span><span class="topic-name">' + topic.name + '</span><br>' +
+        '<span class="topic-sub">' + topic.sub + '</span></span>' +
+        (bestScores[topic.id] !== undefined
+          ? '<span class="topic-best">★ best: ' + bestScores[topic.id] + ' mistakes</span>'
+          : '');
+      btn.addEventListener("click", () => openStudy(topic));
+      list.appendChild(btn);
+    });
+  }
+
+  // ---------- Study ----------
+  function openStudy(topic) {
+    currentTopic = topic;
+    $("study-title").textContent = topic.emoji + " " + topic.name;
+    const list = $("study-list");
+    list.innerHTML = "";
+    topic.words.forEach(([pinyin, english]) => {
+      const row = document.createElement("div");
+      row.className = "study-row";
+      row.innerHTML =
+        '<span class="study-pinyin">' + pinyin + '</span>' +
+        '<span class="study-english">' + english + '</span>';
+      list.appendChild(row);
+    });
+    show("screen-study");
+  }
+
+  // ---------- Match ----------
+  function startMatch() {
+    matchedCount = 0;
+    mistakes = 0;
+    selectedPinyin = null;
+    selectedEnglish = null;
+    updateStatus();
+
+    const colP = $("col-pinyin");
+    const colE = $("col-english");
+    colP.innerHTML = "";
+    colE.innerHTML = "";
+
+    shuffle(currentTopic.words).forEach(([pinyin]) => {
+      colP.appendChild(makeTile(pinyin, "pinyin"));
+    });
+    shuffle(currentTopic.words).forEach(([, english]) => {
+      colE.appendChild(makeTile(english, "english"));
+    });
+
+    show("screen-match");
+  }
+
+  function makeTile(text, kind) {
+    const t = document.createElement("button");
+    t.className = "tile " + kind;
+    t.textContent = text;
+    t.dataset.kind = kind;
+    t.dataset.value = text;
+    t.addEventListener("click", () => selectTile(t));
+    return t;
+  }
+
+  function selectTile(tile) {
+    if (tile.classList.contains("matched")) return;
+
+    const kind = tile.dataset.kind;
+    const prev = kind === "pinyin" ? selectedPinyin : selectedEnglish;
+
+    // Tapping the same tile again deselects it
+    if (prev === tile) {
+      tile.classList.remove("selected");
+      if (kind === "pinyin") selectedPinyin = null; else selectedEnglish = null;
+      return;
+    }
+    // Switching selection within the same column
+    if (prev) prev.classList.remove("selected");
+    tile.classList.add("selected");
+    if (kind === "pinyin") selectedPinyin = tile; else selectedEnglish = tile;
+
+    if (selectedPinyin && selectedEnglish) checkPair();
+  }
+
+  function checkPair() {
+    const p = selectedPinyin, e = selectedEnglish;
+    const isMatch = currentTopic.words.some(
+      ([pinyin, english]) => pinyin === p.dataset.value && english === e.dataset.value
+    );
+
+    if (isMatch) {
+      [p, e].forEach(t => {
+        t.classList.remove("selected");
+        t.classList.add("matched");
+        t.textContent = "✓ " + t.dataset.value;
+      });
+      matchedCount++;
+      updateStatus();
+      selectedPinyin = null;
+      selectedEnglish = null;
+      if (matchedCount === currentTopic.words.length) {
+        setTimeout(showResults, 500);
+      }
+    } else {
+      mistakes++;
+      updateStatus();
+      [p, e].forEach(t => {
+        t.classList.remove("selected");
+        t.classList.add("wrong");
+      });
+      setTimeout(() => [p, e].forEach(t => t.classList.remove("wrong")), 450);
+      selectedPinyin = null;
+      selectedEnglish = null;
+    }
+  }
+
+  function updateStatus() {
+    $("match-progress").textContent = matchedCount + " / " + currentTopic.words.length + " matched";
+    $("match-mistakes").textContent = mistakes + (mistakes === 1 ? " mistake" : " mistakes");
+  }
+
+  // ---------- Results ----------
+  function showResults() {
+    const prevBest = bestScores[currentTopic.id];
+    if (prevBest === undefined || mistakes < prevBest) bestScores[currentTopic.id] = mistakes;
+
+    let stars, title;
+    if (mistakes === 0)      { stars = "⭐⭐⭐"; title = "Perfect! Wánměi!"; }
+    else if (mistakes <= 3)  { stars = "⭐⭐";   title = "Nice work! Hěn hǎo!"; }
+    else                     { stars = "⭐";     title = "You made it — jiāyóu!"; }
+
+    $("results-stars").textContent = stars;
+    $("results-title").textContent = title;
+    $("results-detail").textContent =
+      "All 10 matched with " + mistakes + (mistakes === 1 ? " mistake" : " mistakes") +
+      (bestScores[currentTopic.id] === mistakes && prevBest !== undefined && mistakes < prevBest
+        ? " — a new best!"
+        : ".");
+    renderMenu(); // refresh best scores on the menu
+    show("screen-results");
+  }
+
+  // ---------- Wire up ----------
+  $("btn-start-match").addEventListener("click", startMatch);
+  $("btn-study-back").addEventListener("click", () => show("screen-menu"));
+  $("btn-match-quit").addEventListener("click", () => openStudy(currentTopic));
+  $("btn-replay").addEventListener("click", () => openStudy(currentTopic));
+  $("btn-menu").addEventListener("click", () => show("screen-menu"));
+
+  renderMenu();
+</script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Language Games</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --celadon: #EAF0E6;   /* pale jade background */
+    --ink: #26312A;       /* green-black text */
+    --jade: #3E7C59;
+    --jade-deep: #2C5C42;
+    --gold: #C9A227;
+    --card: #FFFFFF;
+    --radius: 14px;
+    --shadow: 0 2px 6px rgba(38, 49, 42, 0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', system-ui, sans-serif;
+    background: var(--celadon);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .page {
+    width: 100%;
+    max-width: 560px;
+    padding: 32px 16px 48px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  h1 {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 2rem;
+    line-height: 1.15;
+  }
+  h1 span { color: var(--jade); }
+  .tagline {
+    color: #5C6B5E;
+    margin-top: 4px;
+  }
+
+  .games {
+    display: grid;
+    gap: 12px;
+  }
+
+  /* Each game is one card — copy a whole <a class="game-card"> block to add a new one */
+  .game-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--card);
+    border: 2px solid transparent;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px;
+    text-decoration: none;
+    color: var(--ink);
+    transition: transform 0.12s ease, border-color 0.12s ease;
+  }
+  .game-card:hover,
+  .game-card:focus-visible {
+    border-color: var(--jade);
+    transform: translateY(-2px);
+  }
+  .game-card:focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 2px;
+  }
+
+  .game-emoji {
+    font-size: 1.6rem;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    background: var(--celadon);
+    border-radius: 12px;
+  }
+  .game-name {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+  .game-desc {
+    font-size: 0.9rem;
+    color: #5C6B5E;
+  }
+  .game-arrow {
+    margin-left: auto;
+    color: var(--jade);
+    font-weight: 700;
+    font-size: 1.2rem;
+  }
+
+  footer {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #7A8A7C;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <h1>My Language <span>Games</span></h1>
+    <p class="tagline">Little games for learning, one topic at a time</p>
+  </header>
+
+  <nav class="games" aria-label="Games">
+
+    <!-- ============================================================
+         TO ADD A NEW GAME:
+         Copy the whole <a> block below, then change:
+           - href  → the game's file name (e.g. "flashcards.html")
+           - emoji → any emoji you like
+           - name  → the game's title
+           - desc  → a one-line description
+         ============================================================ -->
+
+    <a class="game-card" href="pinyin-match.html">
+      <span class="game-emoji">🀄</span>
+      <span>
+        <span class="game-name">Pīnyīn Match</span><br>
+        <span class="game-desc">Match Mandarin pinyin to English, ten words at a time</span>
+      </span>
+      <span class="game-arrow">→</span>
+    </a>
+
+ <a class="game-card" href="mandarin-match.html">
+      <span class="game-emoji">🀄</span>
+
+      <span>
+        <span class="game-name">Mandarin Match</span><br>
+        <span class="game-desc">Match Mandarin characters to their pinyin and English translations</span>
+      </span>
+      <span class="game-arrow">→</span>
+    </a>
+
+    <!-- Example: uncomment and edit when your next game is ready
+    <a class="game-card" href="my-next-game.html">
+      <span class="game-emoji">🎯</span>
+      <span>
+        <span class="game-name">My Next Game</span><br>
+        <span class="game-desc">A one-line description of the game</span>
+      </span>
+      <span class="game-arrow">→</span>
+    </a>
+    -->
+
+  </nav>
+
+  <footer>Add new games by editing this file — instructions are in the code.</footer>
+
+</div>
+</body>
+</html>
