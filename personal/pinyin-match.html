@@ -139,7 +139,7 @@
   .study-row {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
     gap: 12px;
     padding: 13px 16px;
   }
@@ -151,6 +151,16 @@
     color: var(--jade-deep);
   }
   .study-english { color: var(--ink); text-align: right; }
+  .study-phon, .tile-phon {
+    display: block;
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: 0.75rem;
+    color: #7A8A7C;
+    margin-top: 1px;
+  }
+  .tile.matched .tile-phon { color: rgba(255, 255, 255, 0.85); }
 
   /* ---------- Buttons ---------- */
   .btn {
@@ -329,42 +339,47 @@
     {
       id: "numbers", name: "Numbers", emoji: "🔢", sub: "One to ten",
       words: [
-        ["yī", "one"], ["èr", "two"], ["sān", "three"], ["sì", "four"],
-        ["wǔ", "five"], ["liù", "six"], ["qī", "seven"], ["bā", "eight"],
-        ["jiǔ", "nine"], ["shí", "ten"]
+        ["yī", "one", "ee"], ["èr", "two", "arr"], ["sān", "three", "sahn"],
+        ["sì", "four", "suh"], ["wǔ", "five", "woo"], ["liù", "six", "lyoh"],
+        ["qī", "seven", "chee"], ["bā", "eight", "bah"], ["jiǔ", "nine", "jyoh"],
+        ["shí", "ten", "shrr"]
       ]
     },
     {
       id: "adjectives", name: "Basic adjectives", emoji: "✨", sub: "Big, small, hot, cold…",
       words: [
-        ["dà", "big"], ["xiǎo", "small"], ["hǎo", "good"], ["rè", "hot"],
-        ["lěng", "cold"], ["duō", "many"], ["kuài", "fast"], ["màn", "slow"],
-        ["xīn", "new"], ["lèi", "tired"]
+        ["dà", "big", "dah"], ["xiǎo", "small", "shyow"], ["hǎo", "good", "how"],
+        ["rè", "hot", "ruh"], ["lěng", "cold", "lung"], ["duō", "many", "dwaw"],
+        ["kuài", "fast", "kwye"], ["màn", "slow", "mahn"], ["xīn", "new", "sheen"],
+        ["lèi", "tired", "lay"]
       ]
     },
     {
       id: "verbs", name: "Basic verbs", emoji: "🏃", sub: "Eat, drink, go, want…",
       words: [
-        ["chī", "to eat"], ["hē", "to drink"], ["qù", "to go"], ["lái", "to come"],
-        ["yào", "to want"], ["yǒu", "to have"], ["kàn", "to look / see"],
-        ["shuō", "to speak"], ["mǎi", "to buy"], ["ài", "to love"]
+        ["chī", "to eat", "chrr"], ["hē", "to drink", "huh"], ["qù", "to go", "chyoo"],
+        ["lái", "to come", "lye"], ["yào", "to want", "yow"], ["yǒu", "to have", "yoh"],
+        ["kàn", "to look / see", "kahn"], ["shuō", "to speak", "shwaw"],
+        ["mǎi", "to buy", "my"], ["ài", "to love", "eye"]
       ]
     },
     {
       id: "food", name: "Food & drink", emoji: "🍜", sub: "Rice, tea, noodles…",
       words: [
-        ["mǐfàn", "rice"], ["chá", "tea"], ["shuǐ", "water"], ["miàntiáo", "noodles"],
-        ["kāfēi", "coffee"], ["píjiǔ", "beer"], ["jī", "chicken"], ["yú", "fish"],
-        ["niúnǎi", "milk"], ["píngguǒ", "apple"]
+        ["mǐfàn", "rice", "mee-fahn"], ["chá", "tea", "chah"], ["shuǐ", "water", "shway"],
+        ["miàntiáo", "noodles", "myen-tyow"], ["kāfēi", "coffee", "kah-fay"],
+        ["píjiǔ", "beer", "pee-jyoh"], ["jī", "chicken", "jee"], ["yú", "fish", "yoo"],
+        ["niúnǎi", "milk", "nyoh-nye"], ["píngguǒ", "apple", "ping-gwaw"]
       ]
     },
     {
       id: "greetings", name: "Greetings & basics", emoji: "👋", sub: "Hello, thank you, sorry…",
       words: [
-        ["nǐ hǎo", "hello"], ["xièxie", "thank you"], ["zàijiàn", "goodbye"],
-        ["duìbuqǐ", "sorry"], ["qǐng", "please"], ["zǎoshang hǎo", "good morning"],
-        ["wǎn'ān", "good night"], ["bù kèqi", "you're welcome"],
-        ["hǎo de", "OK / sure"], ["méi guānxi", "no problem"]
+        ["nǐ hǎo", "hello", "nee how"], ["xièxie", "thank you", "shyeh-shyeh"],
+        ["zàijiàn", "goodbye", "dzye-jyen"], ["duìbuqǐ", "sorry", "dway-boo-chee"],
+        ["qǐng", "please", "ching"], ["zǎoshang hǎo", "good morning", "dzow-shahng how"],
+        ["wǎn'ān", "good night", "wahn-ahn"], ["bù kèqi", "you're welcome", "boo kuh-chee"],
+        ["hǎo de", "OK / sure", "how duh"], ["méi guānxi", "no problem", "may gwahn-shee"]
       ]
     }
   ];
@@ -420,11 +435,12 @@
     $("study-title").textContent = topic.emoji + " " + topic.name;
     const list = $("study-list");
     list.innerHTML = "";
-    topic.words.forEach(([pinyin, english]) => {
+    topic.words.forEach(([pinyin, english, phon]) => {
       const row = document.createElement("div");
       row.className = "study-row";
       row.innerHTML =
-        '<span class="study-pinyin">' + pinyin + '</span>' +
+        '<span><span class="study-pinyin">' + pinyin + '</span>' +
+        '<span class="study-phon">' + phon + '</span></span>' +
         '<span class="study-english">' + english + '</span>';
       list.appendChild(row);
     });
@@ -444,8 +460,8 @@
     colP.innerHTML = "";
     colE.innerHTML = "";
 
-    shuffle(currentTopic.words).forEach(([pinyin]) => {
-      colP.appendChild(makeTile(pinyin, "pinyin"));
+    shuffle(currentTopic.words).forEach(([pinyin, , phon]) => {
+      colP.appendChild(makeTile(pinyin, "pinyin", phon));
     });
     shuffle(currentTopic.words).forEach(([, english]) => {
       colE.appendChild(makeTile(english, "english"));
@@ -454,12 +470,13 @@
     show("screen-match");
   }
 
-  function makeTile(text, kind) {
+  function makeTile(text, kind, phon) {
     const t = document.createElement("button");
     t.className = "tile " + kind;
-    t.textContent = text;
     t.dataset.kind = kind;
     t.dataset.value = text;
+    if (phon) t.dataset.phon = phon;
+    t.innerHTML = text + (phon ? '<span class="tile-phon">' + phon + '</span>' : '');
     t.addEventListener("click", () => selectTile(t));
     return t;
   }
@@ -494,7 +511,8 @@
       [p, e].forEach(t => {
         t.classList.remove("selected");
         t.classList.add("matched");
-        t.textContent = "✓ " + t.dataset.value;
+        t.innerHTML = "✓ " + t.dataset.value +
+          (t.dataset.phon ? '<span class="tile-phon">' + t.dataset.phon + '</span>' : '');
       });
       matchedCount++;
       updateStatus();
