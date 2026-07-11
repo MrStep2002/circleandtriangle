@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pīnyīn Phrases — Mandarin Sentence Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --celadon: #EAF0E6;
+    --ink: #26312A;
+    --jade: #3E7C59;
+    --jade-deep: #2C5C42;
+    --cinnabar: #C0392B;
+    --gold: #C9A227;
+    --card: #FFFFFF;
+    --line: #CBD8C6;
+    --radius: 14px;
+    --shadow: 0 2px 6px rgba(38, 49, 42, 0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: 'Nunito', system-ui, sans-serif;
+    background: var(--celadon);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 560px;
+    padding: 20px 16px 48px;
+  }
+
+  /* ---------- Header ---------- */
+  header { text-align: center; padding: 12px 0 20px; }
+  .logo {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 2rem;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .logo .tone { color: var(--jade); }
+  .tagline { font-size: 0.95rem; color: #5C6B5E; margin-top: 2px; }
+
+  /* ---------- Screens ---------- */
+  .screen { display: none; }
+  .screen.active { display: block; animation: rise 0.35s ease both; }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  h2 {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.35rem;
+    margin-bottom: 4px;
+  }
+  .hint { color: #5C6B5E; font-size: 0.95rem; margin-bottom: 18px; }
+
+  /* ---------- Topic menu ---------- */
+  .topics { display: grid; gap: 12px; }
+  .topic-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    background: var(--card);
+    border: 2px solid transparent;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--ink);
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.12s ease, border-color 0.12s ease;
+  }
+  .topic-btn:hover, .topic-btn:focus-visible { border-color: var(--jade); transform: translateY(-2px); }
+  .topic-btn:active { transform: translateY(0); }
+  .topic-emoji {
+    font-size: 1.6rem;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    background: var(--celadon);
+    border-radius: 12px;
+  }
+  .topic-name { font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 1.1rem; }
+  .topic-sub { font-size: 0.85rem; color: #5C6B5E; }
+  .topic-best {
+    margin-left: auto;
+    font-size: 0.85rem;
+    color: var(--gold);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  /* ---------- Play screen ---------- */
+  .play-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+  .play-status .progress { color: var(--jade-deep); }
+  .play-status .mistakes { color: var(--cinnabar); }
+
+  .english-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 18px 16px;
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .english-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #7A8A7C;
+    margin-bottom: 4px;
+  }
+  .english-phrase {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    line-height: 1.35;
+  }
+
+  /* Built sentence area */
+  .sentence-area {
+    min-height: 74px;
+    background: rgba(255, 255, 255, 0.55);
+    border: 2px dashed var(--line);
+    border-radius: var(--radius);
+    padding: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 16px;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+  .sentence-area.complete {
+    border-style: solid;
+    border-color: var(--jade);
+    background: #E3EFE7;
+  }
+  .slot-hint { color: #96A698; font-style: italic; font-size: 0.9rem; }
+
+  .placed {
+    background: var(--jade);
+    color: #fff;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    animation: pop 0.25s ease both;
+  }
+  @keyframes pop {
+    from { transform: scale(0.6); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+
+  /* Word bank */
+  .bank-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #7A8A7C;
+    margin-bottom: 8px;
+  }
+  .bank {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .tile {
+    min-height: 52px;
+    padding: 8px 14px;
+    border-radius: 12px;
+    border: 2px solid var(--line);
+    background: var(--card);
+    box-shadow: var(--shadow);
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--jade-deep);
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.12s ease, opacity 0.25s ease, transform 0.12s ease;
+  }
+  .tile:hover, .tile:focus-visible { border-color: var(--jade); }
+  .tile:active { transform: scale(0.96); }
+  .tile.used {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.8);
+  }
+  .tile.wrong { animation: shake 0.4s ease; border-color: var(--cinnabar); }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+  }
+  .tile-phon {
+    display: block;
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: 0.75rem;
+    color: #7A8A7C;
+    margin-top: 1px;
+  }
+
+  /* Phrase-complete panel */
+  .done-panel {
+    display: none;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px;
+    text-align: center;
+    margin-bottom: 16px;
+    animation: rise 0.3s ease both;
+  }
+  .done-panel.visible { display: block; }
+  .done-pinyin {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--jade-deep);
+    margin-bottom: 4px;
+  }
+  .done-phon {
+    font-style: italic;
+    font-size: 0.95rem;
+    color: #7A8A7C;
+    margin-bottom: 6px;
+  }
+  .done-literal { font-size: 0.9rem; color: #5C6B5E; font-style: italic; }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: block;
+    width: 100%;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 15px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    transition: transform 0.12s ease, background 0.12s ease;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--jade); color: #fff; }
+  .btn-primary:hover, .btn-primary:focus-visible { background: var(--jade-deep); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--jade-deep);
+    border: 2px solid var(--jade);
+    margin-top: 10px;
+  }
+  .btn-ghost:hover, .btn-ghost:focus-visible { background: rgba(62, 124, 89, 0.08); }
+  .btn:focus-visible, .topic-btn:focus-visible, .tile:focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 2px;
+  }
+  .btn[hidden] { display: none; }
+
+  /* ---------- Results ---------- */
+  .results-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px 20px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .results-stars { font-size: 2rem; letter-spacing: 6px; margin-bottom: 8px; }
+  .results-title {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    margin-bottom: 6px;
+  }
+  .results-detail { color: #5C6B5E; }
+
+  footer {
+    margin-top: 28px;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #7A8A7C;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">P<span class="tone">ī</span>ny<span class="tone">ī</span>n Phrases</div>
+    <div class="tagline">Build Mandarin sentences, one word at a time</div>
+  </header>
+
+  <!-- ===== Menu screen ===== -->
+  <section id="screen-menu" class="screen active" aria-label="Choose a topic">
+    <h2>Pick a topic</h2>
+    <p class="hint">Each topic has five phrases. Tap the pinyin words in the right order to build the sentence.</p>
+    <div class="topics" id="topic-list"></div>
+  </section>
+
+  <!-- ===== Play screen ===== -->
+  <section id="screen-play" class="screen" aria-label="Build the phrase">
+    <div class="play-status">
+      <span class="progress" id="play-progress">Phrase 1 of 5</span>
+      <span class="mistakes" id="play-mistakes">0 mistakes</span>
+    </div>
+
+    <div class="english-card">
+      <div class="english-label">Say this in Mandarin</div>
+      <div class="english-phrase" id="english-phrase"></div>
+    </div>
+
+    <div class="sentence-area" id="sentence-area" aria-live="polite">
+      <span class="slot-hint" id="slot-hint">Tap the words below, in order…</span>
+    </div>
+
+    <div class="bank-label">Word bank</div>
+    <div class="bank" id="bank"></div>
+
+    <div class="done-panel" id="done-panel">
+      <div class="done-pinyin" id="done-pinyin"></div>
+      <div class="done-phon" id="done-phon"></div>
+      <div class="done-literal" id="done-literal"></div>
+    </div>
+
+    <button class="btn btn-primary" id="btn-next" hidden>Next phrase</button>
+    <button class="btn btn-ghost" id="btn-play-quit">Back to topics</button>
+  </section>
+
+  <!-- ===== Results screen ===== -->
+  <section id="screen-results" class="screen" aria-label="Results">
+    <div class="results-card">
+      <div class="results-stars" id="results-stars"></div>
+      <div class="results-title" id="results-title"></div>
+      <div class="results-detail" id="results-detail"></div>
+    </div>
+    <button class="btn btn-primary" id="btn-replay">Play this topic again</button>
+    <button class="btn btn-ghost" id="btn-menu">Back to topics</button>
+  </section>
+
+  <footer>Made for learning — pinyin only, no characters required.</footer>
+</div>
+
+<script>
+  // ---------- Phrases ----------
+  // Each phrase: en (English), tokens (pinyin word + rough pronunciation, in order),
+  // punct (final punctuation), literal (word-for-word gloss).
+  const TOPICS = [
+    {
+      id: "meeting", name: "Meeting people", emoji: "👋", sub: "Hello, names, where you're from",
+      phrases: [
+        { en: "How are you?", punct: "?",
+          tokens: [["nǐ","nee"],["hǎo","how"],["ma","mah"]],
+          literal: "you / good / [question]" },
+        { en: "What is your name?", punct: "?",
+          tokens: [["nǐ","nee"],["jiào","jyow"],["shénme","shun-muh"],["míngzi","ming-dzuh"]],
+          literal: "you / are called / what / name" },
+        { en: "My name is Anna.", punct: ".",
+          tokens: [["wǒ","waw"],["jiào","jyow"],["Ānnà","ahn-nah"]],
+          literal: "I / am called / Anna" },
+        { en: "Nice to meet you.", punct: ".",
+          tokens: [["hěn","hun"],["gāoxìng","gow-shing"],["rènshi","run-shrr"],["nǐ","nee"]],
+          literal: "very / happy / to know / you" },
+        { en: "I am from England.", punct: ".",
+          tokens: [["wǒ","waw"],["shì","shrr"],["Yīngguó","ying-gwaw"],["rén","run"]],
+          literal: "I / am / England / person" }
+      ]
+    },
+    {
+      id: "food", name: "Ordering food & drink", emoji: "🍜", sub: "Please, thank you, the bill",
+      phrases: [
+        { en: "Can I have some chicken noodles, please?", punct: ".",
+          tokens: [["qǐng","ching"],["gěi","gay"],["wǒ","waw"],["jīròu","jee-roh"],["miàntiáo","myen-tyow"]],
+          literal: "please / give / me / chicken / noodles" },
+        { en: "I would like a cup of tea.", punct: ".",
+          tokens: [["wǒ","waw"],["yào","yow"],["yī","ee"],["bēi","bay"],["chá","chah"]],
+          literal: "I / want / one / cup / tea" },
+        { en: "I'd like the bill, thanks.", punct: ".",
+          tokens: [["wǒ","waw"],["yào","yow"],["mǎidān","my-dahn"],["xièxie","shyeh-shyeh"]],
+          literal: "I / want / bill / thanks" },
+        { en: "This is delicious!", punct: "!",
+          tokens: [["zhè","juh"],["ge","guh"],["hěn","hun"],["hǎochī","how-chrr"]],
+          literal: "this / one / very / tasty" },
+        { en: "I don't eat fish.", punct: ".",
+          tokens: [["wǒ","waw"],["bù","boo"],["chī","chrr"],["yú","yoo"]],
+          literal: "I / not / eat / fish" }
+      ]
+    },
+    {
+      id: "around", name: "Getting around", emoji: "🚕", sub: "Directions, stations, help",
+      phrases: [
+        { en: "Where is the toilet?", punct: "?",
+          tokens: [["cèsuǒ","tsuh-swaw"],["zài","dzye"],["nǎr","nar"]],
+          literal: "toilet / is at / where" },
+        { en: "I want to go to the train station.", punct: ".",
+          tokens: [["wǒ","waw"],["yào","yow"],["qù","chyoo"],["huǒchēzhàn","hwaw-chuh-jahn"]],
+          literal: "I / want / go / train station" },
+        { en: "How far is it?", punct: "?",
+          tokens: [["yǒu","yoh"],["duō","dwaw"],["yuǎn","ywen"]],
+          literal: "there is / how / far" },
+        { en: "Please stop here.", punct: ".",
+          tokens: [["qǐng","ching"],["zài","dzye"],["zhèlǐ","juh-lee"],["tíng","ting"]],
+          literal: "please / at / here / stop" },
+        { en: "I am lost.", punct: ".",
+          tokens: [["wǒ","waw"],["mílù","mee-loo"],["le","luh"]],
+          literal: "I / lost the way / [done]" }
+      ]
+    },
+    {
+      id: "shopping", name: "Shopping & money", emoji: "🛍️", sub: "Prices, bargaining, buying",
+      phrases: [
+        { en: "How much is this?", punct: "?",
+          tokens: [["zhè","juh"],["ge","guh"],["duōshǎo","dwaw-show"],["qián","chyen"]],
+          literal: "this / one / how much / money" },
+        { en: "Too expensive!", punct: "!",
+          tokens: [["tài","tye"],["guì","gway"],["le","luh"]],
+          literal: "too / expensive / [emphasis]" },
+        { en: "I want to buy this.", punct: ".",
+          tokens: [["wǒ","waw"],["yào","yow"],["mǎi","my"],["zhè","juh"],["ge","guh"]],
+          literal: "I / want / buy / this / one" },
+        { en: "Can it be a little cheaper?", punct: "?",
+          tokens: [["kěyǐ","kuh-yee"],["piányi","pyen-yee"],["yīdiǎn","ee-dyen"],["ma","mah"]],
+          literal: "can / cheaper / a little / [question]" },
+        { en: "I don't want it, thanks.", punct: ".",
+          tokens: [["wǒ","waw"],["bù","boo"],["yào","yow"],["xièxie","shyeh-shyeh"]],
+          literal: "I / not / want / thanks" }
+      ]
+    }
+  ];
+
+  // ---------- State ----------
+  let currentTopic = null;
+  let phraseIndex = 0;
+  let tokenPos = 0;
+  let mistakes = 0;
+  const bestScores = {}; // topicId -> fewest mistakes (session only)
+
+  // ---------- Helpers ----------
+  const $ = (id) => document.getElementById(id);
+
+  function show(screenId) {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    $(screenId).classList.add("active");
+    window.scrollTo({ top: 0 });
+  }
+
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  // ---------- Menu ----------
+  function renderMenu() {
+    const list = $("topic-list");
+    list.innerHTML = "";
+    TOPICS.forEach(topic => {
+      const btn = document.createElement("button");
+      btn.className = "topic-btn";
+      btn.innerHTML =
+        '<span class="topic-emoji">' + topic.emoji + '</span>' +
+        '<span><span class="topic-name">' + topic.name + '</span><br>' +
+        '<span class="topic-sub">' + topic.sub + '</span></span>' +
+        (bestScores[topic.id] !== undefined
+          ? '<span class="topic-best">★ best: ' + bestScores[topic.id] + ' mistakes</span>'
+          : '');
+      btn.addEventListener("click", () => startTopic(topic));
+      list.appendChild(btn);
+    });
+  }
+
+  // ---------- Play ----------
+  function startTopic(topic) {
+    currentTopic = topic;
+    phraseIndex = 0;
+    mistakes = 0;
+    loadPhrase();
+    show("screen-play");
+  }
+
+  function currentPhrase() {
+    return currentTopic.phrases[phraseIndex];
+  }
+
+  function loadPhrase() {
+    const phrase = currentPhrase();
+    tokenPos = 0;
+
+    $("play-progress").textContent =
+      "Phrase " + (phraseIndex + 1) + " of " + currentTopic.phrases.length;
+    updateMistakes();
+
+    $("english-phrase").textContent = phrase.en;
+
+    const area = $("sentence-area");
+    area.classList.remove("complete");
+    area.innerHTML = '<span class="slot-hint" id="slot-hint">Tap the words below, in order…</span>';
+
+    const bank = $("bank");
+    bank.innerHTML = "";
+    shuffle(phrase.tokens).forEach(([word, phon]) => {
+      const t = document.createElement("button");
+      t.className = "tile";
+      t.dataset.value = word;
+      t.innerHTML = word + '<span class="tile-phon">' + phon + '</span>';
+      t.addEventListener("click", () => tapTile(t));
+      bank.appendChild(t);
+    });
+
+    $("done-panel").classList.remove("visible");
+    $("btn-next").hidden = true;
+  }
+
+  function tapTile(tile) {
+    if (tile.classList.contains("used")) return;
+    const phrase = currentPhrase();
+    const expected = phrase.tokens[tokenPos][0];
+
+    if (tile.dataset.value === expected) {
+      tile.classList.add("used");
+      const hint = $("slot-hint");
+      if (hint) hint.remove();
+
+      const placed = document.createElement("span");
+      placed.className = "placed";
+      placed.textContent = tile.dataset.value;
+      $("sentence-area").appendChild(placed);
+
+      tokenPos++;
+      if (tokenPos === phrase.tokens.length) phraseComplete();
+    } else {
+      mistakes++;
+      updateMistakes();
+      tile.classList.add("wrong");
+      setTimeout(() => tile.classList.remove("wrong"), 450);
+    }
+  }
+
+  function phraseComplete() {
+    const phrase = currentPhrase();
+    const area = $("sentence-area");
+    area.classList.add("complete");
+
+    // Append final punctuation to the last placed word
+    const placedWords = area.querySelectorAll(".placed");
+    const last = placedWords[placedWords.length - 1];
+    if (last) last.textContent += phrase.punct;
+
+    const fullPinyin = phrase.tokens.map(t => t[0]).join(" ") + phrase.punct;
+    const fullPhon = phrase.tokens.map(t => t[1]).join(" ");
+    $("done-pinyin").textContent = "✓ " + fullPinyin;
+    $("done-phon").textContent = "Say it: " + fullPhon;
+    $("done-literal").textContent = "Word by word: " + phrase.literal;
+    $("done-panel").classList.add("visible");
+
+    const isLast = phraseIndex === currentTopic.phrases.length - 1;
+    const nextBtn = $("btn-next");
+    nextBtn.textContent = isLast ? "See results" : "Next phrase";
+    nextBtn.hidden = false;
+    nextBtn.focus();
+  }
+
+  function updateMistakes() {
+    $("play-mistakes").textContent =
+      mistakes + (mistakes === 1 ? " mistake" : " mistakes");
+  }
+
+  // ---------- Results ----------
+  function showResults() {
+    const prevBest = bestScores[currentTopic.id];
+    const isNewBest = prevBest === undefined || mistakes < prevBest;
+    if (isNewBest) bestScores[currentTopic.id] = mistakes;
+
+    let stars, title;
+    if (mistakes === 0)      { stars = "⭐⭐⭐"; title = "Perfect! Wánměi!"; }
+    else if (mistakes <= 4)  { stars = "⭐⭐";   title = "Nice work! Hěn hǎo!"; }
+    else                     { stars = "⭐";     title = "You made it — jiāyóu!"; }
+
+    $("results-stars").textContent = stars;
+    $("results-title").textContent = title;
+    $("results-detail").textContent =
+      "All 5 phrases built with " + mistakes +
+      (mistakes === 1 ? " mistake" : " mistakes") +
+      (isNewBest && prevBest !== undefined ? " — a new best!" : ".");
+    renderMenu();
+    show("screen-results");
+  }
+
+  // ---------- Wire up ----------
+  $("btn-next").addEventListener("click", () => {
+    if (phraseIndex === currentTopic.phrases.length - 1) {
+      showResults();
+    } else {
+      phraseIndex++;
+      loadPhrase();
+    }
+  });
+  $("btn-play-quit").addEventListener("click", () => show("screen-menu"));
+  $("btn-replay").addEventListener("click", () => startTopic(currentTopic));
+  $("btn-menu").addEventListener("click", () => show("screen-menu"));
+
+  renderMenu();
+</script>
+</body>
+</html>
