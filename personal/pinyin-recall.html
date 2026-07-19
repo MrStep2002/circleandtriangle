@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pīnyīn Recall — See the Chinese, Type the English</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --celadon: #EAF0E6;
+    --ink: #26312A;
+    --jade: #3E7C59;
+    --jade-deep: #2C5C42;
+    --cinnabar: #C0392B;
+    --gold: #C9A227;
+    --card: #FFFFFF;
+    --line: #CBD8C6;
+    --radius: 14px;
+    --shadow: 0 2px 6px rgba(38, 49, 42, 0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: 'Nunito', system-ui, sans-serif;
+    background: var(--celadon);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .app { width: 100%; max-width: 560px; padding: 20px 16px 48px; }
+
+  /* ---------- Header ---------- */
+  header { text-align: center; padding: 12px 0 20px; }
+  .logo {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 2rem;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .logo .tone { color: var(--jade); }
+  .tagline { font-size: 0.95rem; color: #5C6B5E; margin-top: 2px; }
+
+  /* ---------- Screens ---------- */
+  .screen { display: none; }
+  .screen.active { display: block; animation: rise 0.35s ease both; }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  h2 {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.35rem;
+    margin-bottom: 4px;
+  }
+  .hint { color: #5C6B5E; font-size: 0.95rem; margin-bottom: 18px; }
+
+  /* ---------- Mode menu ---------- */
+  .topics { display: grid; gap: 12px; }
+  .topic-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    background: var(--card);
+    border: 2px solid transparent;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--ink);
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.12s ease, border-color 0.12s ease;
+  }
+  .topic-btn:hover, .topic-btn:focus-visible { border-color: var(--jade); transform: translateY(-2px); }
+  .topic-btn:active { transform: translateY(0); }
+  .topic-emoji {
+    font-size: 1.6rem;
+    width: 48px; height: 48px;
+    flex-shrink: 0;
+    display: grid; place-items: center;
+    background: var(--celadon);
+    border-radius: 12px;
+  }
+  .topic-name { font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 1.1rem; }
+  .topic-sub { font-size: 0.85rem; color: #5C6B5E; }
+  .topic-best {
+    margin-left: auto;
+    font-size: 0.85rem;
+    color: var(--gold);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  /* ---------- Streak bar ---------- */
+  .streak-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 10px 16px;
+    margin-bottom: 14px;
+  }
+  .streak-now {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 1.4rem;
+    color: var(--jade-deep);
+    transition: transform 0.15s ease, color 0.15s ease;
+  }
+  .streak-now.bump { transform: scale(1.25); }
+  .streak-now.broken { color: var(--cinnabar); animation: shake 0.4s ease; }
+  .streak-best { font-weight: 700; color: var(--gold); font-size: 0.95rem; }
+
+  /* ---------- Word card ---------- */
+  .word-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 24px 16px 20px;
+    text-align: center;
+    margin-bottom: 14px;
+    transition: border-color 0.2s ease;
+    border: 2px solid transparent;
+  }
+  .word-card.correct { border-color: var(--jade); }
+  .word-card.wrong { animation: shake 0.4s ease; border-color: var(--cinnabar); }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+  }
+  .word-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #7A8A7C;
+    margin-bottom: 10px;
+  }
+  .word-hanzi {
+    font-size: 3.2rem;
+    line-height: 1.15;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+  .word-pinyin {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--jade-deep);
+  }
+  .word-phon {
+    font-style: italic;
+    font-size: 0.95rem;
+    color: #7A8A7C;
+    margin-top: 2px;
+  }
+
+  /* ---------- Answer input ---------- */
+  .answer-row { display: flex; gap: 10px; margin-bottom: 10px; }
+  .answer-input {
+    flex: 1;
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 14px 14px;
+    border-radius: var(--radius);
+    border: 2px solid var(--line);
+    background: var(--card);
+    color: var(--ink);
+    min-width: 0;
+  }
+  .answer-input:focus {
+    outline: none;
+    border-color: var(--jade);
+  }
+  .btn-check {
+    flex-shrink: 0;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    padding: 0 22px;
+    border-radius: var(--radius);
+    border: none;
+    background: var(--jade);
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.12s ease, transform 0.12s ease;
+  }
+  .btn-check:hover, .btn-check:focus-visible { background: var(--jade-deep); }
+  .btn-check:active { transform: scale(0.97); }
+
+  /* ---------- Feedback ---------- */
+  .feedback {
+    min-height: 56px;
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+  }
+  .feedback.neutral { color: #7A8A7C; font-weight: 600; font-style: italic; background: transparent; }
+  .feedback.good { background: #E3EFE7; color: var(--jade-deep); }
+  .feedback.bad { background: #F7E5E2; color: var(--cinnabar); }
+  .feedback .fb-sub {
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: #5C6B5E;
+    font-style: italic;
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: block;
+    width: 100%;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 15px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    transition: transform 0.12s ease, background 0.12s ease;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--jade); color: #fff; }
+  .btn-primary:hover, .btn-primary:focus-visible { background: var(--jade-deep); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--jade-deep);
+    border: 2px solid var(--jade);
+    margin-top: 10px;
+  }
+  .btn-ghost:hover, .btn-ghost:focus-visible { background: rgba(62, 124, 89, 0.08); }
+  .btn:focus-visible, .topic-btn:focus-visible, .btn-check:focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 2px;
+  }
+  .btn[hidden] { display: none; }
+
+  footer { margin-top: 28px; text-align: center; font-size: 0.8rem; color: #7A8A7C; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">P<span class="tone">ī</span>ny<span class="tone">ī</span>n Recall</div>
+    <div class="tagline">See the Chinese — type the English</div>
+  </header>
+
+  <!-- ===== Menu screen ===== -->
+  <section id="screen-menu" class="screen active" aria-label="Choose a topic">
+    <h2>Pick your run</h2>
+    <p class="hint">You'll see the character, the pinyin, and how to say it — you type what it means in English. Correct first time keeps your streak alive; a wrong guess or peeking at the answer resets the run!</p>
+    <div class="topics" id="topic-list"></div>
+  </section>
+
+  <!-- ===== Play screen ===== -->
+  <section id="screen-play" class="screen" aria-label="Type the meaning">
+    <div class="streak-bar">
+      <span class="streak-now" id="streak-now">🔥 0</span>
+      <span class="streak-best" id="streak-best">Best: 0</span>
+    </div>
+
+    <div class="word-card" id="word-card">
+      <div class="word-label">What does this mean?</div>
+      <div class="word-hanzi" id="word-hanzi" lang="zh-Hans"></div>
+      <div class="word-pinyin" id="word-pinyin"></div>
+      <div class="word-phon" id="word-phon"></div>
+    </div>
+
+    <div class="answer-row">
+      <input type="text" class="answer-input" id="answer-input"
+             placeholder="Type the English…" autocomplete="off"
+             autocorrect="off" autocapitalize="off" spellcheck="false"
+             enterkeyhint="go">
+      <button class="btn-check" id="btn-check">Check</button>
+    </div>
+
+    <div class="feedback neutral" id="feedback">Type your answer, then press Check (or Enter)</div>
+
+    <button class="btn btn-primary" id="btn-next" hidden>Next word</button>
+    <button class="btn btn-ghost" id="btn-reveal">Show answer</button>
+    <button class="btn btn-ghost" id="btn-quit">End run &amp; back to menu</button>
+  </section>
+
+  <footer>Made for learning — now with characters, for the curious!</footer>
+</div>
+
+<script>
+  // ---------- Vocabulary ----------
+  // Format: [hanzi, pinyin, pronunciation, main English (shown as the answer), extra accepted answers]
+  const TOPICS = [
+    { id: "numbers", name: "Numbers", emoji: "🔢", sub: "One to ten", words: [
+      ["一", "yī", "ee", "one", ["1"]],
+      ["二", "èr", "arr", "two", ["2"]],
+      ["三", "sān", "sahn", "three", ["3"]],
+      ["四", "sì", "suh", "four", ["4"]],
+      ["五", "wǔ", "woo", "five", ["5"]],
+      ["六", "liù", "lyoh", "six", ["6"]],
+      ["七", "qī", "chee", "seven", ["7"]],
+      ["八", "bā", "bah", "eight", ["8"]],
+      ["九", "jiǔ", "jyoh", "nine", ["9"]],
+      ["十", "shí", "shrr", "ten", ["10"]]
+    ]},
+    { id: "adjectives", name: "Basic adjectives", emoji: "✨", sub: "Big, small, hot, cold…", words: [
+      ["大", "dà", "dah", "big", ["large"]],
+      ["小", "xiǎo", "shyow", "small", ["little"]],
+      ["好", "hǎo", "how", "good", []],
+      ["热", "rè", "ruh", "hot", []],
+      ["冷", "lěng", "lung", "cold", []],
+      ["多", "duō", "dwaw", "many", ["a lot", "lots", "much"]],
+      ["快", "kuài", "kwye", "fast", ["quick"]],
+      ["慢", "màn", "mahn", "slow", []],
+      ["新", "xīn", "sheen", "new", []],
+      ["累", "lèi", "lay", "tired", []]
+    ]},
+    { id: "verbs", name: "Basic verbs", emoji: "🏃", sub: "Eat, drink, go, want…", words: [
+      ["吃", "chī", "chrr", "to eat", []],
+      ["喝", "hē", "huh", "to drink", []],
+      ["去", "qù", "chyoo", "to go", []],
+      ["来", "lái", "lye", "to come", []],
+      ["要", "yào", "yow", "to want", ["would like"]],
+      ["有", "yǒu", "yoh", "to have", []],
+      ["看", "kàn", "kahn", "to look / see", ["look", "see", "watch"]],
+      ["说", "shuō", "shwaw", "to speak", ["talk", "say"]],
+      ["买", "mǎi", "my", "to buy", []],
+      ["爱", "ài", "eye", "to love", []]
+    ]},
+    { id: "food", name: "Food & drink", emoji: "🍜", sub: "Rice, tea, water, noodles…", words: [
+      ["米饭", "mǐfàn", "mee-fahn", "rice", []],
+      ["茶", "chá", "chah", "tea", []],
+      ["水", "shuǐ", "shway", "water", []],
+      ["面条", "miàntiáo", "myen-tyow", "noodles", ["noodle"]],
+      ["咖啡", "kāfēi", "kah-fay", "coffee", []],
+      ["啤酒", "píjiǔ", "pee-jyoh", "beer", []],
+      ["鸡", "jī", "jee", "chicken", []],
+      ["鱼", "yú", "yoo", "fish", []],
+      ["牛奶", "niúnǎi", "nyoh-nye", "milk", []],
+      ["苹果", "píngguǒ", "ping-gwaw", "apple", ["apples"]]
+    ]},
+    { id: "greetings", name: "Greetings & basics", emoji: "👋", sub: "Hello, thank you, sorry…", words: [
+      ["你好", "nǐ hǎo", "nee how", "hello", ["hi"]],
+      ["谢谢", "xièxie", "shyeh-shyeh", "thank you", ["thanks"]],
+      ["再见", "zàijiàn", "dzye-jyen", "goodbye", ["bye", "see you"]],
+      ["对不起", "duìbuqǐ", "dway-boo-chee", "sorry", ["i'm sorry", "i am sorry"]],
+      ["请", "qǐng", "ching", "please", []],
+      ["早上好", "zǎoshang hǎo", "dzow-shahng how", "good morning", ["morning"]],
+      ["晚安", "wǎn'ān", "wahn-ahn", "good night", ["goodnight"]],
+      ["不客气", "bù kèqi", "boo kuh-chee", "you're welcome", ["you are welcome", "welcome"]],
+      ["好的", "hǎo de", "how duh", "OK / sure", ["ok", "okay", "sure"]],
+      ["没关系", "méi guānxi", "may gwahn-shee", "no problem", ["no worries", "it's ok", "it's okay"]]
+    ]},
+    { id: "nouns", name: "Everyday nouns", emoji: "🏠", sub: "Home, friend, phone, dog…", words: [
+      ["人", "rén", "run", "person", []],
+      ["家", "jiā", "jyah", "home / family", ["home", "family", "house"]],
+      ["书", "shū", "shoo", "book", []],
+      ["车", "chē", "chuh", "car", []],
+      ["门", "mén", "mun", "door", []],
+      ["钱", "qián", "chyen", "money", []],
+      ["手机", "shǒujī", "shoh-jee", "mobile phone", ["phone", "mobile", "cell phone", "cellphone"]],
+      ["朋友", "péngyou", "pung-yoh", "friend", []],
+      ["狗", "gǒu", "goh", "dog", []],
+      ["猫", "māo", "maow", "cat", []]
+    ]},
+    { id: "weather", name: "Weather", emoji: "🌦️", sub: "Sun, rain, wind, snow…", words: [
+      ["天气", "tiānqì", "tyen-chee", "weather", []],
+      ["太阳", "tàiyáng", "tye-yahng", "sun", ["sunshine"]],
+      ["雨", "yǔ", "yoo", "rain", []],
+      ["雪", "xuě", "shweh", "snow", []],
+      ["风", "fēng", "fung", "wind", []],
+      ["云", "yún", "yoon", "cloud", ["clouds"]],
+      ["下雨", "xià yǔ", "shyah yoo", "it's raining", ["raining", "it is raining", "rainy"]],
+      ["下雪", "xià xuě", "shyah shweh", "it's snowing", ["snowing", "it is snowing"]],
+      ["晴天", "qíngtiān", "ching-tyen", "sunny day", ["sunny"]],
+      ["多云", "duōyún", "dwaw-yoon", "cloudy", []]
+    ]},
+    { id: "food2", name: "More food & drink", emoji: "🥟", sub: "Dumplings, soup, pork, juice…", words: [
+      ["猪肉", "zhūròu", "joo-roh", "pork", []],
+      ["牛肉", "niúròu", "nyoh-roh", "beef", []],
+      ["羊肉", "yángròu", "yahng-roh", "lamb", ["mutton"]],
+      ["饺子", "jiǎozi", "jyow-dzuh", "dumplings", ["dumpling"]],
+      ["汤", "tāng", "tahng", "soup", []],
+      ["面包", "miànbāo", "myen-baow", "bread", []],
+      ["鸡蛋", "jīdàn", "jee-dahn", "egg", ["eggs"]],
+      ["蔬菜", "shūcài", "shoo-tsye", "vegetables", ["vegetable", "veg", "veggies"]],
+      ["水果", "shuǐguǒ", "shway-gwaw", "fruit", []],
+      ["果汁", "guǒzhī", "gwaw-jrr", "juice", []]
+    ]},
+    { id: "school", name: "School phrases", emoji: "🏫", sub: "Well done, quiet please, keep going…", words: [
+      ["做得好", "zuò de hǎo", "dzwaw duh how", "well done", ["good job", "good work"]],
+      ["很好", "hěn hǎo", "hun how", "very good", []],
+      ["不错", "búcuò", "boo-tswaw", "good try / not bad", ["good try", "not bad", "pretty good"]],
+      ["你真棒", "nǐ zhēn bàng", "nee jun bahng", "you're brilliant", ["you are brilliant", "brilliant", "you're great", "you're amazing", "amazing"]],
+      ["加油", "jiāyóu", "jyah-yoh", "keep going!", ["keep going", "add oil", "come on", "you can do it", "go for it"]],
+      ["我为你骄傲", "wǒ wèi nǐ jiāo'ào", "waw way nee jyow-ow", "I'm proud of you", ["i am proud of you", "proud of you"]],
+      ["请安静", "qǐng ānjìng", "ching ahn-jing", "quiet please", ["please be quiet", "be quiet", "quiet", "silence please"]],
+      ["请坐", "qǐng zuò", "ching dzwaw", "please sit down", ["sit down", "sit down please", "sit", "take a seat"]],
+      ["认真听", "rènzhēn tīng", "run-jun ting", "listen carefully", ["listen"]],
+      ["再试一次", "zài shì yī cì", "dzye shrr ee tsuh", "try again", ["have another go"]]
+    ]},
+    { id: "places", name: "Places around town", emoji: "📍", sub: "Park, station, bar, restaurant…", words: [
+      ["公园", "gōngyuán", "gohng-ywen", "park", []],
+      ["火车站", "huǒchēzhàn", "hwaw-chuh-jahn", "train station", ["station"]],
+      ["机场", "jīchǎng", "jee-chahng", "airport", []],
+      ["酒吧", "jiǔbā", "jyoh-bah", "bar", ["pub"]],
+      ["饭馆", "fànguǎn", "fahn-gwahn", "restaurant", []],
+      ["商店", "shāngdiàn", "shahng-dyen", "shop", ["store"]],
+      ["超市", "chāoshì", "chow-shrr", "supermarket", []],
+      ["医院", "yīyuàn", "ee-ywen", "hospital", []],
+      ["学校", "xuéxiào", "shweh-shyow", "school", []],
+      ["银行", "yínháng", "yeen-hahng", "bank", []]
+    ]}
+  ];
+
+  const MODES = [{ id: "mix", name: "Mix everything", emoji: "🎲",
+                   sub: "All " + (TOPICS.length * 10) + " words, dealt at random" }]
+    .concat(TOPICS.map(t => ({ id: t.id, name: t.name, emoji: t.emoji, sub: t.sub })));
+
+  const ALL_WORDS = TOPICS.flatMap(t => t.words);
+
+  // ---------- Answer checking ----------
+  function normalize(s) {
+    let n = s.toLowerCase()
+      .replace(/[’‘]/g, "'")
+      .replace(/[^a-z0-9' ]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    n = n.replace(/^(to|a|an|the) /, "");
+    n = n.replace(/'/g, "");        // i'm -> im, it's -> its
+    return n;
+  }
+
+  function acceptedAnswers(word) {
+    const answers = new Set();
+    // The main English may contain alternatives split by "/"
+    word[3].split("/").forEach(part => answers.add(normalize(part)));
+    word[4].forEach(a => answers.add(normalize(a)));
+    return answers;
+  }
+
+  // ---------- State ----------
+  let currentMode = null;
+  let pool = [];
+  let word = null;
+  let lastPin = "";
+  let dirty = false;     // wrong guess or reveal on this word
+  let answered = false;  // word finished (correct or revealed)
+  let streak = 0;
+
+  let bestStreaks = {};
+  try { bestStreaks = JSON.parse(localStorage.getItem("pinyinRecallBest") || "{}"); }
+  catch (e) { bestStreaks = {}; }
+
+  function saveBest() {
+    try { localStorage.setItem("pinyinRecallBest", JSON.stringify(bestStreaks)); }
+    catch (e) { /* storage unavailable — best streaks last this visit only */ }
+  }
+
+  // ---------- Helpers ----------
+  const $ = (id) => document.getElementById(id);
+  const pickWord = () => pool[Math.floor(Math.random() * pool.length)];
+
+  function show(screenId) {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    $(screenId).classList.add("active");
+    window.scrollTo({ top: 0 });
+  }
+
+  // ---------- Menu ----------
+  function renderMenu() {
+    const list = $("topic-list");
+    list.innerHTML = "";
+    MODES.forEach(mode => {
+      const btn = document.createElement("button");
+      btn.className = "topic-btn";
+      btn.innerHTML =
+        '<span class="topic-emoji">' + mode.emoji + '</span>' +
+        '<span><span class="topic-name">' + mode.name + '</span><br>' +
+        '<span class="topic-sub">' + mode.sub + '</span></span>' +
+        (bestStreaks[mode.id]
+          ? '<span class="topic-best">🔥 best: ' + bestStreaks[mode.id] + '</span>'
+          : '');
+      btn.addEventListener("click", () => startMode(mode));
+      list.appendChild(btn);
+    });
+  }
+
+  // ---------- Play ----------
+  function startMode(mode) {
+    currentMode = mode;
+    pool = mode.id === "mix"
+      ? ALL_WORDS
+      : TOPICS.find(t => t.id === mode.id).words;
+    streak = 0;
+    updateStreakBar();
+    nextWord();
+    show("screen-play");
+  }
+
+  function nextWord() {
+    let attempt = 0;
+    do { word = pickWord(); attempt++; }
+    while (word[1] === lastPin && attempt < 10);
+    lastPin = word[1];
+
+    dirty = false;
+    answered = false;
+
+    $("word-hanzi").textContent = word[0];
+    $("word-pinyin").textContent = word[1];
+    $("word-phon").textContent = '"' + word[2] + '"';
+    $("word-card").classList.remove("correct", "wrong");
+
+    const input = $("answer-input");
+    input.value = "";
+    input.disabled = false;
+
+    const fb = $("feedback");
+    fb.className = "feedback neutral";
+    fb.textContent = "Type your answer, then press Check (or Enter)";
+
+    $("btn-next").hidden = true;
+    $("btn-reveal").hidden = false;
+    input.focus();
+  }
+
+  function checkAnswer() {
+    if (answered) return;
+    const input = $("answer-input");
+    const guess = normalize(input.value);
+    if (!guess) { input.focus(); return; }
+
+    const card = $("word-card");
+    const fb = $("feedback");
+
+    if (acceptedAnswers(word).has(guess)) {
+      answered = true;
+      card.classList.remove("wrong");
+      card.classList.add("correct");
+
+      if (!dirty) {
+        streak++;
+        updateStreakBar();
+        if (!bestStreaks[currentMode.id] || streak > bestStreaks[currentMode.id]) {
+          bestStreaks[currentMode.id] = streak;
+          saveBest();
+          updateStreakBar();
+        }
+      }
+
+      fb.className = "feedback good";
+      fb.innerHTML = "✓ Correct! <strong>" + word[1] + "</strong> = " + word[3] +
+        '<span class="fb-sub">' + streakFlair() + "</span>";
+
+      input.disabled = true;
+      $("btn-reveal").hidden = true;
+      const nextBtn = $("btn-next");
+      nextBtn.hidden = false;
+      nextBtn.focus();
+    } else {
+      // Run broken!
+      dirty = true;
+      if (streak > 0) {
+        streak = 0;
+        updateStreakBar(true);
+      }
+      card.classList.remove("wrong");
+      void card.offsetWidth;
+      card.classList.add("wrong");
+      fb.className = "feedback bad";
+      fb.textContent = "Not quite — have another go!";
+      input.select();
+      input.focus();
+    }
+  }
+
+  function revealAnswer() {
+    if (answered) return;
+    answered = true;
+    dirty = true;
+    if (streak > 0) {
+      streak = 0;
+      updateStreakBar(true);
+    }
+
+    const fb = $("feedback");
+    fb.className = "feedback bad";
+    fb.innerHTML = "<strong>" + word[1] + "</strong> means: " + word[3] +
+      '<span class="fb-sub">Run reset — it\'ll stick next time. Jiāyóu!</span>';
+
+    $("answer-input").disabled = true;
+    $("btn-reveal").hidden = true;
+    const nextBtn = $("btn-next");
+    nextBtn.hidden = false;
+    nextBtn.focus();
+  }
+
+  function streakFlair() {
+    if (dirty) return "Run reset this word — new one starts now!";
+    if (streak >= 20) return "🔥🔥🔥 " + streak + " in a row — lǎoshī level!";
+    if (streak >= 10) return "🔥🔥 " + streak + " in a row — unstoppable!";
+    if (streak >= 5)  return "🔥 " + streak + " in a row — wǔ and counting!";
+    if (streak >= 3)  return "🔥 " + streak + " in a row!";
+    if (streak === 2) return "🔥 Two in a row!";
+    return "🔥 Run started — keep it going!";
+  }
+
+  function updateStreakBar(broken) {
+    const now = $("streak-now");
+    now.textContent = "🔥 " + streak;
+    now.classList.remove("bump", "broken");
+    void now.offsetWidth;
+    now.classList.add(broken ? "broken" : "bump");
+    setTimeout(() => now.classList.remove("bump", "broken"), 450);
+
+    const best = bestStreaks[currentMode ? currentMode.id : ""] || 0;
+    $("streak-best").textContent = "Best: " + best;
+  }
+
+  // ---------- Wire up ----------
+  $("btn-check").addEventListener("click", checkAnswer);
+  $("answer-input").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (answered) nextWord(); else checkAnswer();
+    }
+  });
+  $("btn-next").addEventListener("click", nextWord);
+  $("btn-reveal").addEventListener("click", revealAnswer);
+  $("btn-quit").addEventListener("click", () => {
+    renderMenu();
+    show("screen-menu");
+  });
+
+  renderMenu();
+</script>
+</body>
+</html>
