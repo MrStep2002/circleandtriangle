@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pīnyīn Daily — Everyday Mandarin Sentence Runs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --celadon: #EAF0E6;
+    --ink: #26312A;
+    --jade: #3E7C59;
+    --jade-deep: #2C5C42;
+    --cinnabar: #C0392B;
+    --gold: #C9A227;
+    --card: #FFFFFF;
+    --line: #CBD8C6;
+    --radius: 14px;
+    --shadow: 0 2px 6px rgba(38, 49, 42, 0.10);
+
+    --role-person: #A07E17;      --role-person-bg: #F6EEDA;
+    --role-frame: #2C5C42;       --role-frame-bg: #E3EFE7;
+    --role-adj: #7B5AA6;         --role-adj-bg: #EEE8F5;
+    --role-thing: #3D6395;       --role-thing-bg: #E4EBF4;
+    --role-time: #3A8E8C;        --role-time-bg: #E2F0EF;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: 'Nunito', system-ui, sans-serif;
+    background: var(--celadon);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .app { width: 100%; max-width: 560px; padding: 20px 16px 48px; }
+
+  /* ---------- Header ---------- */
+  header { text-align: center; padding: 12px 0 20px; }
+  .logo {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 2rem;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .logo .tone { color: var(--jade); }
+  .tagline { font-size: 0.95rem; color: #5C6B5E; margin-top: 2px; }
+
+  /* ---------- Screens ---------- */
+  .screen { display: none; }
+  .screen.active { display: block; animation: rise 0.35s ease both; }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  h2 {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.35rem;
+    margin-bottom: 4px;
+  }
+  .hint { color: #5C6B5E; font-size: 0.95rem; margin-bottom: 18px; }
+
+  /* ---------- Mode menu ---------- */
+  .topics { display: grid; gap: 12px; }
+  .topic-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    background: var(--card);
+    border: 2px solid transparent;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--ink);
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.12s ease, border-color 0.12s ease;
+  }
+  .topic-btn:hover, .topic-btn:focus-visible { border-color: var(--jade); transform: translateY(-2px); }
+  .topic-btn:active { transform: translateY(0); }
+  .topic-emoji {
+    font-size: 1.6rem;
+    width: 48px; height: 48px;
+    flex-shrink: 0;
+    display: grid; place-items: center;
+    background: var(--celadon);
+    border-radius: 12px;
+  }
+  .topic-name { font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 1.1rem; }
+  .topic-sub { font-size: 0.85rem; color: #5C6B5E; }
+  .topic-best {
+    margin-left: auto;
+    font-size: 0.85rem;
+    color: var(--gold);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  /* ---------- Streak bar ---------- */
+  .streak-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 10px 16px;
+    margin-bottom: 14px;
+  }
+  .streak-now {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 1.4rem;
+    color: var(--jade-deep);
+    transition: transform 0.15s ease, color 0.15s ease;
+  }
+  .streak-now.bump { transform: scale(1.25); }
+  .streak-now.broken { color: var(--cinnabar); animation: shake 0.4s ease; }
+  .streak-best { font-weight: 700; color: var(--gold); font-size: 0.95rem; }
+
+  /* ---------- Play screen ---------- */
+  .english-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 18px 16px;
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .english-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #7A8A7C;
+    margin-bottom: 4px;
+  }
+  .english-phrase {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    line-height: 1.35;
+  }
+
+  .sentence-area {
+    min-height: 74px;
+    background: rgba(255, 255, 255, 0.55);
+    border: 2px dashed var(--line);
+    border-radius: var(--radius);
+    padding: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 16px;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+  .sentence-area.complete { border-style: solid; border-color: var(--jade); background: #E3EFE7; }
+  .slot-hint { color: #96A698; font-style: italic; font-size: 0.9rem; }
+
+  .placed {
+    color: #fff;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    animation: pop 0.25s ease both;
+  }
+  .placed.person { background: var(--role-person); }
+  .placed.frame  { background: var(--jade); }
+  .placed.adj    { background: var(--role-adj); }
+  .placed.thing  { background: var(--role-thing); }
+  .placed.time   { background: var(--role-time); }
+  @keyframes pop {
+    from { transform: scale(0.6); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+
+  .bank-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #7A8A7C;
+    margin-bottom: 8px;
+  }
+  .bank { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+
+  .tile {
+    min-height: 52px;
+    padding: 8px 14px;
+    border-radius: 12px;
+    border: 2px solid var(--line);
+    background: var(--card);
+    box-shadow: var(--shadow);
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.12s ease, opacity 0.25s ease, transform 0.12s ease;
+  }
+  .tile.person { color: var(--role-person); background: var(--role-person-bg); }
+  .tile.frame  { color: var(--role-frame);  background: var(--role-frame-bg); }
+  .tile.adj    { color: var(--role-adj);    background: var(--role-adj-bg); }
+  .tile.thing  { color: var(--role-thing);  background: var(--role-thing-bg); }
+  .tile.time   { color: var(--role-time);   background: var(--role-time-bg); }
+  .tile:hover, .tile:focus-visible { border-color: var(--jade); }
+  .tile:active { transform: scale(0.96); }
+  .tile.used { opacity: 0; pointer-events: none; transform: scale(0.8); }
+  .tile.wrong { animation: shake 0.4s ease; border-color: var(--cinnabar); }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+  }
+  .tile-phon {
+    display: block;
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: 0.75rem;
+    color: #7A8A7C;
+    margin-top: 1px;
+  }
+
+  .done-panel {
+    display: none;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px;
+    text-align: center;
+    margin-bottom: 16px;
+    animation: rise 0.3s ease both;
+  }
+  .done-panel.visible { display: block; }
+  .done-streak {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 1.05rem;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  .done-pinyin {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--jade-deep);
+    margin-bottom: 4px;
+  }
+  .done-phon { font-style: italic; font-size: 0.95rem; color: #7A8A7C; margin-bottom: 6px; }
+  .done-literal { font-size: 0.9rem; color: #5C6B5E; font-style: italic; }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: block;
+    width: 100%;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 15px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    transition: transform 0.12s ease, background 0.12s ease;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--jade); color: #fff; }
+  .btn-primary:hover, .btn-primary:focus-visible { background: var(--jade-deep); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--jade-deep);
+    border: 2px solid var(--jade);
+    margin-top: 10px;
+  }
+  .btn-ghost:hover, .btn-ghost:focus-visible { background: rgba(62, 124, 89, 0.08); }
+  .btn:focus-visible, .topic-btn:focus-visible, .tile:focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 2px;
+  }
+  .btn[hidden] { display: none; }
+
+  footer { margin-top: 28px; text-align: center; font-size: 0.8rem; color: #7A8A7C; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">P<span class="tone">ī</span>ny<span class="tone">ī</span>n Daily</div>
+    <div class="tagline">Everyday sentences from words you already know</div>
+  </header>
+
+  <!-- ===== Menu screen ===== -->
+  <section id="screen-menu" class="screen active" aria-label="Choose a run">
+    <h2>Pick your run</h2>
+    <p class="hint">Endless everyday sentences — eating, errands, weather, feelings — built only from your vocab lists. Perfect builds grow your streak; one wrong tap resets the run!</p>
+    <div class="topics" id="topic-list"></div>
+  </section>
+
+  <!-- ===== Play screen ===== -->
+  <section id="screen-play" class="screen" aria-label="Build the phrase">
+    <div class="streak-bar">
+      <span class="streak-now" id="streak-now">🔥 0</span>
+      <span class="streak-best" id="streak-best">Best: 0</span>
+    </div>
+
+    <div class="english-card">
+      <div class="english-label">Say this in Mandarin</div>
+      <div class="english-phrase" id="english-phrase"></div>
+    </div>
+
+    <div class="sentence-area" id="sentence-area" aria-live="polite">
+      <span class="slot-hint" id="slot-hint">Tap the words below, in order…</span>
+    </div>
+
+    <div class="bank-label">Word bank <span style="text-transform:none; letter-spacing:0; font-weight:600;">(extra words are hiding in here!)</span></div>
+    <div class="bank" id="bank"></div>
+
+    <div class="done-panel" id="done-panel">
+      <div class="done-streak" id="done-streak"></div>
+      <div class="done-pinyin" id="done-pinyin"></div>
+      <div class="done-phon" id="done-phon"></div>
+      <div class="done-literal" id="done-literal"></div>
+    </div>
+
+    <button class="btn btn-primary" id="btn-next" hidden>Next sentence</button>
+    <button class="btn btn-ghost" id="btn-play-quit">End run &amp; back to menu</button>
+  </section>
+
+  <footer>Made for learning — pinyin only, no characters required.</footer>
+</div>
+
+<script>
+  // ---------- Vocabulary (all from the Pīnyīn Match lists) ----------
+  const PRONOUNS = [
+    { pin: "wǒ",    phon: "waw",     en: "I",    third: false },
+    { pin: "nǐ",    phon: "nee",     en: "You",  third: false },
+    { pin: "tā",    phon: "tah",     en: "He",   third: true },
+    { pin: "tā",    phon: "tah",     en: "She",  third: true },
+    { pin: "wǒmen", phon: "waw-mun", en: "We",   third: false },
+    { pin: "tāmen", phon: "tah-mun", en: "They", third: false }
+  ];
+  const be = (p) => p.en === "I" ? "am" : (p.third ? "is" : "are");
+
+  const EAT_FOODS = [
+    { pin: "jiǎozi",   phon: "jyow-dzuh", sen: "dumplings" },
+    { pin: "miàntiáo", phon: "myen-tyow", sen: "noodles" },
+    { pin: "mǐfàn",    phon: "mee-fahn",  sen: "rice" },
+    { pin: "yú",       phon: "yoo",       sen: "fish" },
+    { pin: "jī",       phon: "jee",       sen: "chicken" },
+    { pin: "zhūròu",   phon: "joo-roh",   sen: "pork" },
+    { pin: "niúròu",   phon: "nyoh-roh",  sen: "beef" },
+    { pin: "yángròu",  phon: "yahng-roh", sen: "lamb" },
+    { pin: "jīdàn",    phon: "jee-dahn",  sen: "eggs" },
+    { pin: "miànbāo",  phon: "myen-baow", sen: "bread" },
+    { pin: "shūcài",   phon: "shoo-tsye", sen: "vegetables" },
+    { pin: "píngguǒ",  phon: "ping-gwaw", sen: "an apple" }
+  ];
+  const DRINKS = [
+    { pin: "chá",    phon: "chah",     sen: "tea" },
+    { pin: "kāfēi",  phon: "kah-fay",  sen: "coffee" },
+    { pin: "shuǐ",   phon: "shway",    sen: "water" },
+    { pin: "píjiǔ",  phon: "pee-jyoh", sen: "beer" },
+    { pin: "niúnǎi", phon: "nyoh-nye", sen: "milk" },
+    { pin: "guǒzhī", phon: "gwaw-jrr", sen: "juice" }
+  ];
+
+  const PLACES = [
+    { pin: "gōngyuán",   phon: "gohng-ywen",     sen: "the park" },
+    { pin: "huǒchēzhàn", phon: "hwaw-chuh-jahn", sen: "the train station" },
+    { pin: "jīchǎng",    phon: "jee-chahng",     sen: "the airport" },
+    { pin: "jiǔbā",      phon: "jyoh-bah",       sen: "the bar" },
+    { pin: "fànguǎn",    phon: "fahn-gwahn",     sen: "the restaurant" },
+    { pin: "shāngdiàn",  phon: "shahng-dyen",    sen: "the shop" },
+    { pin: "chāoshì",    phon: "chow-shrr",      sen: "the supermarket" },
+    { pin: "yīyuàn",     phon: "ee-ywen",        sen: "the hospital" },
+    { pin: "xuéxiào",    phon: "shweh-shyow",    sen: "school" },
+    { pin: "yínháng",    phon: "yeen-hahng",     sen: "the bank" }
+  ];
+
+  const LIKE_THINGS = [
+    { pin: "chá",      phon: "chah",      sen: "tea" },
+    { pin: "kāfēi",    phon: "kah-fay",   sen: "coffee" },
+    { pin: "píjiǔ",    phon: "pee-jyoh",  sen: "beer" },
+    { pin: "jiǎozi",   phon: "jyow-dzuh", sen: "dumplings" },
+    { pin: "miàntiáo", phon: "myen-tyow", sen: "noodles" },
+    { pin: "yú",       phon: "yoo",       sen: "fish" },
+    { pin: "gǒu",      phon: "goh",       sen: "dogs" },
+    { pin: "māo",      phon: "maow",      sen: "cats" },
+    { pin: "xià yǔ",   phon: "shyah yoo",   sen: "the rain" },
+    { pin: "xià xuě",  phon: "shyah shweh", sen: "the snow" },
+    { pin: "tàiyáng",  phon: "tye-yahng",   sen: "the sun" }
+  ];
+
+  const ADJS = {
+    "hǎo":  { phon: "how",   en: "good", enPerson: "well" },
+    "lěng": { phon: "lung",  en: "cold" },
+    "rè":   { phon: "ruh",   en: "hot" },
+    "dà":   { phon: "dah",   en: "big" },
+    "xiǎo": { phon: "shyow", en: "small" },
+    "kuài": { phon: "kwye",  en: "fast" },
+    "xīn":  { phon: "sheen", en: "new" },
+    "lèi":  { phon: "lay",   en: "tired" }
+  };
+  const DESCRIBE_SUBJECTS = [
+    { pin: "tiānqì", phon: "tyen-chee", sen: "weather", adjs: ["hǎo", "lěng", "rè"] },
+    { pin: "chá",    phon: "chah",      sen: "tea",     adjs: ["rè"] },
+    { pin: "kāfēi",  phon: "kah-fay",   sen: "coffee",  adjs: ["rè"] },
+    { pin: "tāng",   phon: "tahng",     sen: "soup",    adjs: ["rè"] },
+    { pin: "píjiǔ",  phon: "pee-jyoh",  sen: "beer",    adjs: ["lěng"] },
+    { pin: "shuǐ",   phon: "shway",     sen: "water",   adjs: ["lěng"] },
+    { pin: "gǒu",    phon: "goh",       sen: "dog",     adjs: ["dà", "xiǎo"] },
+    { pin: "māo",    phon: "maow",      sen: "cat",     adjs: ["dà", "xiǎo"] },
+    { pin: "chē",    phon: "chuh",      sen: "car",     adjs: ["kuài", "xīn", "dà"] },
+    { pin: "shǒujī", phon: "shoh-jee",  sen: "phone",   adjs: ["xīn"] }
+  ];
+  const PERSON_ADJS = ["lèi", "lèi", "hǎo"]; // tired twice — it's the daily classic!
+
+  const ERRANDS = [
+    { placePins: ["chāoshì", "shāngdiàn"], verb: { pin: "mǎi", phon: "my", en: "buy" },
+      items: [
+        { pin: "miànbāo", phon: "myen-baow", sen: "bread" },
+        { pin: "niúnǎi",  phon: "nyoh-nye",  sen: "milk" },
+        { pin: "jīdàn",   phon: "jee-dahn",  sen: "eggs" },
+        { pin: "shuǐguǒ", phon: "shway-gwaw", sen: "fruit" },
+        { pin: "shūcài",  phon: "shoo-tsye", sen: "vegetables" },
+        { pin: "guǒzhī",  phon: "gwaw-jrr",  sen: "juice" },
+        { pin: "kāfēi",   phon: "kah-fay",   sen: "coffee" }
+      ] },
+    { placePins: ["fànguǎn"], verb: { pin: "chī", phon: "chrr", en: "eat" },
+      items: [
+        { pin: "jiǎozi",   phon: "jyow-dzuh", sen: "dumplings" },
+        { pin: "miàntiáo", phon: "myen-tyow", sen: "noodles" },
+        { pin: "mǐfàn",    phon: "mee-fahn",  sen: "rice" },
+        { pin: "yú",       phon: "yoo",       sen: "fish" }
+      ] },
+    { placePins: ["jiǔbā"], verb: { pin: "hē", phon: "huh", en: "drink" },
+      items: [
+        { pin: "píjiǔ", phon: "pee-jyoh", sen: "beer" }
+      ] }
+  ];
+
+  // ----- New-pattern vocab (introduces a few new words!) -----
+  const NUMBERS = [
+    { pin: "yī",    phon: "ee",     en: "one",   n: 1 },
+    { pin: "liǎng", phon: "lyahng", en: "two",   n: 2 },
+    { pin: "sān",   phon: "sahn",   en: "three", n: 3 }
+  ];
+  // Counters (measure words): ge for people, zhī for animals, běn for books
+  const HAVE_SETS = [
+    { measure: { pin: "ge",  phon: "guh" },
+      things: [ { pin: "péngyou", phon: "pung-yoh", sen: "friend" } ] },
+    { measure: { pin: "zhī", phon: "jrr" },
+      things: [ { pin: "gǒu", phon: "goh", sen: "dog" },
+                { pin: "māo", phon: "maow", sen: "cat" } ] },
+    { measure: { pin: "běn", phon: "bun" },
+      things: [ { pin: "shū", phon: "shoo", sen: "book" } ] }
+  ];
+
+  const POSSESSIVES = { "I": "My", "You": "Your", "He": "His", "She": "Her", "We": "Our", "They": "Their" };
+  const POSSESS_NOUNS = [
+    { pin: "gǒu",     phon: "goh",      sen: "dog",    adjs: ["dà", "xiǎo", "hǎo"] },
+    { pin: "māo",     phon: "maow",     sen: "cat",    adjs: ["dà", "xiǎo"] },
+    { pin: "chē",     phon: "chuh",     sen: "car",    adjs: ["kuài", "xīn", "dà"] },
+    { pin: "shǒujī",  phon: "shoh-jee", sen: "phone",  adjs: ["xīn", "hǎo"] },
+    { pin: "jiā",     phon: "jyah",     sen: "home",   adjs: ["dà", "xiǎo"] },
+    { pin: "shū",     phon: "shoo",     sen: "book",   adjs: ["xīn", "hǎo"] },
+    { pin: "péngyou", phon: "pung-yoh", sen: "friend", adjs: ["hǎo"] }
+  ];
+
+  const LANGS = [
+    { pin: "Zhōngwén", phon: "joong-wun", sen: "Chinese" },
+    { pin: "Yīngwén",  phon: "ying-wun",  sen: "English" }
+  ];
+
+  const TIME_WORDS = [
+    { pin: "jīntiān",  phon: "jin-tyen",  sen: "today" },
+    { pin: "míngtiān", phon: "ming-tyen", sen: "tomorrow" }
+  ];
+
+  const POLITE_DRINKS = [
+    { pin: "chá",   phon: "chah",    sen: "tea" },
+    { pin: "kāfēi", phon: "kah-fay", sen: "coffee" },
+    { pin: "shuǐ",  phon: "shway",   sen: "water" }
+  ];
+  const POLITE_FOODS = [
+    { pin: "jiǎozi",  phon: "jyow-dzuh",  sen: "dumplings" },
+    { pin: "mǐfàn",   phon: "mee-fahn",   sen: "rice" },
+    { pin: "shuǐguǒ", phon: "shway-gwaw", sen: "fruit" },
+    { pin: "miànbāo", phon: "myen-baow",  sen: "bread" }
+  ];
+
+  // ---------- Helpers ----------
+  const $ = (id) => document.getElementById(id);
+  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  const pickOther = (arr, notPin) => pick(arr.filter(x => x.pin !== notPin));
+
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function show(screenId) {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    $(screenId).classList.add("active");
+    window.scrollTo({ top: 0 });
+  }
+
+  const tok = (o, role, gloss) => ({ pin: o.pin, phon: o.phon, role, gloss: gloss || o.sen });
+  const dis = (o, role) => ({ pin: o.pin, phon: o.phon, role });
+  const findPlace = (pin) => PLACES.find(p => p.pin === pin);
+  const adjTok = (pin, forPerson) => ({
+    pin, phon: ADJS[pin].phon, role: "adj",
+    gloss: forPerson ? (ADJS[pin].enPerson || ADJS[pin].en) : ADJS[pin].en
+  });
+
+  // ---------- Sentence generators ----------
+  // Each returns { en, tokens: [{pin, phon, role, gloss}], distract: [{pin, phon, role}] }
+  const GENERATORS = {
+
+    // [P] (yào) chī/hē [food or drink]
+    eatdrink() {
+      const p = pick(PRONOUNS);
+      const isDrink = Math.random() < 0.45;
+      const food = pick(isDrink ? DRINKS : EAT_FOODS);
+      const verb = isDrink
+        ? { pin: "hē", phon: "huh", en: "drink" }
+        : { pin: "chī", phon: "chrr", en: "eat" };
+      const wrongVerb = isDrink
+        ? { pin: "chī", phon: "chrr" }
+        : { pin: "hē", phon: "huh" };
+      const want = Math.random() < 0.4;
+
+      const tokens = [tok(p, "person", p.en)];
+      let en;
+      if (want) {
+        tokens.push({ pin: "yào", phon: "yow", role: "frame", gloss: "want" });
+        en = p.en + " " + (p.third ? "wants" : "want") + " to " + verb.en + " " + food.sen + ".";
+      } else {
+        en = p.en + " " + be(p) + " " + verb.en.replace("eat", "eating").replace("drink", "drinking") + " " + food.sen + ".";
+      }
+      tokens.push({ pin: verb.pin, phon: verb.phon, role: "frame", gloss: verb.en });
+      tokens.push(tok(food, "thing"));
+
+      return {
+        en, tokens,
+        distract: [
+          dis(pickOther(PRONOUNS, p.pin), "person"),
+          dis(pickOther(isDrink ? DRINKS : EAT_FOODS, food.pin), "thing"),
+          { pin: wrongVerb.pin, phon: wrongVerb.phon, role: "frame" } // the chī/hē trap!
+        ]
+      };
+    },
+
+    // [P] (bù) qù [place]
+    going() {
+      const p = pick(PRONOUNS);
+      const place = pick(PLACES);
+      const negative = Math.random() < 0.3;
+
+      const tokens = [tok(p, "person", p.en)];
+      if (negative) tokens.push({ pin: "bù", phon: "boo", role: "frame", gloss: "not" });
+      tokens.push({ pin: "qù", phon: "chyoo", role: "frame", gloss: "go" });
+      tokens.push(tok(place, "thing"));
+
+      const en = p.en + " " + be(p) + (negative ? " not" : "") + " going to " + place.sen + ".";
+      const distract = [
+        dis(pickOther(PRONOUNS, p.pin), "person"),
+        dis(pickOther(PLACES, place.pin), "thing")
+      ];
+      if (!negative) distract.push({ pin: "bù", phon: "boo", role: "frame" });
+
+      return { en, tokens, distract };
+    },
+
+    // [P] (bù) xǐhuan / ài [thing]
+    likes() {
+      const p = pick(PRONOUNS);
+      const thing = pick(LIKE_THINGS);
+      const negative = Math.random() < 0.4;
+      const love = !negative && Math.random() < 0.4;
+
+      const tokens = [tok(p, "person", p.en)];
+      if (negative) tokens.push({ pin: "bù", phon: "boo", role: "frame", gloss: "not" });
+      tokens.push(love
+        ? { pin: "ài", phon: "eye", role: "frame", gloss: "love" }
+        : { pin: "xǐhuan", phon: "shee-hwahn", role: "frame", gloss: "like" });
+      tokens.push(tok(thing, "thing"));
+
+      let en;
+      if (negative) en = p.en + " " + (p.third ? "doesn't" : "don't") + " like " + thing.sen + ".";
+      else if (love) en = p.en + " " + (p.third ? "loves" : "love") + " " + thing.sen + ".";
+      else en = p.en + " " + (p.third ? "likes" : "like") + " " + thing.sen + ".";
+
+      const distract = [
+        dis(pickOther(PRONOUNS, p.pin), "person"),
+        dis(pickOther(LIKE_THINGS, thing.pin), "thing")
+      ];
+      if (!negative) distract.push({ pin: "bù", phon: "boo", role: "frame" });
+      else distract.push({ pin: love ? "xǐhuan" : "ài", phon: love ? "shee-hwahn" : "eye", role: "frame" });
+
+      return { en, tokens, distract };
+    },
+
+    // [subject] hěn [adjective]  — the weather is very cold, I am very tired…
+    describe() {
+      const personSubject = Math.random() < 0.35;
+      const hen = { pin: "hěn", phon: "hun", role: "frame", gloss: "very" };
+
+      if (personSubject) {
+        const p = pick(PRONOUNS);
+        const adjPin = pick(PERSON_ADJS);
+        const adj = adjTok(adjPin, true);
+        const wrongAdj = pick(Object.keys(ADJS).filter(a => a !== adjPin));
+        return {
+          en: p.en + " " + be(p) + " very " + adj.gloss + ".",
+          tokens: [tok(p, "person", p.en), hen, adj],
+          distract: [
+            dis(pickOther(PRONOUNS, p.pin), "person"),
+            { pin: wrongAdj, phon: ADJS[wrongAdj].phon, role: "adj" }
+          ]
+        };
+      }
+
+      const subj = pick(DESCRIBE_SUBJECTS);
+      const adjPin = pick(subj.adjs);
+      const adj = adjTok(adjPin, false);
+      const wrongAdj = pick(Object.keys(ADJS).filter(a => a !== adjPin));
+      return {
+        en: "The " + subj.sen + " is very " + adj.gloss + ".",
+        tokens: [tok(subj, "thing"), hen, adj],
+        distract: [
+          dis(pickOther(DESCRIBE_SUBJECTS, subj.pin), "thing"),
+          { pin: wrongAdj, phon: ADJS[wrongAdj].phon, role: "adj" }
+        ]
+      };
+    },
+
+    // [P] qù [place] chī/hē/mǎi [thing] — going somewhere to do something
+    errand() {
+      const p = pick(PRONOUNS);
+      const errand = pick(ERRANDS);
+      const place = findPlace(pick(errand.placePins));
+      const item = pick(errand.items);
+
+      const en = p.en + " " + be(p) + " going to " + place.sen +
+                 " to " + errand.verb.en + " " + item.sen + ".";
+      const tokens = [
+        tok(p, "person", p.en),
+        { pin: "qù", phon: "chyoo", role: "frame", gloss: "go" },
+        tok(place, "thing"),
+        { pin: errand.verb.pin, phon: errand.verb.phon, role: "frame", gloss: errand.verb.en },
+        tok(item, "thing")
+      ];
+
+      // Distractors: a wrong place, plus a wrong verb from another errand type.
+      const otherErrand = pick(ERRANDS.filter(e => e.verb.pin !== errand.verb.pin));
+      const distract = [
+        dis(pickOther(PRONOUNS, p.pin), "person"),
+        dis(pickOther(PLACES, place.pin), "thing"),
+        { pin: otherErrand.verb.pin, phon: otherErrand.verb.phon, role: "frame" }
+      ];
+
+      return { en, tokens, distract };
+    },
+
+    // [P] yǒu [number] [counter] [thing] — I have two dogs
+    have() {
+      const p = pick(PRONOUNS);
+      const set = pick(HAVE_SETS);
+      const thing = pick(set.things);
+      const num = pick(NUMBERS);
+      const plural = num.n > 1 ? "s" : "";
+      const en = p.en + " " + (p.third ? "has" : "have") + " " + num.en + " " + thing.sen + plural + ".";
+
+      const wrongMeasure = pick(HAVE_SETS.filter(s => s.measure.pin !== set.measure.pin)).measure;
+      const distract = [
+        dis(pickOther(PRONOUNS, p.pin), "person"),
+        { pin: wrongMeasure.pin, phon: wrongMeasure.phon, role: "adj" }
+      ];
+      if (num.pin === "liǎng") distract.push({ pin: "èr", phon: "arr", role: "adj" });
+      else distract.push(dis(pickOther(NUMBERS, num.pin), "adj"));
+
+      return {
+        en,
+        tokens: [
+          tok(p, "person", p.en),
+          { pin: "yǒu", phon: "yoh", role: "frame", gloss: "have" },
+          { pin: num.pin, phon: num.phon, role: "adj", gloss: num.en },
+          { pin: set.measure.pin, phon: set.measure.phon, role: "adj", gloss: "[counter]" },
+          tok(thing, "thing")
+        ],
+        distract
+      };
+    },
+
+    // [P] de [noun] hěn [adj] — my dog is very big
+    possess() {
+      const p = pick(PRONOUNS);
+      const noun = pick(POSSESS_NOUNS);
+      const adjPin = pick(noun.adjs);
+      const pos = POSSESSIVES[p.en];
+      const wrongAdj = pick(Object.keys(ADJS).filter(a => a !== adjPin));
+      return {
+        en: pos + " " + noun.sen + " is very " + ADJS[adjPin].en + ".",
+        tokens: [
+          tok(p, "person", pos.toLowerCase()),
+          { pin: "de", phon: "duh", role: "frame", gloss: "'s" },
+          tok(noun, "thing"),
+          { pin: "hěn", phon: "hun", role: "frame", gloss: "very" },
+          adjTok(adjPin, false)
+        ],
+        distract: [
+          dis(pickOther(PRONOUNS, p.pin), "person"),
+          { pin: wrongAdj, phon: ADJS[wrongAdj].phon, role: "adj" }
+        ]
+      };
+    },
+
+    // [P] (bù) shuō [language]  /  [P] kàn shū
+    speak() {
+      if (Math.random() < 0.6) {
+        const p = pick(PRONOUNS);
+        const lang = pick(LANGS);
+        const negative = Math.random() < 0.4;
+        const tokens = [tok(p, "person", p.en)];
+        if (negative) tokens.push({ pin: "bù", phon: "boo", role: "frame", gloss: "not" });
+        tokens.push({ pin: "shuō", phon: "shwaw", role: "frame", gloss: "speak" });
+        tokens.push(tok(lang, "thing"));
+        const en = negative
+          ? p.en + " " + (p.third ? "doesn't" : "don't") + " speak " + lang.sen + "."
+          : p.en + " " + (p.third ? "speaks" : "speak") + " " + lang.sen + ".";
+        const distract = [
+          dis(pickOther(PRONOUNS, p.pin), "person"),
+          dis(pickOther(LANGS, lang.pin), "thing")
+        ];
+        if (!negative) distract.push({ pin: "bù", phon: "boo", role: "frame" });
+        return { en, tokens, distract };
+      }
+      const p = pick(PRONOUNS);
+      return {
+        en: p.en + " " + be(p) + " reading a book.",
+        tokens: [
+          tok(p, "person", p.en),
+          { pin: "kàn", phon: "kahn", role: "frame", gloss: "read / look at" },
+          { pin: "shū", phon: "shoo", role: "thing", gloss: "book" }
+        ],
+        distract: [
+          dis(pickOther(PRONOUNS, p.pin), "person"),
+          { pin: "shuō", phon: "shwaw", role: "frame" },
+          { pin: "shǒujī", phon: "shoh-jee", role: "thing" }
+        ]
+      };
+    },
+
+    // [jīntiān/míngtiān] + weather — it's raining today, tomorrow will be cold
+    weathertalk() {
+      const t = pick(TIME_WORDS);
+      const today = t.pin === "jīntiān";
+      const timeTok = { pin: t.pin, phon: t.phon, role: "time", gloss: t.sen };
+      const r = Math.random();
+
+      if (r < 0.35) {
+        const rain = Math.random() < 0.5;
+        const ev = rain
+          ? { pin: "xià yǔ", phon: "shyah yoo", sen: "rain" }
+          : { pin: "xià xuě", phon: "shyah shweh", sen: "snow" };
+        const other = rain
+          ? { pin: "xià xuě", phon: "shyah shweh" }
+          : { pin: "xià yǔ", phon: "shyah yoo" };
+        return {
+          en: today
+            ? "It's " + (rain ? "raining" : "snowing") + " today."
+            : "It will " + ev.sen + " tomorrow.",
+          tokens: [timeTok, { pin: ev.pin, phon: ev.phon, role: "thing", gloss: ev.sen }],
+          distract: [
+            { pin: other.pin, phon: other.phon, role: "thing" },
+            dis(pickOther(TIME_WORDS, t.pin), "time")
+          ]
+        };
+      }
+
+      if (r < 0.7) {
+        const adjPin = pick(["lěng", "rè"]);
+        const wrongAdj = adjPin === "lěng" ? "rè" : "lěng";
+        return {
+          en: today
+            ? "It's very " + ADJS[adjPin].en + " today."
+            : "It will be very " + ADJS[adjPin].en + " tomorrow.",
+          tokens: [timeTok, { pin: "hěn", phon: "hun", role: "frame", gloss: "very" }, adjTok(adjPin, false)],
+          distract: [
+            { pin: wrongAdj, phon: ADJS[wrongAdj].phon, role: "adj" },
+            dis(pickOther(TIME_WORDS, t.pin), "time")
+          ]
+        };
+      }
+
+      const adjPin = pick(["hǎo", "lěng", "rè"]);
+      const wrongAdj = pick(Object.keys(ADJS).filter(a => a !== adjPin));
+      return {
+        en: today
+          ? "The weather is very " + ADJS[adjPin].en + " today."
+          : "The weather will be very " + ADJS[adjPin].en + " tomorrow.",
+        tokens: [
+          timeTok,
+          { pin: "tiānqì", phon: "tyen-chee", role: "thing", gloss: "weather" },
+          { pin: "hěn", phon: "hun", role: "frame", gloss: "very" },
+          adjTok(adjPin, false)
+        ],
+        distract: [
+          { pin: wrongAdj, phon: ADJS[wrongAdj].phon, role: "adj" },
+          dis(pickOther(TIME_WORDS, t.pin), "time")
+        ]
+      };
+    },
+
+    // Qǐng + verb + thing — please have some tea / please come to my home
+    polite() {
+      if (Math.random() < 0.3) {
+        return {
+          en: "Please come to my home.",
+          tokens: [
+            { pin: "qǐng", phon: "ching", role: "frame", gloss: "please" },
+            { pin: "lái", phon: "lye", role: "frame", gloss: "come" },
+            { pin: "wǒ", phon: "waw", role: "person", gloss: "my" },
+            { pin: "de", phon: "duh", role: "frame", gloss: "'s" },
+            { pin: "jiā", phon: "jyah", role: "thing", gloss: "home" }
+          ],
+          distract: [
+            { pin: "qù", phon: "chyoo", role: "frame" },
+            { pin: "tā", phon: "tah", role: "person" }
+          ]
+        };
+      }
+      const isDrink = Math.random() < 0.5;
+      const items = isDrink ? POLITE_DRINKS : POLITE_FOODS;
+      const item = pick(items);
+      const verb = isDrink
+        ? { pin: "hē", phon: "huh", en: "drink" }
+        : { pin: "chī", phon: "chrr", en: "eat" };
+      const wrongVerb = isDrink
+        ? { pin: "chī", phon: "chrr" }
+        : { pin: "hē", phon: "huh" };
+      return {
+        en: "Please have some " + item.sen + ".",
+        tokens: [
+          { pin: "qǐng", phon: "ching", role: "frame", gloss: "please" },
+          { pin: verb.pin, phon: verb.phon, role: "frame", gloss: verb.en },
+          tok(item, "thing")
+        ],
+        distract: [
+          { pin: wrongVerb.pin, phon: wrongVerb.phon, role: "frame" },
+          dis(pickOther(items, item.pin), "thing")
+        ]
+      };
+    }
+  };
+
+  const MODES = [
+    { id: "mix", name: "Mix it up", emoji: "🎲", sub: "All ten patterns, at random — a whole day in one run",
+      gens: ["eatdrink", "going", "likes", "describe", "errand",
+             "have", "possess", "speak", "weathertalk", "polite"] },
+    { id: "eatdrink", name: "Eating & drinking", emoji: "🍜", sub: "I'm eating dumplings, she wants to drink tea…",
+      gens: ["eatdrink"] },
+    { id: "going", name: "Out & about", emoji: "🚶", sub: "I'm going to the park, he isn't going to school…",
+      gens: ["going"] },
+    { id: "likes", name: "Likes & loves", emoji: "❤️", sub: "We love dumplings, she doesn't like the rain…",
+      gens: ["likes"] },
+    { id: "describe", name: "How things are", emoji: "☀️", sub: "The weather is very cold, I am very tired…",
+      gens: ["describe"] },
+    { id: "errand", name: "Errands", emoji: "🧺", sub: "Going to the supermarket to buy bread…",
+      gens: ["errand"] },
+    { id: "have", name: "What we have", emoji: "🐾", sub: "I have two dogs, she has three books…",
+      gens: ["have"] },
+    { id: "mine", name: "Mine & yours", emoji: "🤝", sub: "My dog is very big, her car is very fast…",
+      gens: ["possess"] },
+    { id: "speak", name: "Speaking & reading", emoji: "🗣️", sub: "I speak English, he's reading a book…",
+      gens: ["speak"] },
+    { id: "weathertalk", name: "Weather talk", emoji: "⛅", sub: "It's raining today, tomorrow will be cold…",
+      gens: ["weathertalk"] },
+    { id: "polite", name: "Being polite", emoji: "🍵", sub: "Please have some tea, please come to my home…",
+      gens: ["polite"] }
+  ];
+
+  // ---------- State ----------
+  let currentMode = null;
+  let phrase = null;
+  let tokenPos = 0;
+  let streak = 0;
+  let dirty = false;
+  let lastEn = "";
+
+  let bestStreaks = {};
+  try { bestStreaks = JSON.parse(localStorage.getItem("pinyinDailyBest") || "{}"); }
+  catch (e) { bestStreaks = {}; }
+
+  function saveBest() {
+    try { localStorage.setItem("pinyinDailyBest", JSON.stringify(bestStreaks)); }
+    catch (e) { /* storage unavailable — best streaks last this visit only */ }
+  }
+
+  // ---------- Menu ----------
+  function renderMenu() {
+    const list = $("topic-list");
+    list.innerHTML = "";
+    MODES.forEach(mode => {
+      const btn = document.createElement("button");
+      btn.className = "topic-btn";
+      btn.innerHTML =
+        '<span class="topic-emoji">' + mode.emoji + '</span>' +
+        '<span><span class="topic-name">' + mode.name + '</span><br>' +
+        '<span class="topic-sub">' + mode.sub + '</span></span>' +
+        (bestStreaks[mode.id]
+          ? '<span class="topic-best">🔥 best: ' + bestStreaks[mode.id] + '</span>'
+          : '');
+      btn.addEventListener("click", () => startMode(mode));
+      list.appendChild(btn);
+    });
+  }
+
+  // ---------- Play ----------
+  function startMode(mode) {
+    currentMode = mode;
+    streak = 0;
+    updateStreakBar();
+    nextSentence();
+    show("screen-play");
+  }
+
+  function nextSentence() {
+    let attempt = 0;
+    do {
+      phrase = GENERATORS[pick(currentMode.gens)]();
+      attempt++;
+    } while (phrase.en === lastEn && attempt < 10);
+    lastEn = phrase.en;
+
+    tokenPos = 0;
+    dirty = false;
+
+    $("english-phrase").textContent = phrase.en;
+
+    const area = $("sentence-area");
+    area.classList.remove("complete");
+    area.innerHTML = '<span class="slot-hint" id="slot-hint">Tap the words below, in order…</span>';
+
+    // Bank = tokens + distractors, minus any duplicated pinyin.
+    const bank = $("bank");
+    bank.innerHTML = "";
+    const usedPins = new Set(phrase.tokens.map(t => t.pin));
+    const cleanDistract = [];
+    phrase.distract.forEach(d => {
+      if (!usedPins.has(d.pin)) { cleanDistract.push(d); usedPins.add(d.pin); }
+    });
+
+    shuffle(phrase.tokens.concat(cleanDistract)).forEach(item => {
+      const t = document.createElement("button");
+      t.className = "tile " + item.role;
+      t.dataset.value = item.pin;
+      t.innerHTML = item.pin + '<span class="tile-phon">' + item.phon + '</span>';
+      t.addEventListener("click", () => tapTile(t));
+      bank.appendChild(t);
+    });
+
+    $("done-panel").classList.remove("visible");
+    $("btn-next").hidden = true;
+  }
+
+  function tapTile(tile) {
+    if (tile.classList.contains("used")) return;
+    if (!$("btn-next").hidden) return;
+    const expected = phrase.tokens[tokenPos];
+
+    if (tile.dataset.value === expected.pin) {
+      tile.classList.add("used");
+      const hint = $("slot-hint");
+      if (hint) hint.remove();
+
+      const placed = document.createElement("span");
+      placed.className = "placed " + expected.role;
+      placed.textContent = expected.pin;
+      $("sentence-area").appendChild(placed);
+
+      tokenPos++;
+      if (tokenPos === phrase.tokens.length) sentenceComplete();
+    } else {
+      dirty = true;
+      if (streak > 0) {
+        streak = 0;
+        updateStreakBar(true);
+      }
+      tile.classList.add("wrong");
+      setTimeout(() => tile.classList.remove("wrong"), 450);
+    }
+  }
+
+  function sentenceComplete() {
+    const area = $("sentence-area");
+    area.classList.add("complete");
+
+    const placedWords = area.querySelectorAll(".placed");
+    const last = placedWords[placedWords.length - 1];
+    if (last) last.textContent += ".";
+
+    if (!dirty) {
+      streak++;
+      updateStreakBar();
+      if (!bestStreaks[currentMode.id] || streak > bestStreaks[currentMode.id]) {
+        bestStreaks[currentMode.id] = streak;
+        saveBest();
+        updateStreakBar();
+      }
+    }
+
+    $("done-streak").textContent = streakMessage();
+    $("done-pinyin").textContent =
+      "✓ " + phrase.tokens.map(t => t.pin).join(" ") + ".";
+    $("done-phon").textContent =
+      "Say it: " + phrase.tokens.map(t => t.phon).join(" ");
+    $("done-literal").textContent =
+      "Word by word: " + phrase.tokens.map(t => t.gloss).join(" / ");
+    $("done-panel").classList.add("visible");
+
+    const nextBtn = $("btn-next");
+    nextBtn.hidden = false;
+    nextBtn.focus();
+  }
+
+  function streakMessage() {
+    if (dirty) return "Run reset — start a new one!";
+    if (streak >= 20) return "🔥🔥🔥 " + streak + " in a row — lǎoshī level!";
+    if (streak >= 10) return "🔥🔥 " + streak + " in a row — shí+! Unstoppable!";
+    if (streak >= 5)  return "🔥 " + streak + " in a row — wǔ and counting!";
+    if (streak >= 3)  return "🔥 " + streak + " in a row — sān! Keep going!";
+    if (streak === 2) return "🔥 Two in a row!";
+    return "🔥 Run started — keep it going!";
+  }
+
+  function updateStreakBar(broken) {
+    const now = $("streak-now");
+    now.textContent = "🔥 " + streak;
+    now.classList.remove("bump", "broken");
+    void now.offsetWidth;
+    now.classList.add(broken ? "broken" : "bump");
+    setTimeout(() => now.classList.remove("bump", "broken"), 450);
+
+    const best = bestStreaks[currentMode ? currentMode.id : ""] || 0;
+    $("streak-best").textContent = "Best: " + best;
+  }
+
+  // ---------- Wire up ----------
+  $("btn-next").addEventListener("click", nextSentence);
+  $("btn-play-quit").addEventListener("click", () => {
+    renderMenu();
+    show("screen-menu");
+  });
+
+  renderMenu();
+</script>
+</body>
+</html>
