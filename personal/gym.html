@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loadout — Weekly Training Log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #14161a;
+    --bg-raised: #1c1f24;
+    --bg-raised-2: #24272e;
+    --line: #33373f;
+    --chalk: #f2efe9;
+    --chalk-dim: #9aa0a8;
+    --chalk-faint: #666b73;
+    --yellow: #f4d35e;
+    --yellow-dim: #7a6a30;
+    --steel: #4a90c4;
+    --steel-dim: #2b4a63;
+    --danger: #e4572e;
+    --radius: 14px;
+  }
+  *{ box-sizing: border-box; }
+  html,body{
+    margin:0; padding:0;
+    background: var(--bg);
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(255,255,255,0.035) 1px, transparent 0);
+    background-size: 22px 22px;
+    color: var(--chalk);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  .wrap{ max-width: 640px; margin: 0 auto; padding: 28px 18px 100px; }
+
+  /* ---------- Header ---------- */
+  header{ margin-bottom: 22px; }
+  .eyebrow{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--yellow);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    font-weight: 700;
+  }
+  h1{
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    letter-spacing: 0.02em;
+    margin: 0 0 4px 0;
+    line-height: 0.95;
+  }
+  .subrow{
+    display:flex; justify-content: space-between; align-items: flex-end;
+    flex-wrap: wrap; gap: 10px; margin-top: 10px;
+  }
+  .weekdate{ color: var(--chalk-dim); font-size: 14px; }
+  .streak{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: var(--chalk-dim);
+    display:flex; align-items:center; gap:6px;
+  }
+  .streak b{ color: var(--yellow); font-size: 15px; }
+
+  /* ---------- Progress bar (loading bar) ---------- */
+  .loadbar-wrap{ margin: 20px 0 26px; }
+  .loadbar-label{
+    display:flex; justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--chalk-dim); margin-bottom: 8px;
+    letter-spacing: 0.05em;
+  }
+  .loadbar{
+    height: 14px; border-radius: 7px; background: var(--bg-raised);
+    border: 1px solid var(--line); overflow: hidden; position: relative;
+  }
+  .loadbar-fill{
+    height: 100%; border-radius: 7px;
+    background: linear-gradient(90deg, var(--steel), var(--yellow));
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+  }
+  .goal-banner{
+    margin-top: 12px; padding: 12px 14px; border-radius: 10px;
+    background: linear-gradient(90deg, rgba(244,211,94,0.14), rgba(244,211,94,0.03));
+    border: 1px solid var(--yellow-dim);
+    font-size: 13.5px; color: var(--yellow);
+    display: none; align-items: center; gap: 8px;
+    font-weight: 600;
+  }
+  .goal-banner.show{ display: flex; }
+
+  /* ---------- Exercise cards ---------- */
+  .list{ display: flex; flex-direction: column; gap: 10px; }
+  .card{
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 14px 14px;
+    display: flex; align-items: center; gap: 12px;
+    transition: border-color 0.2s;
+  }
+  .card.done{ border-color: var(--yellow-dim); background: linear-gradient(180deg, rgba(244,211,94,0.06), var(--bg-raised) 40%); }
+  .card-main{ flex: 1; min-width: 0; }
+  .card-name{ font-size: 15px; font-weight: 600; margin-bottom: 3px; }
+  .card-meta{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--chalk-faint); letter-spacing: 0.03em;
+  }
+  .plates{ display:flex; gap: 5px; align-items:center; }
+  .plate{
+    width: 20px; height: 20px; border-radius: 50%;
+    border: 2px solid var(--line);
+    background: var(--bg-raised-2);
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .plate.filled{
+    background: var(--yellow);
+    border-color: var(--yellow);
+    box-shadow: 0 0 0 3px rgba(244,211,94,0.12);
+  }
+  .card-controls{ display:flex; align-items:center; gap: 8px; }
+  .btn-circle{
+    width: 34px; height: 34px; border-radius: 50%;
+    border: 1px solid var(--line); background: var(--bg-raised-2);
+    color: var(--chalk); font-size: 17px; line-height: 1;
+    display:flex; align-items:center; justify-content:center;
+    cursor: pointer; user-select: none; flex-shrink:0;
+  }
+  .btn-circle:active{ transform: scale(0.92); }
+  .btn-circle.plus{ background: var(--steel-dim); border-color: var(--steel); color: var(--chalk); }
+  .btn-circle.plus:hover{ background: var(--steel); }
+  .icon-btn{
+    background: none; border: none; color: var(--chalk-faint);
+    cursor: pointer; padding: 4px; font-size: 15px; line-height:1;
+  }
+  .icon-btn:hover{ color: var(--chalk); }
+
+  /* ---------- Add / edit ---------- */
+  .add-row{ margin-top: 16px; }
+  .add-btn{
+    width: 100%; padding: 13px; border-radius: var(--radius);
+    border: 1px dashed var(--line); background: transparent;
+    color: var(--chalk-dim); font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px; letter-spacing: 0.05em; cursor: pointer;
+    text-transform: uppercase; font-weight: 700;
+  }
+  .add-btn:hover{ border-color: var(--yellow-dim); color: var(--yellow); }
+
+  .editor{
+    background: var(--bg-raised); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 16px; margin-top: 10px;
+    display: none; flex-direction: column; gap: 10px;
+  }
+  .editor.show{ display: flex; }
+  .editor label{
+    font-family: 'JetBrains Mono', monospace; font-size: 10.5px;
+    color: var(--chalk-faint); text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .editor input{
+    background: var(--bg-raised-2); border: 1px solid var(--line);
+    border-radius: 8px; padding: 10px 12px; color: var(--chalk);
+    font-family: 'Inter', sans-serif; font-size: 14px; width: 100%;
+  }
+  .editor input:focus{ outline: none; border-color: var(--steel); }
+  .editor-row{ display:flex; gap: 10px; }
+  .editor-row > div{ flex: 1; }
+  .editor-actions{ display:flex; gap: 8px; margin-top: 4px; }
+  .editor-actions button{
+    flex:1; padding: 10px; border-radius: 8px; border: none;
+    font-weight: 700; font-size: 13px; cursor: pointer;
+    font-family: 'Inter', sans-serif;
+  }
+  .save-btn{ background: var(--yellow); color: #22200f; }
+  .cancel-btn{ background: var(--bg-raised-2); color: var(--chalk-dim); }
+
+  /* ---------- History ---------- */
+  .history-toggle{
+    margin-top: 28px; display:flex; align-items:center; gap:8px;
+    cursor: pointer; color: var(--chalk-dim); font-size: 13px;
+    font-family: 'JetBrains Mono', monospace; letter-spacing: 0.04em;
+    user-select: none;
+  }
+  .history-toggle .chev{ transition: transform 0.2s; }
+  .history-toggle.open .chev{ transform: rotate(90deg); }
+  .history-list{
+    display:none; flex-direction: column; gap: 8px; margin-top: 12px;
+  }
+  .history-list.show{ display: flex; }
+  .history-item{
+    display:flex; justify-content: space-between; align-items:center;
+    padding: 10px 14px; background: var(--bg-raised);
+    border: 1px solid var(--line); border-radius: 10px;
+    font-size: 13px;
+  }
+  .history-item .hi-date{ color: var(--chalk-dim); font-family: 'JetBrains Mono', monospace; font-size: 11.5px; }
+  .history-badge{
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    font-weight: 700; padding: 3px 9px; border-radius: 20px;
+  }
+  .history-badge.hit{ background: rgba(244,211,94,0.15); color: var(--yellow); }
+  .history-badge.miss{ background: rgba(228,87,46,0.13); color: var(--danger); }
+  .empty-hist{ color: var(--chalk-faint); font-size: 13px; padding: 8px 2px; }
+
+  footer{
+    margin-top: 40px; text-align: center; color: var(--chalk-faint);
+    font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.06em;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Weekly Training Log</div>
+    <h1>LOADOUT</h1>
+    <div class="subrow">
+      <div class="weekdate" id="weekdate">—</div>
+      <div class="streak">Streak <b id="streakCount">0</b> wks</div>
+    </div>
+  </header>
+
+  <div class="loadbar-wrap">
+    <div class="loadbar-label">
+      <span id="progressLabel">0 / 0 COMPLETE</span>
+      <span id="progressPct">0%</span>
+    </div>
+    <div class="loadbar"><div class="loadbar-fill" id="loadbarFill" style="width:0%"></div></div>
+    <div class="goal-banner" id="goalBanner">🏆 Weekly goal hit — everything on the list is done.</div>
+  </div>
+
+  <div class="list" id="list"></div>
+
+  <div class="add-row">
+    <button class="add-btn" id="showAddBtn">+ Add exercise</button>
+    <div class="editor" id="editor">
+      <div>
+        <label>Exercise name</label>
+        <input type="text" id="editName" placeholder="e.g. Lat pulldown 30kg x 15">
+      </div>
+      <div class="editor-row">
+        <div>
+          <label>Weekly target (times)</label>
+          <input type="number" id="editTarget" min="1" max="14" value="1">
+        </div>
+      </div>
+      <div class="editor-actions">
+        <button class="cancel-btn" id="cancelEditBtn">Cancel</button>
+        <button class="save-btn" id="saveEditBtn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="history-toggle" id="historyToggle">
+    <span class="chev">▶</span> <span>Week history</span>
+  </div>
+  <div class="history-list" id="historyList"></div>
+
+  <footer>SAVED LOCALLY ON THIS DEVICE · RESETS EVERY MONDAY</footer>
+</div>
+
+<script>
+(function(){
+  const STORAGE_KEY = 'loadout_gym_tracker_v1';
+
+  const DEFAULT_EXERCISES = [
+    { name: 'Yoga — 20 mins', target: 1 },
+    { name: 'Pilates — 20 mins', target: 1 },
+    { name: '5km cycling under 15 mins', target: 1 },
+    { name: '8kg x 50 reps', target: 1 },
+    { name: '8kg x 50 reps and raise', target: 1 },
+    { name: '15kg long bar x 20 reps', target: 1 },
+    { name: '20kg seated leg press x 20', target: 1 },
+    { name: '50kg abdominal x 50', target: 1 },
+    { name: 'Seated leg curl 27.5kg x 40', target: 1 },
+    { name: 'Leg extension 27.5kg x 40', target: 1 },
+    { name: 'Biceps curl 20kg x 40', target: 1 },
+    { name: 'Pectoral fly 40kg x 40', target: 1 },
+    { name: 'Chest press', target: 1 },
+    { name: 'Shoulder press', target: 1 },
+    { name: 'Rowing', target: 1 },
+    { name: 'Running 5km', target: 1 },
+  ];
+
+  function uid(){ return 'x' + Math.random().toString(36).slice(2, 10); }
+
+  function getMonday(d){
+    const date = new Date(d);
+    const day = date.getDay(); // 0 Sun .. 6 Sat
+    const diff = (day === 0 ? -6 : 1) - day;
+    date.setDate(date.getDate() + diff);
+    date.setHours(0,0,0,0);
+    return date;
+  }
+  function fmtDate(d){
+    return d.toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
+  }
+  function weekKey(monday){
+    return monday.toISOString().slice(0,10);
+  }
+
+  function loadData(){
+    let raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw){
+      const exercises = DEFAULT_EXERCISES.map(e => ({ id: uid(), name: e.name, target: e.target }));
+      const monday = getMonday(new Date());
+      const data = {
+        exercises,
+        currentWeekKey: weekKey(monday),
+        progress: {},
+        history: [],
+        streak: 0,
+      };
+      exercises.forEach(e => data.progress[e.id] = 0);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      return data;
+    }
+    return JSON.parse(raw);
+  }
+  function saveData(data){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  function allDone(data){
+    if(data.exercises.length === 0) return false;
+    return data.exercises.every(e => (data.progress[e.id]||0) >= e.target);
+  }
+
+  function rolloverIfNeeded(data){
+    const nowMonday = getMonday(new Date());
+    const nowKey = weekKey(nowMonday);
+    if(nowKey !== data.currentWeekKey){
+      // archive the week that just ended
+      const total = data.exercises.length;
+      const completed = data.exercises.filter(e => (data.progress[e.id]||0) >= e.target).length;
+      const achieved = total > 0 && completed === total;
+      data.history.unshift({
+        weekKey: data.currentWeekKey,
+        completed, total, achieved,
+      });
+      data.streak = achieved ? (data.streak||0) + 1 : 0;
+      // reset progress for new week
+      const newProgress = {};
+      data.exercises.forEach(e => newProgress[e.id] = 0);
+      data.progress = newProgress;
+      data.currentWeekKey = nowKey;
+      saveData(data);
+    }
+  }
+
+  let data = loadData();
+  rolloverIfNeeded(data);
+
+  const listEl = document.getElementById('list');
+  const weekdateEl = document.getElementById('weekdate');
+  const streakEl = document.getElementById('streakCount');
+  const loadbarFill = document.getElementById('loadbarFill');
+  const progressLabel = document.getElementById('progressLabel');
+  const progressPct = document.getElementById('progressPct');
+  const goalBanner = document.getElementById('goalBanner');
+  const historyListEl = document.getElementById('historyList');
+  const historyToggle = document.getElementById('historyToggle');
+
+  function render(){
+    const monday = getMonday(new Date());
+    const sunday = new Date(monday); sunday.setDate(sunday.getDate()+6);
+    weekdateEl.textContent = fmtDate(monday) + ' – ' + fmtDate(sunday);
+    streakEl.textContent = data.streak || 0;
+
+    listEl.innerHTML = '';
+    let completedCount = 0;
+    data.exercises.forEach(ex => {
+      const count = data.progress[ex.id] || 0;
+      const done = count >= ex.target;
+      if(done) completedCount++;
+
+      const card = document.createElement('div');
+      card.className = 'card' + (done ? ' done' : '');
+
+      const main = document.createElement('div');
+      main.className = 'card-main';
+      const nameEl = document.createElement('div');
+      nameEl.className = 'card-name';
+      nameEl.textContent = ex.name;
+      const metaEl = document.createElement('div');
+      metaEl.className = 'card-meta';
+      metaEl.textContent = count + ' / ' + ex.target + (ex.target > 1 ? ' this week' : 'x this week');
+      main.appendChild(nameEl);
+      main.appendChild(metaEl);
+
+      const plates = document.createElement('div');
+      plates.className = 'plates';
+      const maxShow = Math.min(ex.target, 7);
+      for(let i=0;i<maxShow;i++){
+        const p = document.createElement('div');
+        p.className = 'plate' + (i < count ? ' filled' : '');
+        plates.appendChild(p);
+      }
+
+      const controls = document.createElement('div');
+      controls.className = 'card-controls';
+
+      const minusBtn = document.createElement('button');
+      minusBtn.className = 'btn-circle';
+      minusBtn.textContent = '–';
+      minusBtn.setAttribute('aria-label', 'Log one less for ' + ex.name);
+      minusBtn.onclick = () => { data.progress[ex.id] = Math.max(0, (data.progress[ex.id]||0) - 1); saveData(data); render(); };
+
+      const plusBtn = document.createElement('button');
+      plusBtn.className = 'btn-circle plus';
+      plusBtn.textContent = '+';
+      plusBtn.setAttribute('aria-label', 'Log one for ' + ex.name);
+      plusBtn.onclick = () => { data.progress[ex.id] = Math.min(ex.target, (data.progress[ex.id]||0) + 1); saveData(data); render(); };
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'icon-btn';
+      delBtn.textContent = '✕';
+      delBtn.title = 'Remove exercise';
+      delBtn.setAttribute('aria-label', 'Remove ' + ex.name);
+      delBtn.onclick = () => {
+        if(confirm('Remove "' + ex.name + '" from your list?')){
+          data.exercises = data.exercises.filter(e => e.id !== ex.id);
+          delete data.progress[ex.id];
+          saveData(data); render();
+        }
+      };
+
+      controls.appendChild(minusBtn);
+      controls.appendChild(plusBtn);
+      controls.appendChild(delBtn);
+
+      card.appendChild(main);
+      card.appendChild(plates);
+      card.appendChild(controls);
+      listEl.appendChild(card);
+    });
+
+    const total = data.exercises.length;
+    const pct = total > 0 ? Math.round((completedCount/total)*100) : 0;
+    loadbarFill.style.width = pct + '%';
+    progressLabel.textContent = completedCount + ' / ' + total + ' COMPLETE';
+    progressPct.textContent = pct + '%';
+    goalBanner.classList.toggle('show', allDone(data));
+
+    renderHistory();
+  }
+
+  function renderHistory(){
+    historyListEl.innerHTML = '';
+    if(data.history.length === 0){
+      const empty = document.createElement('div');
+      empty.className = 'empty-hist';
+      empty.textContent = 'No completed weeks yet — your first archived week will show up here.';
+      historyListEl.appendChild(empty);
+      return;
+    }
+    data.history.forEach(h => {
+      const d = new Date(h.weekKey);
+      const sun = new Date(d); sun.setDate(sun.getDate()+6);
+      const item = document.createElement('div');
+      item.className = 'history-item';
+      const left = document.createElement('div');
+      left.className = 'hi-date';
+      left.textContent = fmtDate(d) + ' – ' + fmtDate(sun);
+      const badge = document.createElement('span');
+      badge.className = 'history-badge ' + (h.achieved ? 'hit' : 'miss');
+      badge.textContent = h.achieved ? '✓ GOAL HIT' : h.completed + '/' + h.total;
+      item.appendChild(left);
+      item.appendChild(badge);
+      historyListEl.appendChild(item);
+    });
+  }
+
+  historyToggle.onclick = () => {
+    historyToggle.classList.toggle('open');
+    historyListEl.classList.toggle('show');
+  };
+
+  // ---- Add exercise editor ----
+  const showAddBtn = document.getElementById('showAddBtn');
+  const editor = document.getElementById('editor');
+  const editName = document.getElementById('editName');
+  const editTarget = document.getElementById('editTarget');
+
+  showAddBtn.onclick = () => {
+    editor.classList.add('show');
+    editName.value = '';
+    editTarget.value = 1;
+    editName.focus();
+  };
+  document.getElementById('cancelEditBtn').onclick = () => editor.classList.remove('show');
+  document.getElementById('saveEditBtn').onclick = () => {
+    const name = editName.value.trim();
+    const target = Math.max(1, parseInt(editTarget.value) || 1);
+    if(!name) { editName.focus(); return; }
+    const id = uid();
+    data.exercises.push({ id, name, target });
+    data.progress[id] = 0;
+    saveData(data);
+    editor.classList.remove('show');
+    render();
+  };
+
+  render();
+  // Re-check rollover if the tab is left open across a week boundary
+  setInterval(() => { rolloverIfNeeded(data); render(); }, 60 * 1000);
+})();
+</script>
+</body>
+</html>
