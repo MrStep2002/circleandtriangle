@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pīnyīn Stories — Build a Mandarin Story</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --celadon: #EAF0E6;
+    --ink: #26312A;
+    --jade: #3E7C59;
+    --jade-deep: #2C5C42;
+    --cinnabar: #C0392B;
+    --gold: #C9A227;
+    --card: #FFFFFF;
+    --line: #CBD8C6;
+    --radius: 14px;
+    --shadow: 0 2px 6px rgba(38, 49, 42, 0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: 'Nunito', system-ui, sans-serif;
+    background: var(--celadon);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .app { width: 100%; max-width: 560px; padding: 20px 16px 48px; }
+
+  header { text-align: center; padding: 12px 0 20px; }
+  .logo {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 2rem;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .logo .tone { color: var(--jade); }
+  .tagline { font-size: 0.95rem; color: #5C6B5E; margin-top: 2px; }
+
+  .screen { display: none; }
+  .screen.active { display: block; animation: rise 0.35s ease both; }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  h2 {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.35rem;
+    margin-bottom: 4px;
+  }
+  .hint { color: #5C6B5E; font-size: 0.95rem; margin-bottom: 18px; }
+
+  .topics { display: grid; gap: 12px; }
+  .topic-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    background: var(--card);
+    border: 2px solid transparent;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--ink);
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.12s ease, border-color 0.12s ease;
+  }
+  .topic-btn:hover, .topic-btn:focus-visible { border-color: var(--jade); transform: translateY(-2px); }
+  .topic-btn:active { transform: translateY(0); }
+  .topic-emoji {
+    font-size: 1.6rem;
+    width: 48px; height: 48px;
+    flex-shrink: 0;
+    display: grid; place-items: center;
+    background: var(--celadon);
+    border-radius: 12px;
+  }
+  .topic-name { font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 1.1rem; }
+  .topic-sub { font-size: 0.85rem; color: #5C6B5E; }
+  .topic-best {
+    margin-left: auto;
+    font-size: 0.85rem;
+    color: var(--gold);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .story-area {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px 16px;
+    min-height: 120px;
+    margin-bottom: 14px;
+  }
+  .story-sentence {
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: #E3EFE7;
+    margin-bottom: 6px;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--jade-deep);
+    animation: slideIn 0.3s ease both;
+  }
+  .story-sentence .en {
+    display: block;
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-weight: 400;
+    font-size: 0.8rem;
+    color: #5C6B5E;
+    font-style: italic;
+    margin-top: 2px;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  .story-sentence:last-child { margin-bottom: 0; }
+
+  .sentence-bank {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .sentence-tile {
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    border: 2px solid var(--line);
+    background: var(--card);
+    box-shadow: var(--shadow);
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--ink);
+    cursor: pointer;
+    transition: border-color 0.12s ease, opacity 0.3s ease, transform 0.12s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .sentence-tile:hover:not(.used) { border-color: var(--jade); transform: translateX(4px); }
+  .sentence-tile:active { transform: scale(0.98); }
+  .sentence-tile .en {
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-weight: 400;
+    font-size: 0.85rem;
+    color: #5C6B5E;
+  }
+  .sentence-tile.used {
+    opacity: 0.3;
+    cursor: default;
+    transform: none;
+    pointer-events: none;
+  }
+  .sentence-tile.wrong {
+    animation: shake 0.4s ease;
+    border-color: var(--cinnabar);
+  }
+  .sentence-tile.correct {
+    border-color: var(--jade);
+    background: #E3EFE7;
+  }
+
+  .feedback {
+    min-height: 50px;
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .feedback.neutral { color: #7A8A7C; font-weight: 600; font-style: italic; background: transparent; }
+  .feedback.good { background: #E3EFE7; color: var(--jade-deep); }
+  .feedback.bad { background: #F7E5E2; color: var(--cinnabar); }
+
+  .done-panel {
+    display: none;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px;
+    text-align: center;
+    margin-bottom: 16px;
+    animation: rise 0.3s ease both;
+  }
+  .done-panel.visible { display: block; }
+  .done-streak {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+  .done-story {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--jade-deep);
+    line-height: 1.6;
+  }
+
+  .btn {
+    display: block;
+    width: 100%;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 15px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    transition: transform 0.12s ease, background 0.12s ease;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--jade); color: #fff; }
+  .btn-primary:hover, .btn-primary:focus-visible { background: var(--jade-deep); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--jade-deep);
+    border: 2px solid var(--jade);
+    margin-top: 10px;
+  }
+  .btn-ghost:hover, .btn-ghost:focus-visible { background: rgba(62, 124, 89, 0.08); }
+  .btn:focus-visible, .topic-btn:focus-visible, .sentence-tile:focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 2px;
+  }
+  .btn[hidden] { display: none; }
+
+  footer { margin-top: 28px; text-align: center; font-size: 0.8rem; color: #7A8A7C; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">P<span class="tone">ī</span>ny<span class="tone">ī</span>n Stories</div>
+    <div class="tagline">Build a story — one sentence at a time</div>
+  </header>
+
+  <section id="screen-menu" class="screen active" aria-label="Choose a story">
+    <h2>Pick a story</h2>
+    <p class="hint">Arrange the sentences in the right order to build a story. Tap the sentences in the correct logical sequence. One wrong tap resets your streak!</p>
+    <div class="topics" id="topic-list"></div>
+  </section>
+
+  <section id="screen-play" class="screen" aria-label="Build the story">
+    <div class="story-area" id="story-area">
+      <div style="color:#7A8A7C; font-style:italic; text-align:center;">Tap the sentences below in the right order to build your story…</div>
+    </div>
+
+    <div class="sentence-bank" id="sentence-bank"></div>
+
+    <div class="feedback neutral" id="feedback">Choose the next sentence in the story</div>
+
+    <div class="done-panel" id="done-panel">
+      <div class="done-streak" id="done-streak"></div>
+      <div class="done-story" id="done-story"></div>
+    </div>
+
+    <button class="btn btn-primary" id="btn-next" hidden>Next story</button>
+    <button class="btn btn-ghost" id="btn-quit">End run &amp; back to menu</button>
+  </section>
+
+  <footer>Made for learning — pinyin only, no characters required.</footer>
+</div>
+
+<script>
+  // ---------- Stories ----------
+  // Each story: an array of sentences in logical order.
+  // Each sentence: [pinyin, english]
+  const STORIES = [
+    {
+      id: "morning", name: "Morning Routine", emoji: "🌅", sub: "A typical morning",
+      sentences: [
+        ["wǒ zǎoshang qī diǎn qǐchuáng", "I wake up at 7 in the morning"],
+        ["wǒ xǐliǎn shuāyá", "I wash my face and brush my teeth"],
+        ["wǒ chī zǎofàn", "I eat breakfast"],
+        ["wǒ hē yī bēi chá", "I drink a cup of tea"],
+        ["wǒ qù shàngbān", "I go to work"]
+      ]
+    },
+    {
+      id: "restaurant", name: "At a Restaurant", emoji: "🍜", sub: "Ordering a meal",
+      sentences: [
+        ["wǒmen zǒu jìn fànguǎn", "We walk into the restaurant"],
+        ["fúwùyuán gěi wǒmen càidān", "The waiter gives us the menu"],
+        ["wǒ yào chī miàntiáo", "I want to eat noodles"],
+        ["tā yào hē píjiǔ", "He wants to drink beer"],
+        ["wǒmen chīwán fàn, fù le qián", "We finish eating and pay"]
+      ]
+    },
+    {
+      id: "weekend", name: "Weekend Plans", emoji: "🏖️", sub: "Planning a day out",
+      sentences: [
+        ["jīntiān shì xīngqīliù", "Today is Saturday"],
+        ["wǒmen yào qù gōngyuán", "We are going to the park"],
+        ["wǒmen dài shàng shū hé shuǐ", "We bring books and water"],
+        ["wǒmen zài gōngyuán zǒu zǒu", "We walk around the park"],
+        ["wǎnshang wǒmen qù kàn diànyǐng", "In the evening we go to see a movie"]
+      ]
+    },
+    {
+      id: "shopping", name: "Shopping Trip", emoji: "🛍️", sub: "Buying groceries",
+      sentences: [
+        ["wǒmen qù chāoshì", "We go to the supermarket"],
+        ["wǒmen yào mǎi shuǐguǒ", "We want to buy fruit"],
+        ["wǒ xiǎng yào píngguǒ", "I want apples"],
+        ["tā xiǎng yào xiāngjiāo", "She wants bananas"],
+        ["wǒmen fù le qián, huí jiā", "We pay and go home"]
+      ]
+    },
+    {
+      id: "weather", name: "Changing Weather", emoji: "⛅", sub: "A rainy day",
+      sentences: [
+        ["zǎoshang tiānqì hěn hǎo", "The weather is very good in the morning"],
+        ["xiàwǔ kāishǐ xià yǔ", "It starts raining in the afternoon"],
+        ["wǒ dài shàng yǔsǎn", "I bring an umbrella"],
+        ["yǔ tíng le, tiānqì biàn lěng le", "The rain stops, the weather gets cold"],
+        ["wǎnshang wǒmen zài jiā kàn diànshì", "In the evening we watch TV at home"]
+      ]
+    },
+    {
+      id: "travel", name: "Travel Plans", emoji: "✈️", sub: "Going on a trip",
+      sentences: [
+        ["wǒmen yào qù Běijīng", "We are going to Beijing"],
+        ["wǒmen mǎi le huǒchē piào", "We buy train tickets"],
+        ["wǒmen dài shàng xínglǐ", "We bring luggage"],
+        ["wǒmen zuò huǒchē qù Běijīng", "We take the train to Beijing"],
+        ["wǒmen zài Běijīng wán le sān tiān", "We spend three days in Beijing"]
+      ]
+    }
+  ];
+
+  // ---------- State ----------
+  let currentStory = null;
+  let sentences = [];
+  let currentStep = 0;
+  let streak = 0;
+  let dirty = false;
+
+  let bestStreaks = {};
+  try { bestStreaks = JSON.parse(localStorage.getItem("pinyinStoriesBest") || "{}"); }
+  catch (e) { bestStreaks = {}; }
+
+  function saveBest() {
+    try { localStorage.setItem("pinyinStoriesBest", JSON.stringify(bestStreaks)); }
+    catch (e) { /* storage unavailable */ }
+  }
+
+  const $ = (id) => document.getElementById(id);
+  const shuffle = (arr) => {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  };
+  const show = (id) => {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    $(id).classList.add("active");
+    window.scrollTo({ top: 0 });
+  };
+
+  function renderMenu() {
+    const list = $("topic-list");
+    list.innerHTML = "";
+    STORIES.forEach(story => {
+      const btn = document.createElement("button");
+      btn.className = "topic-btn";
+      btn.innerHTML =
+        '<span class="topic-emoji">' + story.emoji + '</span>' +
+        '<span><span class="topic-name">' + story.name + '</span><br>' +
+        '<span class="topic-sub">' + story.sub + '</span></span>' +
+        (bestStreaks[story.id]
+          ? '<span class="topic-best">🔥 best: ' + bestStreaks[story.id] + '</span>'
+          : '');
+      btn.addEventListener("click", () => startStory(story));
+      list.appendChild(btn);
+    });
+  }
+
+  function startStory(story) {
+    currentStory = story;
+    sentences = shuffle(story.sentences);
+    currentStep = 0;
+    dirty = false;
+
+    const area = $("story-area");
+    area.innerHTML = '<div style="color:#7A8A7C; font-style:italic; text-align:center;">Tap the sentences below in the right order to build your story…</div>';
+
+    const bank = $("sentence-bank");
+    bank.innerHTML = "";
+    sentences.forEach((s, idx) => {
+      const tile = document.createElement("button");
+      tile.className = "sentence-tile";
+      tile.dataset.idx = idx;
+      tile.innerHTML = s[0] + '<span class="en">' + s[1] + '</span>';
+      tile.addEventListener("click", () => tapSentence(tile));
+      bank.appendChild(tile);
+    });
+
+    $("done-panel").classList.remove("visible");
+    $("btn-next").hidden = true;
+    $("feedback").className = "feedback neutral";
+    $("feedback").textContent = "Choose the next sentence in the story";
+
+    show("screen-play");
+  }
+
+  function tapSentence(tile) {
+    if (tile.classList.contains("used")) return;
+    if (!$("btn-next").hidden) return;
+
+    const idx = parseInt(tile.dataset.idx);
+    const expected = currentStory.sentences[currentStep];
+    const actual = sentences[idx];
+    const fb = $("feedback");
+
+    if (actual === expected) {
+      // Correct!
+      tile.classList.add("used", "correct");
+      const storyArea = $("story-area");
+      // Remove placeholder if present
+      const placeholder = storyArea.querySelector('div[style*="font-style:italic"]');
+      if (placeholder) placeholder.remove();
+
+      const s = document.createElement("div");
+      s.className = "story-sentence";
+      s.innerHTML = actual[0] + '<span class="en">' + actual[1] + '</span>';
+      storyArea.appendChild(s);
+
+      currentStep++;
+      fb.className = "feedback good";
+      fb.textContent = "✓ Correct! " + (currentStep === currentStory.sentences.length ? "Story complete!" : "Next sentence…");
+
+      if (currentStep === currentStory.sentences.length) {
+        storyComplete();
+      }
+    } else {
+      // Wrong — run broken!
+      dirty = true;
+      if (streak > 0) {
+        streak = 0;
+        updateStreakBar(true);
+      }
+      tile.classList.add("wrong");
+      fb.className = "feedback bad";
+      fb.textContent = "✗ That's not the next sentence. Run reset!";
+      setTimeout(() => tile.classList.remove("wrong"), 450);
+    }
+  }
+
+  function storyComplete() {
+    if (!dirty) {
+      streak++;
+      updateStreakBar();
+      if (!bestStreaks[currentStory.id] || streak > bestStreaks[currentStory.id]) {
+        bestStreaks[currentStory.id] = streak;
+        saveBest();
+        updateStreakBar();
+      }
+    }
+
+    const donePanel = $("done-panel");
+    donePanel.classList.add("visible");
+
+    const storyText = currentStory.sentences.map(s => s[0]).join(" → ");
+    $("done-streak").textContent = streakMessage();
+    $("done-story").textContent = "📖 " + storyText;
+
+    $("btn-next").hidden = false;
+    $("btn-next").focus();
+
+    $("feedback").className = "feedback neutral";
+    $("feedback").textContent = dirty ? "Story built, but the run took a hit!" : "Perfect story — run continues!";
+  }
+
+  function streakMessage() {
+    if (dirty) return "Run reset — start a new one!";
+    if (streak >= 15) return "🔥🔥🔥 " + streak + " stories — lǎoshī level!";
+    if (streak >= 10) return "🔥🔥 " + streak + " stories — shí+! Unstoppable!";
+    if (streak >= 5)  return "🔥 " + streak + " stories — wǔ and counting!";
+    if (streak >= 3)  return "🔥 " + streak + " stories — sān! Keep going!";
+    if (streak === 2) return "🔥 Two stories in a row!";
+    return "🔥 Run started — keep it going!";
+  }
+
+  function updateStreakBar(broken) {
+    const now = $("streak-now");
+    if (!now) return;
+    now.textContent = "🔥 " + streak;
+    now.classList.remove("bump", "broken");
+    void now.offsetWidth;
+    now.classList.add(broken ? "broken" : "bump");
+    setTimeout(() => now.classList.remove("bump", "broken"), 450);
+  }
+
+  // ---------- Wire up ----------
+  // Note: No streak bar in this game (simpler UI), but we keep the logic
+  // We'll add a simple streak display in the story area
+  const storyArea = $("story-area");
+  const streakDisplay = document.createElement("div");
+  streakDisplay.style.cssText = "font-size:0.8rem; color:#5C6B5E; margin-top:8px; text-align:center;";
+  streakDisplay.id = "streak-display";
+  storyArea.appendChild(streakDisplay);
+
+  // Override updateStreakBar to also update the inline display
+  const origUpdate = updateStreakBar;
+  updateStreakBar = function(broken) {
+    origUpdate(broken);
+    const display = $("streak-display");
+    if (display) {
+      display.textContent = "🔥 Current streak: " + streak + (broken ? " (broken!)" : "");
+    }
+  };
+
+  $("btn-next").addEventListener("click", () => {
+    const stories = STORIES.filter(s => s.id !== currentStory.id);
+    if (stories.length === 0) {
+      // Only one story, just reshuffle
+      startStory(currentStory);
+    } else {
+      startStory(stories[Math.floor(Math.random() * stories.length)]);
+    }
+  });
+
+  $("btn-quit").addEventListener("click", () => {
+    renderMenu();
+    show("screen-menu");
+  });
+
+  renderMenu();
+</script>
+</body>
+</html>
