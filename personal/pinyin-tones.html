@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pīnyīn Tone Trainer — Master the Tones</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --celadon: #EAF0E6;
+    --ink: #26312A;
+    --jade: #3E7C59;
+    --jade-deep: #2C5C42;
+    --cinnabar: #C0392B;
+    --gold: #C9A227;
+    --card: #FFFFFF;
+    --line: #CBD8C6;
+    --radius: 14px;
+    --shadow: 0 2px 6px rgba(38, 49, 42, 0.10);
+    --tone1: #3E7C59;
+    --tone2: #C9A227;
+    --tone3: #7B5AA6;
+    --tone4: #C0392B;
+    --tone5: #5C6B5E;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: 'Nunito', system-ui, sans-serif;
+    background: var(--celadon);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .app { width: 100%; max-width: 560px; padding: 20px 16px 48px; }
+
+  header { text-align: center; padding: 12px 0 20px; }
+  .logo {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 2rem;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .logo .tone { color: var(--jade); }
+  .tagline { font-size: 0.95rem; color: #5C6B5E; margin-top: 2px; }
+
+  .screen { display: none; }
+  .screen.active { display: block; animation: rise 0.35s ease both; }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  h2 {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.35rem;
+    margin-bottom: 4px;
+  }
+  .hint { color: #5C6B5E; font-size: 0.95rem; margin-bottom: 18px; }
+
+  .topics { display: grid; gap: 12px; }
+  .topic-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    background: var(--card);
+    border: 2px solid transparent;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--ink);
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.12s ease, border-color 0.12s ease;
+  }
+  .topic-btn:hover, .topic-btn:focus-visible { border-color: var(--jade); transform: translateY(-2px); }
+  .topic-btn:active { transform: translateY(0); }
+  .topic-emoji {
+    font-size: 1.6rem;
+    width: 48px; height: 48px;
+    flex-shrink: 0;
+    display: grid; place-items: center;
+    background: var(--celadon);
+    border-radius: 12px;
+  }
+  .topic-name { font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 1.1rem; }
+  .topic-sub { font-size: 0.85rem; color: #5C6B5E; }
+  .topic-best {
+    margin-left: auto;
+    font-size: 0.85rem;
+    color: var(--gold);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .streak-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 10px 16px;
+    margin-bottom: 14px;
+  }
+  .streak-now {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 1.4rem;
+    color: var(--jade-deep);
+    transition: transform 0.15s ease, color 0.15s ease;
+  }
+  .streak-now.bump { transform: scale(1.25); }
+  .streak-now.broken { color: var(--cinnabar); animation: shake 0.4s ease; }
+  .streak-best { font-weight: 700; color: var(--gold); font-size: 0.95rem; }
+
+  .tone-display {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 30px 20px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .tone-pinyin {
+    font-family: 'Baloo 2', sans-serif;
+    font-size: 3.2rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .tone-pinyin .t1 { color: var(--tone1); }
+  .tone-pinyin .t2 { color: var(--tone2); }
+  .tone-pinyin .t3 { color: var(--tone3); }
+  .tone-pinyin .t4 { color: var(--tone4); }
+  .tone-pinyin .t5 { color: var(--tone5); }
+  .tone-meaning {
+    font-size: 1.1rem;
+    color: #5C6B5E;
+  }
+  .tone-phon {
+    font-style: italic;
+    font-size: 0.95rem;
+    color: #7A8A7C;
+    margin-top: 2px;
+  }
+
+  .tone-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .tone-btn {
+    padding: 14px 0;
+    border-radius: var(--radius);
+    border: 3px solid transparent;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+    background: var(--card);
+    color: var(--ink);
+    box-shadow: var(--shadow);
+  }
+  .tone-btn:hover { transform: translateY(-2px); }
+  .tone-btn:active { transform: scale(0.96); }
+  .tone-btn.t1 { border-color: var(--tone1); color: var(--tone1); }
+  .tone-btn.t2 { border-color: var(--tone2); color: var(--tone2); }
+  .tone-btn.t3 { border-color: var(--tone3); color: var(--tone3); }
+  .tone-btn.t4 { border-color: var(--tone4); color: var(--tone4); }
+  .tone-btn.t5 { border-color: var(--tone5); color: var(--tone5); }
+  .tone-btn.t1:hover, .tone-btn.t1:focus-visible { background: var(--tone1); color: #fff; }
+  .tone-btn.t2:hover, .tone-btn.t2:focus-visible { background: var(--tone2); color: #fff; }
+  .tone-btn.t3:hover, .tone-btn.t3:focus-visible { background: var(--tone3); color: #fff; }
+  .tone-btn.t4:hover, .tone-btn.t4:focus-visible { background: var(--tone4); color: #fff; }
+  .tone-btn.t5:hover, .tone-btn.t5:focus-visible { background: var(--tone5); color: #fff; }
+  .tone-btn.correct {
+    border-color: var(--jade);
+    background: var(--jade);
+    color: #fff;
+    transform: scale(1.05);
+  }
+  .tone-btn.wrong {
+    animation: shake 0.4s ease;
+    border-color: var(--cinnabar);
+    background: var(--cinnabar);
+    color: #fff;
+  }
+  .tone-btn .label {
+    display: block;
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0.7;
+  }
+
+  .feedback {
+    min-height: 60px;
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+  }
+  .feedback.neutral { color: #7A8A7C; font-weight: 600; font-style: italic; background: transparent; }
+  .feedback.good { background: #E3EFE7; color: var(--jade-deep); }
+  .feedback.bad { background: #F7E5E2; color: var(--cinnabar); }
+  .feedback .fb-sub {
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: #5C6B5E;
+    font-style: italic;
+  }
+
+  .btn {
+    display: block;
+    width: 100%;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 15px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    transition: transform 0.12s ease, background 0.12s ease;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--jade); color: #fff; }
+  .btn-primary:hover, .btn-primary:focus-visible { background: var(--jade-deep); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--jade-deep);
+    border: 2px solid var(--jade);
+    margin-top: 10px;
+  }
+  .btn-ghost:hover, .btn-ghost:focus-visible { background: rgba(62, 124, 89, 0.08); }
+  .btn:focus-visible, .topic-btn:focus-visible, .tone-btn:focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 2px;
+  }
+  .btn[hidden] { display: none; }
+
+  footer { margin-top: 28px; text-align: center; font-size: 0.8rem; color: #7A8A7C; }
+
+  @media (max-width: 400px) {
+    .tone-btn { font-size: 1rem; padding: 10px 0; }
+    .tone-pinyin { font-size: 2.4rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">Tone <span class="tone">Trainer</span></div>
+    <div class="tagline">Hear the tone, pick the number</div>
+  </header>
+
+  <section id="screen-menu" class="screen active" aria-label="Choose a set">
+    <h2>Pick your words</h2>
+    <p class="hint">You'll see a word with its tone marks. Your job: identify which tone number it is — 1st, 2nd, 3rd, 4th, or neutral. One wrong tap resets your streak!</p>
+    <div class="topics" id="topic-list"></div>
+  </section>
+
+  <section id="screen-play" class="screen" aria-label="Identify the tone">
+    <div class="streak-bar">
+      <span class="streak-now" id="streak-now">🔥 0</span>
+      <span class="streak-best" id="streak-best">Best: 0</span>
+    </div>
+
+    <div class="tone-display">
+      <div class="tone-pinyin" id="tone-pinyin"></div>
+      <div class="tone-meaning" id="tone-meaning"></div>
+      <div class="tone-phon" id="tone-phon"></div>
+    </div>
+
+    <div class="tone-buttons" id="tone-buttons">
+      <button class="tone-btn t1" data-tone="1">1<span class="label">¯</span></button>
+      <button class="tone-btn t2" data-tone="2">2<span class="label">ˊ</span></button>
+      <button class="tone-btn t3" data-tone="3">3<span class="label">ˇ</span></button>
+      <button class="tone-btn t4" data-tone="4">4<span class="label">ˋ</span></button>
+      <button class="tone-btn t5" data-tone="5">5<span class="label">·</span></button>
+    </div>
+
+    <div class="feedback neutral" id="feedback">Tap the tone number you hear / see</div>
+
+    <button class="btn btn-primary" id="btn-next" hidden>Next word</button>
+    <button class="btn btn-ghost" id="btn-quit">End run &amp; back to menu</button>
+  </section>
+
+  <footer>Made for learning — tone mastery starts here!</footer>
+</div>
+
+<script>
+  // ---------- Vocabulary with tone numbers ----------
+  // Each word: [pinyin_with_marks, meaning, pronunciation_guide, tone_number]
+  const TOPICS = [
+    { id: "numbers", name: "Numbers", emoji: "🔢", sub: "One to ten — all tones",
+      words: [
+        ["yī", "one", "ee", 1],
+        ["èr", "two", "arr", 4],
+        ["sān", "three", "sahn", 1],
+        ["sì", "four", "suh", 4],
+        ["wǔ", "five", "woo", 3],
+        ["liù", "six", "lyoh", 4],
+        ["qī", "seven", "chee", 1],
+        ["bā", "eight", "bah", 1],
+        ["jiǔ", "nine", "jyoh", 3],
+        ["shí", "ten", "shrr", 2]
+      ]},
+    { id: "basics", name: "Everyday Words", emoji: "💬", sub: "Hello, thank you, sorry…",
+      words: [
+        ["nǐ", "you", "nee", 3],
+        ["hǎo", "good", "how", 3],
+        ["xièxie", "thank you", "shyeh-shyeh", 4],
+        ["zàijiàn", "goodbye", "dzye-jyen", 4],
+        ["duìbuqǐ", "sorry", "dway-boo-chee", 4],
+        ["qǐng", "please", "ching", 3],
+        ["wǎn'ān", "good night", "wahn-ahn", 3],
+        ["bù", "not", "boo", 4],
+        ["ma", "[question]", "mah", 5],
+        ["de", "[possession]", "duh", 5]
+      ]},
+    { id: "food", name: "Food & Drink", emoji: "🍜", sub: "Rice, tea, noodles, chicken…",
+      words: [
+        ["mǐfàn", "rice", "mee-fahn", 3],
+        ["chá", "tea", "chah", 2],
+        ["shuǐ", "water", "shway", 3],
+        ["miàntiáo", "noodles", "myen-tyow", 4],
+        ["kāfēi", "coffee", "kah-fay", 1],
+        ["píjiǔ", "beer", "pee-jyoh", 2],
+        ["jī", "chicken", "jee", 1],
+        ["yú", "fish", "yoo", 2],
+        ["niúnǎi", "milk", "nyoh-nye", 2],
+        ["píngguǒ", "apple", "ping-gwaw", 2]
+      ]},
+    { id: "verbs", name: "Verbs", emoji: "🏃", sub: "Eat, drink, go, want…",
+      words: [
+        ["chī", "to eat", "chrr", 1],
+        ["hē", "to drink", "huh", 1],
+        ["qù", "to go", "chyoo", 4],
+        ["lái", "to come", "lye", 2],
+        ["yào", "to want", "yow", 4],
+        ["yǒu", "to have", "yoh", 3],
+        ["kàn", "to look", "kahn", 4],
+        ["shuō", "to speak", "shwaw", 1],
+        ["mǎi", "to buy", "my", 3],
+        ["ài", "to love", "eye", 4]
+      ]},
+    { id: "mixed", name: "Mixed Challenge", emoji: "🎯", sub: "All of the above, shuffled!",
+      words: [] }
+  ];
+
+  // Fill "mixed" with all words
+  const allWords = [];
+  TOPICS.forEach(t => {
+    if (t.id !== "mixed") t.words.forEach(w => allWords.push(w));
+  });
+  TOPICS.find(t => t.id === "mixed").words = allWords;
+
+  // ---------- State ----------
+  let currentMode = null;
+  let word = null;
+  let answered = false;
+  let streak = 0;
+  let bestStreaks = {};
+
+  try { bestStreaks = JSON.parse(localStorage.getItem("toneTrainerBest") || "{}"); }
+  catch (e) { bestStreaks = {}; }
+
+  function saveBest() {
+    try { localStorage.setItem("toneTrainerBest", JSON.stringify(bestStreaks)); }
+    catch (e) { /* storage unavailable */ }
+  }
+
+  const $ = (id) => document.getElementById(id);
+  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  const show = (id) => {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    $(id).classList.add("active");
+    window.scrollTo({ top: 0 });
+  };
+
+  function renderMenu() {
+    const list = $("topic-list");
+    list.innerHTML = "";
+    TOPICS.forEach(mode => {
+      const btn = document.createElement("button");
+      btn.className = "topic-btn";
+      btn.innerHTML =
+        '<span class="topic-emoji">' + mode.emoji + '</span>' +
+        '<span><span class="topic-name">' + mode.name + '</span><br>' +
+        '<span class="topic-sub">' + mode.sub + '</span></span>' +
+        (bestStreaks[mode.id]
+          ? '<span class="topic-best">🔥 best: ' + bestStreaks[mode.id] + '</span>'
+          : '');
+      btn.addEventListener("click", () => startMode(mode));
+      list.appendChild(btn);
+    });
+  }
+
+  function startMode(mode) {
+    currentMode = mode;
+    streak = 0;
+    updateStreakBar();
+    nextWord();
+    show("screen-play");
+  }
+
+  function nextWord() {
+    word = pick(currentMode.words);
+    answered = false;
+
+    const pinyinEl = $("tone-pinyin");
+    // Color each syllable's tone
+    const syllables = word[0].split(" ");
+    pinyinEl.innerHTML = syllables.map(s => {
+      const tone = getToneNumber(s);
+      return '<span class="t' + tone + '">' + s + '</span>';
+    }).join(" ");
+
+    $("tone-meaning").textContent = word[1];
+    $("tone-phon").textContent = '"' + word[2] + '"';
+
+    const fb = $("feedback");
+    fb.className = "feedback neutral";
+    fb.textContent = "Which tone is this? Tap 1–5.";
+
+    document.querySelectorAll(".tone-btn").forEach(b => {
+      b.classList.remove("correct", "wrong");
+      b.disabled = false;
+    });
+
+    $("btn-next").hidden = true;
+  }
+
+  function getToneNumber(pinyin) {
+    // Check for tone marks
+    const marks = {
+      'ā': 1, 'ē': 1, 'ī': 1, 'ō': 1, 'ū': 1, 'ǖ': 1,
+      'á': 2, 'é': 2, 'í': 2, 'ó': 2, 'ú': 2, 'ǘ': 2,
+      'ǎ': 3, 'ě': 3, 'ǐ': 3, 'ǒ': 3, 'ǔ': 3, 'ǚ': 3,
+      'à': 4, 'è': 4, 'ì': 4, 'ò': 4, 'ù': 4, 'ǜ': 4
+    };
+    for (let char of pinyin) {
+      if (marks[char]) return marks[char];
+    }
+    return 5; // neutral
+  }
+
+  function checkTone(toneNum) {
+    if (answered) return;
+    const btn = document.querySelector('.tone-btn[data-tone="' + toneNum + '"]');
+    const correctTone = getToneNumber(word[0].split(" ")[0]);
+
+    if (toneNum === correctTone) {
+      answered = true;
+      btn.classList.add("correct");
+      streak++;
+      updateStreakBar();
+      if (!bestStreaks[currentMode.id] || streak > bestStreaks[currentMode.id]) {
+        bestStreaks[currentMode.id] = streak;
+        saveBest();
+        updateStreakBar();
+      }
+
+      const fb = $("feedback");
+      fb.className = "feedback good";
+      fb.innerHTML = "✓ Correct! That's tone <strong>" + correctTone + "</strong>" +
+        '<span class="fb-sub">' + streakFlair() + "</span>";
+
+      document.querySelectorAll(".tone-btn").forEach(b => b.disabled = true);
+      $("btn-next").hidden = false;
+      $("btn-next").focus();
+    } else {
+      // Run broken!
+      if (streak > 0) {
+        streak = 0;
+        updateStreakBar(true);
+      }
+      btn.classList.add("wrong");
+      const fb = $("feedback");
+      fb.className = "feedback bad";
+      fb.innerHTML = "✗ That's tone <strong>" + correctTone + "</strong>, not " + toneNum +
+        '<span class="fb-sub">Run reset — look at the tone mark, jiāyóu!</span>';
+
+      document.querySelectorAll(".tone-btn").forEach(b => b.disabled = true);
+      $("btn-next").hidden = false;
+      $("btn-next").focus();
+
+      // Show correct answer highlight
+      document.querySelector('.tone-btn[data-tone="' + correctTone + '"]').classList.add("correct");
+    }
+  }
+
+  function streakFlair() {
+    if (streak >= 20) return "🔥🔥🔥 " + streak + " in a row — tone master!";
+    if (streak >= 10) return "🔥🔥 " + streak + " in a row — shí! Unstoppable!";
+    if (streak >= 5)  return "🔥 " + streak + " in a row — wǔ and counting!";
+    if (streak >= 3)  return "🔥 " + streak + " in a row — sān! Keep going!";
+    if (streak === 2) return "🔥 Two in a row!";
+    return "🔥 Run started — keep it going!";
+  }
+
+  function updateStreakBar(broken) {
+    const now = $("streak-now");
+    now.textContent = "🔥 " + streak;
+    now.classList.remove("bump", "broken");
+    void now.offsetWidth;
+    now.classList.add(broken ? "broken" : "bump");
+    setTimeout(() => now.classList.remove("bump", "broken"), 450);
+    $("streak-best").textContent = "Best: " + (bestStreaks[currentMode ? currentMode.id : ""] || 0);
+  }
+
+  // ---------- Wire up ----------
+  document.querySelectorAll(".tone-btn").forEach(btn => {
+    btn.addEventListener("click", () => checkTone(parseInt(btn.dataset.tone)));
+  });
+
+  $("btn-next").addEventListener("click", nextWord);
+  $("btn-quit").addEventListener("click", () => { renderMenu(); show("screen-menu"); });
+
+  renderMenu();
+</script>
+</body>
+</html>
