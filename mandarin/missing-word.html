@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Missing Word — Mandarin Sentence Game</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EAF0E6;--ink:#26312A;--jade:#3E7C59;--deep:#2C5C42;--red:#C0392B;--card:#fff;--line:#CBD8C6;--shadow:0 2px 7px rgba(38,49,42,.12)}*{box-sizing:border-box;margin:0;padding:0}body{background:var(--bg);color:var(--ink);font-family:Nunito,system-ui,sans-serif;min-height:100vh}.app{width:min(580px,100%);margin:auto;padding:32px 16px 50px}header{text-align:center;margin-bottom:24px}.logo{font:800 2rem 'Baloo 2',sans-serif}.logo span{color:var(--jade)}.tag{color:#5C6B5E}.card{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:24px;margin-bottom:14px}.intro{text-align:center}.intro h2{font:800 1.45rem 'Baloo 2',sans-serif}.intro p{color:#5C6B5E;margin:8px 0 18px}.btn{border:0;border-radius:12px;padding:13px 17px;background:var(--jade);color:#fff;font:800 1rem Nunito;cursor:pointer;width:100%}.status{display:flex;justify-content:space-between;margin-bottom:12px;color:#647267}.english{text-align:center;font:800 1.35rem 'Baloo 2',sans-serif}.sentence{font:800 1.45rem 'Baloo 2',sans-serif;color:var(--deep);text-align:center;line-height:1.7;margin-top:12px}.blank{display:inline-block;min-width:74px;border-bottom:3px solid var(--jade);color:var(--jade)}.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}.choice{border:2px solid var(--line);background:#fff;border-radius:12px;padding:14px 8px;font:800 1.05rem Nunito;color:var(--deep);cursor:pointer}.choice:hover{border-color:var(--jade)}.choice.correct{background:var(--jade);border-color:var(--jade);color:#fff}.choice.wrong{animation:shake .35s;border-color:var(--red)}.feedback{text-align:center;min-height:50px;margin:12px 0;padding:11px;border-radius:10px}.good{background:#E3EFE7;color:var(--deep)}.bad{background:#FBE9E7;color:#922B21}.next{display:none}.result{text-align:center}.result .big{font-size:3rem}.hidden{display:none}@keyframes shake{25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}}
+</style></head><body><main class="app">
+<header><div class="logo">Missing <span>Word</span></div><div class="tag">Complete ten short Mandarin sentences</div></header>
+<section class="card intro" id="intro"><h2>One gap, one definite answer</h2><p>Use the English meaning and Mandarin word order to choose the missing pinyin word.</p><button class="btn" id="start">Start ten sentences</button></section>
+<section id="game" class="hidden"></section>
+</main>
+<script src="vocab-data.js"></script><script src="progress.js"></script>
+<script>
+(function(){
+const $=id=>document.getElementById(id),V=window.MANDARIN_WORDS;
+const Q=[
+ ["I want to drink tea.",["wǒ","yào","___","chá"],"hē",["chī","qù","shuō"]],
+ ["I eat noodles.",["wǒ","___","miàntiáo"],"chī",["hē","mǎi","kàn"]],
+ ["She drinks coffee.",["tā","___","kāfēi"],"hē",["chī","qù","lái"]],
+ ["We go to school.",["wǒmen","___","xuéxiào"],"qù",["hē","shuō","yǒu"]],
+ ["I want to buy fruit.",["wǒ","yào","___","shuǐguǒ"],"mǎi",["kàn","hē","lái"]],
+ ["Today's weather is hot.",["jīntiān","tiānqì","hěn","___"],"rè",["lěng","màn","xiǎo"]],
+ ["My phone is new.",["wǒ","de","shǒujī","hěn","___"],"xīn",["lèi","rè","duō"]],
+ ["The cat is inside.",["māo","zài","___"],"lǐmiàn",["wàimiàn","zuǒbian","qiánmiàn"]],
+ ["The bank is on the right.",["yínháng","zài","___"],"yòubian",["zuǒbian","lǐmiàn","hòumiàn"]],
+ ["My father is a doctor.",["wǒ","bàba","shì","___"],"yīshēng",["xuésheng","lǎoshī","tóngshì"]],
+ ["Tomorrow I am going to the airport.",["wǒ","míngtiān","qù","___"],"jīchǎng",["yīyuàn","yínháng","gōngyuán"]],
+ ["I don't know.",["wǒ","bù","___"],"zhīdào",["xǐhuan","shuō","mǎi"]],
+ ["Where is the toilet?",["cèsuǒ","zài","___"],"nǎr",["shénme","shéi","nà"]],
+ ["This is my bag.",["zhè","shì","wǒ","de","___"],"bāo",["mén","chuānghu","xié"]],
+ ["Please sit down.",["qǐng","___"],"zuò",["qù","lái","kàn"]],
+ ["I like dumplings.",["wǒ","___","jiǎozi"],"xǐhuan",["zhīdào","shuō","qù"]],
+ ["The hospital is near.",["yīyuàn","hěn","___"],"jìn",["yuǎn","dà","màn"]],
+ ["My keys are on the table.",["wǒ","de","yàoshi","zài","zhuōzi","___"],"shàng",["xià","lǐmiàn","hòumiàn"]],
+ ["My friend is outside.",["wǒ","de","péngyou","zài","___"],"wàimiàn",["lǐmiàn","qiánmiàn","zuǒbian"]],
+ ["It isn't far.",["bù","___"],"yuǎn",["jìn","kuài","xīn"]],
+ ["Turn left.",["wǎng","___","zhuǎn"],"zuǒ",["yòu","shàng","xià"]],
+ ["Let's meet at the restaurant.",["wǒmen","zài","___","jiàn","ba"],"fànguǎn",["jiǔbā","yīyuàn","yínháng"]],
+ ["No problem.",["méi","___"],"wèntí",["shǒujī","qián","shíjiān"]],
+ ["Wait a second.",["děng","___"],"yīxià",["yīdiǎn","yī cì","yī ge"]],
+ ["I'm almost there.",["wǒ","kuài","___","le"],"dào",["qù","lái","zǒu"]]
+];
+let round=[],i=0,score=0,dirty=false;const shuffle=a=>{a=[...a];for(let x=a.length-1;x;x--){const j=Math.floor(Math.random()*(x+1));[a[x],a[j]]=[a[j],a[x]]}return a};
+function start(){round=shuffle(Q).slice(0,10);i=score=0;$("intro").classList.add("hidden");$("game").classList.remove("hidden");render()}
+function render(){dirty=false;const q=round[i],options=shuffle([q[2],...q[3]]);$("game").innerHTML=`<div class="status"><span>Sentence ${i+1} of 10</span><span>✓ ${score}</span></div><div class="card"><div class="english">${q[0]}</div><div class="sentence">${q[1].map(x=>x==="___"?'<span class="blank">?</span>':x).join(" ")}</div></div><div class="choices" id="choices"></div><div class="feedback" id="feedback"></div><button class="btn next" id="next">${i===9?"See results":"Next sentence"}</button>`;options.forEach(opt=>{const b=document.createElement("button");b.className="choice";b.textContent=opt;b.onclick=()=>choose(b,opt,q);$("choices").appendChild(b)});$("next").onclick=()=>{i++;i===10?finish():render()}}
+function choose(button,opt,q){if($("next").style.display==="block")return;if(opt===q[2]){button.classList.add("correct");if(!dirty){score++;const w=V.find(w=>w.pinyin===q[2]);if(w)MandarinProgress.record(w,true)}$("feedback").className="feedback good";$("feedback").innerHTML=`✓ ${q[1].map(x=>x==="___"?`<strong>${q[2]}</strong>`:x).join(" ")}`;$("next").style.display="block"}else{if(!dirty){const w=V.find(w=>w.pinyin===q[2]);if(w)MandarinProgress.record(w,false)}dirty=true;button.classList.add("wrong");setTimeout(()=>button.classList.remove("wrong"),400);$("feedback").className="feedback bad";$("feedback").textContent="Not that one — try again."}}
+function finish(){$("game").innerHTML=`<div class="card result"><div class="big">${score===10?"🏆":"🌱"}</div><h2>${score} / 10 first time</h2><p style="color:#5C6B5E;margin:8px 0 18px">${score===10?"Perfect sentence recall.":"The ones you missed have been added to your review record where possible."}</p><button class="btn" id="again">Play another ten</button></div>`;$("again").onclick=start}
+$("start").onclick=start;
+}());
+</script><script src="site-nav.js"></script></body></html>

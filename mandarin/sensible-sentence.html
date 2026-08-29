@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Which Sentence Makes Sense? — Mandarin Game</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EAF0E6;--ink:#26312A;--jade:#3E7C59;--deep:#2C5C42;--red:#C0392B;--card:#fff;--line:#CBD8C6;--shadow:0 2px 7px rgba(38,49,42,.12)}*{box-sizing:border-box;margin:0;padding:0}body{background:var(--bg);color:var(--ink);font-family:Nunito,system-ui,sans-serif;min-height:100vh}.app{width:min(600px,100%);margin:auto;padding:32px 16px 50px}header{text-align:center;margin-bottom:24px}.logo{font:800 1.9rem 'Baloo 2',sans-serif}.logo span{color:var(--jade)}.tag{color:#5C6B5E}.card{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:24px;margin-bottom:14px}.intro{text-align:center}.intro h2,.result h2{font:800 1.45rem 'Baloo 2',sans-serif}.intro p,.result p{color:#5C6B5E;margin:8px 0 18px}.btn{border:0;border-radius:12px;padding:13px 17px;background:var(--jade);color:#fff;font:800 1rem Nunito;cursor:pointer;width:100%}.status{display:flex;justify-content:space-between;color:#647267;margin-bottom:12px}.situation{text-align:center}.situation-label{text-transform:uppercase;letter-spacing:.08em;font-size:.75rem;color:#728075;font-weight:800}.situation-text{font:800 1.45rem 'Baloo 2',sans-serif;margin-top:7px}.choices{display:grid;gap:10px}.choice{border:2px solid var(--line);background:#fff;border-radius:13px;padding:15px 12px;font:800 1.05rem Nunito;color:var(--deep);cursor:pointer;text-align:left}.choice:hover{border-color:var(--jade)}.choice.correct{background:var(--jade);border-color:var(--jade);color:#fff}.choice.wrong{animation:shake .35s;border-color:var(--red)}.feedback{text-align:center;min-height:52px;margin:12px 0;padding:11px;border-radius:10px}.good{background:#E3EFE7;color:var(--deep)}.bad{background:#FBE9E7;color:#922B21}.next{display:none}.result{text-align:center}.big{font-size:3rem}.hidden{display:none}@keyframes shake{25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}}
+</style></head><body><main class="app">
+<header><div class="logo">Which Sentence <span>Makes Sense?</span></div><div class="tag">Choose the Mandarin that fits the situation</div></header>
+<section class="card intro" id="intro"><h2>Meaning, not guesswork</h2><p>Each situation has one intended answer. Choose the pinyin sentence that communicates it correctly.</p><button class="btn" id="start">Start ten situations</button></section>
+<section id="game" class="hidden"></section>
+</main>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const Q=[
+ {p:"You are thirsty and want water.",a:"wǒ yào hē shuǐ",x:["wǒ yào chī shuǐ","wǒ yào qù shuǐ"],m:"I want to drink water."},
+ {p:"You are hungry and want noodles.",a:"wǒ yào chī miàntiáo",x:["wǒ yào hē miàntiáo","wǒ yào qù miàntiáo"],m:"I want to eat noodles."},
+ {p:"You need to travel to the airport.",a:"wǒ yào qù jīchǎng",x:["wǒ yào hē jīchǎng","wǒ yào chī jīchǎng"],m:"I want to go to the airport."},
+ {p:"You explain that your friend is a teacher.",a:"wǒ de péngyou shì lǎoshī",x:["wǒ de lǎoshī shì péngyou ma","wǒ shì péngyou de lǎoshī"],m:"My friend is a teacher."},
+ {p:"You cannot find your keys.",a:"wǒ de yàoshi zài nǎr",x:["wǒ de yàoshi shì shéi","wǒ de yàoshi chī shénme"],m:"Where are my keys?"},
+ {p:"You say that today's weather is cold.",a:"jīntiān tiānqì hěn lěng",x:["jīntiān tiānqì hěn lèi","jīntiān tiānqì hěn màn"],m:"Today's weather is very cold."},
+ {p:"You order one cup of tea.",a:"wǒ yào yī bēi chá",x:["wǒ yào yī wǎn chá","wǒ yào yī ge yínháng"],m:"I would like one cup of tea."},
+ {p:"You do not understand what someone said.",a:"wǒ bù dǒng",x:["wǒ bù hē","wǒ bù jīchǎng"],m:"I don't understand."},
+ {p:"You ask a taxi driver to stop here.",a:"qǐng zài zhèlǐ tíng",x:["qǐng zài zhèlǐ chī","qǐng zài zhèlǐ mǎi"],m:"Please stop here."},
+ {p:"You explain that the bank is on the left.",a:"yínháng zài zuǒbian",x:["yínháng hē zuǒbian","zuǒbian zài yínháng ma"],m:"The bank is on the left."},
+ {p:"A friend apologises and you say it is no problem.",a:"méi wèntí",x:["méi yínháng","méi miàntiáo"],m:"No problem."},
+ {p:"You message someone to say you are nearly there.",a:"wǒ kuài dào le",x:["wǒ kuài chī le","wǒ dào kuài le"],m:"I'm almost there."},
+ {p:"You say you will go to the restaurant tomorrow.",a:"wǒ míngtiān qù fànguǎn",x:["wǒ fànguǎn qù míngtiān","wǒ míngtiān hē fànguǎn"],m:"I'm going to the restaurant tomorrow."},
+ {p:"You ask who that person is.",a:"nà ge rén shì shéi",x:["nà ge rén zài shénme","shéi nà ge rén hē"],m:"Who is that person?"},
+ {p:"You explain that the computer is in the room.",a:"diànnǎo zài fángjiān lǐ",x:["fángjiān zài diànnǎo lǐ","diànnǎo chī fángjiān"],m:"The computer is in the room."},
+ {p:"You explain that your mother is a doctor.",a:"wǒ māma shì yīshēng",x:["wǒ yīshēng shì māma","wǒ māma qù yīshēng ma"],m:"My mother is a doctor."},
+ {p:"You want to buy these shoes.",a:"wǒ yào mǎi zhèxiē xié",x:["wǒ yào hē zhèxiē xié","wǒ xié mǎi zhèxiē yào"],m:"I want to buy these shoes."},
+ {p:"You explain that your friend is outside.",a:"wǒ de péngyou zài wàimiàn",x:["wàimiàn de wǒ zài péngyou","wǒ de péngyou hē wàimiàn"],m:"My friend is outside."},
+ {p:"You tell someone to turn right.",a:"wǎng yòu zhuǎn",x:["wǎng yòu hē","yòu wǎng zhuǎn ma"],m:"Turn right."},
+ {p:"You ask whether the airport is far away.",a:"jīchǎng yuǎn ma",x:["jīchǎng chī ma","yuǎn jīchǎng hē ma"],m:"Is the airport far?"},
+ {p:"You ask someone to speak more slowly.",a:"shuō màn yīdiǎn",x:["shuō kuài yīdiǎn","màn shuō hē yīdiǎn"],m:"Speak a little more slowly."},
+ {p:"You suggest going together.",a:"wǒmen yīqǐ qù ba",x:["wǒmen yīqǐ hē ba","qù wǒmen ba yīqǐ ma"],m:"Let's go together."},
+ {p:"You ask if someone is free tonight.",a:"nǐ jīnwǎn yǒu kòng ma",x:["nǐ jīnwǎn chī kòng ma","kòng nǐ yǒu jīnwǎn ma"],m:"Are you free tonight?"},
+ {p:"You tell someone to wait for a moment.",a:"děng yīxià",x:["chī yīxià","yīxià yínháng"],m:"Wait a moment."}
+];
+let round=[],i=0,score=0,streak=0,locked=false,dirty=false;const shuffle=a=>{a=[...a];for(let n=a.length-1;n;n--){const j=Math.floor(Math.random()*(n+1));[a[n],a[j]]=[a[j],a[n]]}return a};
+function start(){round=shuffle(Q).slice(0,10);i=score=streak=0;$("intro").classList.add("hidden");$("game").classList.remove("hidden");render()}
+function render(){locked=false;dirty=false;const q=round[i];$("game").innerHTML=`<div class="status"><span>Situation ${i+1} of 10</span><span>🔥 ${streak} &nbsp; ✓ ${score}</span></div><div class="card situation"><div class="situation-label">What would you say?</div><div class="situation-text">${q.p}</div></div><div class="choices" id="choices"></div><div class="feedback" id="feedback"></div><button class="btn next" id="next">${i===9?"See results":"Next situation"}</button>`;shuffle([q.a,...q.x]).forEach(text=>{const b=document.createElement("button");b.className="choice";b.textContent=text;b.onclick=()=>choose(b,text,q);$("choices").appendChild(b)});$("next").onclick=()=>{i++;i===10?finish():render()}}
+function choose(button,text,q){if(locked)return;if(text===q.a){locked=true;button.classList.add("correct");if(!dirty){score++;streak++;}$("feedback").className="feedback good";$("feedback").innerHTML=`✓ <strong>${q.a}</strong><br>${q.m}`;$("next").style.display="block"}else{dirty=true;streak=0;button.classList.add("wrong");setTimeout(()=>button.classList.remove("wrong"),400);$("feedback").className="feedback bad";$("feedback").textContent="That doesn't fit the situation. Try again.";document.querySelector('.status span:last-child').textContent=`🔥 0   ✓ ${score}`}}
+function finish(){$("game").innerHTML=`<div class="card result"><div class="big">${score===10?"🏆":"🧠"}</div><h2>${score} / 10</h2><p>${score===10?"Every situation matched first time.":"Another round will draw a different selection."}</p><button class="btn" id="again">Play another ten</button></div>`;$("again").onclick=start}
+$("start").onclick=start;
+}());
+</script><script src="site-nav.js"></script></body></html>

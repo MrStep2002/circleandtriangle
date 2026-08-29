@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Five-Minute Mandarin Circuit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EAF0E6;--ink:#26312A;--jade:#3E7C59;--deep:#2C5C42;--red:#C0392B;--gold:#C9A227;--card:#fff;--line:#CBD8C6;--shadow:0 2px 7px rgba(38,49,42,.12)}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:Nunito,system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}.app{width:min(620px,100%);margin:auto;padding:30px 16px 50px}header{text-align:center;margin-bottom:22px}.logo{font:800 2rem/1.1 'Baloo 2',sans-serif}.logo span{color:var(--jade)}.tag{color:#5C6B5E;margin-top:4px}.stagebar{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin:18px 0}.stage{height:7px;border-radius:99px;background:#cbd8c6}.stage.done,.stage.current{background:var(--jade)}.stage.current{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--jade)}.card{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:22px;margin-bottom:14px}.intro{text-align:center}.intro h2,.screen-title{font:800 1.45rem 'Baloo 2',sans-serif}.intro p,.hint{color:#5C6B5E;margin:8px 0 18px}.btn{border:0;border-radius:12px;padding:13px 18px;font:800 1rem Nunito;cursor:pointer;width:100%;margin-top:10px}.primary{background:var(--jade);color:#fff}.ghost{background:#fff;color:var(--deep);border:2px solid var(--line)}.status{display:flex;justify-content:space-between;color:#647267;font-size:.9rem;margin-bottom:12px}.match-board{display:grid;grid-template-columns:1fr 1fr;gap:9px}.tile,.choice{border:2px solid var(--line);background:#fff;border-radius:12px;padding:12px 8px;font:700 1rem Nunito;color:var(--deep);cursor:pointer;min-height:52px}.tile.selected{border-color:var(--jade);background:#E3EFE7}.tile.matched{background:var(--jade);border-color:var(--jade);color:#fff;opacity:.55}.wrong{animation:shake .35s;border-color:var(--red)!important}.prompt{text-align:center;padding:24px 12px}.prompt-main{font:800 2rem 'Baloo 2',sans-serif;color:var(--deep)}.prompt-sub{color:#657366;margin-top:4px}.answer-row{display:flex;gap:8px}.answer-row input{min-width:0;flex:1;border:2px solid var(--line);border-radius:12px;padding:13px;font:700 1.05rem Nunito}.answer-row button{width:auto;margin:0}.feedback{text-align:center;min-height:46px;padding:11px;margin-top:10px;border-radius:10px}.good{background:#E3EFE7;color:var(--deep)}.bad{background:#FBE9E7;color:#922B21}.bank{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-top:16px}.bank .tile{width:auto}.sentence{min-height:65px;border:2px dashed var(--line);border-radius:12px;padding:12px;display:flex;flex-wrap:wrap;gap:7px;align-items:center}.placed{background:#E3EFE7;padding:8px 10px;border-radius:9px;font-weight:800}.choices{display:grid;gap:9px;margin-top:14px}.choice:hover{border-color:var(--jade)}.result{text-align:center}.result .big{font-size:3rem}.hidden{display:none!important}@keyframes shake{25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}}@media(max-width:420px){.app{padding-top:24px}.prompt-main{font-size:1.65rem}.tile{font-size:.92rem;padding:10px 5px}}
+</style>
+</head>
+<body>
+<main class="app">
+  <header><div class="logo">Five-Minute <span>Circuit</span></div><div class="tag">Five small rounds, one useful daily habit</div></header>
+  <div class="stagebar" id="stagebar" aria-label="Circuit progress"></div>
+  <section class="card intro" id="intro"><h2>A little of everything</h2><p>Match 10 words, recall five meanings, produce five pinyin answers, build three sentences, then revisit anything you missed.</p><button class="btn primary" id="start">Start today's circuit</button></section>
+  <section id="game" class="hidden"></section>
+</main>
+<script src="vocab-data.js"></script>
+<script src="progress.js"></script>
+<script>
+(function(){
+const $=id=>document.getElementById(id), words=window.MANDARIN_WORDS;
+const sentences=[
+ {en:"I want to drink tea.",tokens:["wǒ","yào","hē","chá"]},
+ {en:"My friend is at home.",tokens:["wǒ","de","péngyou","zài","jiā"]},
+ {en:"The bank is on the left.",tokens:["yínháng","zài","zuǒbian"]},
+ {en:"I will go tomorrow.",tokens:["wǒ","míngtiān","qù"]},
+ {en:"Where is the train station?",tokens:["huǒchēzhàn","zài","nǎr"]},
+ {en:"This is my computer.",tokens:["zhè","shì","wǒ","de","diànnǎo"]},
+ {en:"I don't eat fish.",tokens:["wǒ","bù","chī","yú"]},
+ {en:"The car is outside.",tokens:["chē","zài","wàimiàn"]},
+ {en:"She is my colleague.",tokens:["tā","shì","wǒ","de","tóngshì"]},
+ {en:"Let's go to the restaurant.",tokens:["wǒmen","qù","fànguǎn","ba"]}
+];
+let stage=0,queue=[],index=0,current=null,dirty=false,selectedP=null,selectedE=null,matched=0,missed=new Map(),built=[];
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const sample=(a,n)=>shuffle(a).slice(0,n);
+function bars(){const bar=$("stagebar");bar.innerHTML="";for(let i=0;i<5;i++){const d=document.createElement("span");d.className="stage "+(i<stage?"done":i===stage?"current":"");bar.appendChild(d)}}
+function miss(w){missed.set(w.pinyin,w);MandarinProgress.record(w,false)}
+function normEnglish(s){return s.toLowerCase().replace(/[’']/g,"").replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ").trim().replace(/^(to|a|an|the) /,"")}
+function englishAnswers(w){return [w.english,...(w.accepted||[])].flatMap(x=>x.split("/")).map(normEnglish)}
+function normPin(s){return s.toLowerCase().replace(/u:/g,"v").replace(/ü/g,"v").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[1-5]/g,"").replace(/[^a-zv]/g,"")}
+function nextStage(){stage++;bars();if(stage===1)startTyping("english");else if(stage===2)startTyping("pinyin");else if(stage===3)startBuild();else if(stage===4)startReview();}
+function startMatch(){stage=0;bars();const history=MandarinProgress.load();const familiar=words.filter(w=>history[w.pinyin]&&history[w.pinyin].correct>0);queue=sample(familiar.length>=10?familiar:words,10);matched=0;selectedP=selectedE=null;renderMatch()}
+function renderMatch(){const g=$("game");g.classList.remove("hidden");g.innerHTML=`<div class="status"><span>1. Match familiar words</span><span id="count">0 / 10</span></div><div class="match-board"><div id="pins"></div><div id="engs"></div></div><button class="btn primary hidden" id="continue">Next round</button>`;const p=$("pins"),e=$("engs");p.style.display=e.style.display="grid";p.style.gap=e.style.gap="9px";shuffle(queue).forEach(w=>p.appendChild(matchTile(w.pinyin,"p",w)));shuffle(queue).forEach(w=>e.appendChild(matchTile(w.english,"e",w)));$("continue").onclick=nextStage}
+function matchTile(label,type,w){const b=document.createElement("button");b.className="tile";b.textContent=label;b.dataset.pin=w.pinyin;b.onclick=()=>{if(b.classList.contains("matched"))return;const old=type==="p"?selectedP:selectedE;if(old)old.classList.remove("selected");b.classList.add("selected");if(type==="p")selectedP=b;else selectedE=b;if(selectedP&&selectedE)checkMatch()};return b}
+function checkMatch(){const ok=selectedP.dataset.pin===selectedE.dataset.pin;if(ok){MandarinProgress.record(selectedP.dataset.pin,true);[selectedP,selectedE].forEach(x=>{x.classList.remove("selected");x.classList.add("matched")});matched++;$("count").textContent=`${matched} / 10`;if(matched===10)$("continue").classList.remove("hidden")}else{const w=queue.find(x=>x.pinyin===selectedP.dataset.pin);miss(w);[selectedP,selectedE].forEach(x=>{x.classList.remove("selected");x.classList.add("wrong");setTimeout(()=>x.classList.remove("wrong"),400)})}selectedP=selectedE=null}
+function startTyping(kind){queue=sample(words,5);index=0;renderTyping(kind)}
+function renderTyping(kind){current=queue[index];dirty=false;const askEnglish=kind==="english";$("game").innerHTML=`<div class="status"><span>${askEnglish?"2. Recall the meaning":"3. Produce the pinyin"}</span><span>${index+1} / 5</span></div><div class="card prompt"><div class="prompt-main">${askEnglish?current.pinyin:current.english}</div><div class="prompt-sub">${askEnglish?(current.hanzi||current.pronunciation):"Type the Mandarin from memory"}</div></div><div class="answer-row"><input id="input" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${askEnglish?"Type the English…":"Type the pinyin…"}"><button class="btn primary" id="check">Check</button></div><div class="feedback" id="feedback"></div><button class="btn primary hidden" id="next">Next</button>`;$("check").onclick=()=>checkTyping(kind);$("input").onkeydown=e=>{if(e.key==="Enter")checkTyping(kind)};$("next").onclick=()=>{index++;if(index===5)nextStage();else renderTyping(kind)};$("input").focus()}
+function checkTyping(kind){const input=$("input"),guess=input.value.trim();if(!guess)return;const ok=kind==="english"?englishAnswers(current).includes(normEnglish(guess)):normPin(guess)===normPin(current.pinyin);if(ok){if(!dirty)MandarinProgress.record(current,true);$("feedback").className="feedback good";$("feedback").innerHTML=`✓ <strong>${current.pinyin}</strong> = ${current.english}`;input.disabled=true;$("check").classList.add("hidden");$("next").classList.remove("hidden");$("next").focus()}else{if(!dirty)miss(current);dirty=true;$("feedback").className="feedback bad";$("feedback").textContent="Not quite — try again.";input.select()}}
+function startBuild(){queue=sample(sentences,3);index=0;renderBuild()}
+function renderBuild(){const s=queue[index];built=[];$("game").innerHTML=`<div class="status"><span>4. Build a sentence</span><span>${index+1} / 3</span></div><div class="card prompt"><div class="prompt-main" style="font-size:1.45rem">${s.en}</div></div><div class="sentence" id="sentence"><span class="hint">Tap the words in order…</span></div><div class="bank" id="bank"></div><div class="feedback" id="feedback"></div><button class="btn primary hidden" id="next">Next</button>`;shuffle(s.tokens.map((t,i)=>({t,i}))).forEach(o=>{const b=document.createElement("button");b.className="tile";b.textContent=o.t;b.onclick=()=>{const expected=s.tokens[built.length];if(o.t===expected){b.disabled=true;b.style.opacity=.35;built.push(o.t);const hint=$("sentence").querySelector(".hint");if(hint)hint.remove();const x=document.createElement("span");x.className="placed";x.textContent=o.t;$("sentence").appendChild(x);if(built.length===s.tokens.length){$("feedback").className="feedback good";$("feedback").textContent="✓ Sentence complete";$("next").classList.remove("hidden")}}else{b.classList.add("wrong");setTimeout(()=>b.classList.remove("wrong"),400)}};$("bank").appendChild(b)});$("next").onclick=()=>{index++;if(index===3)nextStage();else renderBuild()}}
+function startReview(){queue=[...missed.values()];index=0;if(!queue.length)return finish();renderReview()}
+function renderReview(){current=queue[index];const distract=sample(words.filter(w=>w.pinyin!==current.pinyin),3);const opts=shuffle([current,...distract]);$("game").innerHTML=`<div class="status"><span>5. Revisit missed words</span><span>${index+1} / ${queue.length}</span></div><div class="card prompt"><div class="prompt-main">${current.english}</div><div class="prompt-sub">Choose the pinyin</div></div><div class="choices" id="choices"></div><div class="feedback" id="feedback"></div>`;opts.forEach(w=>{const b=document.createElement("button");b.className="choice";b.textContent=w.pinyin;b.onclick=()=>{if(w.pinyin===current.pinyin){b.style.background="#E3EFE7";$("feedback").className="feedback good";$("feedback").textContent="✓ Got it";setTimeout(()=>{index++;index===queue.length?finish():renderReview()},450)}else{b.classList.add("wrong");$("feedback").className="feedback bad";$("feedback").textContent="Try once more."}};$("choices").appendChild(b)})}
+function finish(){stage=5;bars();$("game").innerHTML=`<div class="card result"><div class="big">${missed.size?"🌱":"🏆"}</div><h2 class="screen-title">Circuit complete</h2><p class="hint">${missed.size?`You revisited ${missed.size} word${missed.size===1?"":"s"}. That is exactly what review is for.`:"Perfect first-time recall today."}</p><button class="btn primary" id="again">Run another circuit</button></div>`;$("again").onclick=()=>{missed.clear();startMatch()}}
+$("start").onclick=()=>{$("intro").classList.add("hidden");startMatch()};bars();
+}());
+</script>
+<script src="site-nav.js"></script>
+</body>
+</html>
