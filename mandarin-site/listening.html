@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Listening Round — Mandarin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --celadon: #EAF0E6;
+    --ink: #26312A;
+    --jade: #3E7C59;
+    --jade-deep: #2C5C42;
+    --cinnabar: #C0392B;
+    --gold: #C9A227;
+    --card: #FFFFFF;
+    --line: #CBD8C6;
+    --radius: 14px;
+    --shadow: 0 2px 6px rgba(38, 49, 42, 0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: 'Nunito', system-ui, sans-serif;
+    background: var(--celadon);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overscroll-behavior-y: contain;
+  }
+
+  .app { width: 100%; max-width: 480px; padding: 16px 14px 32px; }
+
+  header { text-align: center; padding: 8px 0 14px; }
+  .logo {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 1.7rem;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .logo .tone { color: var(--jade); }
+  .tagline { font-size: 0.88rem; color: #5C6B5E; margin-top: 2px; }
+
+  .screen { display: none; }
+  .screen.active { display: block; animation: rise 0.3s ease both; }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  h2 {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin-bottom: 4px;
+  }
+  .hint { color: #5C6B5E; font-size: 0.9rem; margin-bottom: 16px; }
+
+  /* ---------- Menu ---------- */
+  .topics { display: grid; gap: 10px; }
+  .topic-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    background: var(--card);
+    border: 2px solid transparent;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 14px;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--ink);
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.1s ease, border-color 0.1s ease;
+  }
+  .topic-btn:active { transform: scale(0.98); }
+  .topic-emoji {
+    font-size: 1.4rem;
+    width: 42px; height: 42px;
+    flex-shrink: 0;
+    display: grid; place-items: center;
+    background: var(--celadon);
+    border-radius: 11px;
+  }
+  .topic-name { font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 1.02rem; }
+  .topic-sub { font-size: 0.8rem; color: #5C6B5E; }
+  .topic-pct {
+    margin-left: auto;
+    font-weight: 700;
+    color: var(--gold);
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+
+  /* ---------- Play screen ---------- */
+  .progress-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #5C6B5E;
+  }
+  .progress-pct { color: var(--jade-deep); font-size: 1rem; }
+
+  .progress-track {
+    height: 6px;
+    background: var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--jade);
+    border-radius: 999px;
+    transition: width 0.25s ease;
+  }
+
+  .prompt-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 26px 16px;
+    text-align: center;
+    margin-bottom: 18px;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+  }
+  .prompt-hint { font-size: 0.85rem; color: #5C6B5E; }
+
+  .play-btn {
+    width: 74px; height: 74px;
+    border-radius: 50%;
+    background: var(--jade);
+    color: #fff;
+    border: none;
+    font-size: 1.8rem;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(62, 124, 89, 0.35);
+    transition: transform 0.1s ease;
+  }
+  .play-btn:active { transform: scale(0.94); }
+  .play-btn.replaying { animation: pulse 0.5s ease; }
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.12); }
+    100% { transform: scale(1); }
+  }
+  .play-count { font-size: 0.78rem; color: #7A8A7C; }
+
+  .options { display: grid; gap: 10px; }
+  .option-btn {
+    display: block;
+    width: 100%;
+    background: var(--card);
+    border: 2.5px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px 14px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.08s ease, background 0.08s ease, transform 0.08s ease;
+  }
+  .option-btn:active { transform: scale(0.98); }
+  .option-english {
+    display: block;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--jade-deep);
+  }
+
+  .option-btn.correct { border-color: var(--jade); background: #E3EFE7; }
+  .option-btn.correct .option-english::after { content: " ✓"; color: var(--jade); }
+  .option-btn.wrong { border-color: var(--cinnabar); background: #FBEAE7; animation: shake 0.35s ease; }
+  .option-btn.wrong .option-english::after { content: " ✗"; color: var(--cinnabar); }
+  .option-btn.dimmed { opacity: 0.45; }
+  .option-btn.locked { pointer-events: none; }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-3px); }
+  }
+
+  .answer-reveal { font-size: 0.85rem; color: #5C6B5E; margin-top: 4px; }
+  .answer-reveal b { color: var(--jade-deep); font-family: 'Baloo 2', sans-serif; }
+
+  /* ---------- Results screen ---------- */
+  .result-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px 20px;
+    text-align: center;
+    margin-bottom: 18px;
+  }
+  .result-pct {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 3rem;
+    color: var(--jade-deep);
+    line-height: 1;
+  }
+  .result-pct.low { color: var(--cinnabar); }
+  .result-pct.mid { color: var(--gold); }
+  .result-label { font-size: 0.95rem; color: #5C6B5E; margin: 6px 0 14px; }
+  .result-detail { font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 1.05rem; }
+  .result-best { margin-top: 10px; font-size: 0.85rem; color: var(--gold); font-weight: 700; }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: block;
+    width: 100%;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    padding: 14px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--jade); color: #fff; }
+  .btn-ghost { background: transparent; color: var(--jade-deep); border: 2px solid var(--jade); margin-top: 10px; }
+  .btn:focus-visible, .topic-btn:focus-visible, .option-btn:focus-visible, .play-btn:focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 2px;
+  }
+
+  footer { margin-top: 20px; text-align: center; font-size: 0.75rem; color: #7A8A7C; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">Listening <span class="tone">Round</span></div>
+    <div class="tagline">Hear the word, tap what it means</div>
+  </header>
+
+  <!-- ===== Menu screen ===== -->
+  <section id="screen-menu" class="screen active" aria-label="Choose a pool">
+    <h2>Pick your pool</h2>
+    <p class="hint">Real recorded pronunciation — only words with audio are here for now, so the list is short.</p>
+    <div class="topics" id="mode-list"></div>
+  </section>
+
+  <!-- ===== Play screen ===== -->
+  <section id="screen-play" class="screen" aria-label="Listening round">
+    <div class="progress-row">
+      <span id="progress-count">Q 1/14</span>
+      <span class="progress-pct" id="progress-pct">100%</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+    <div class="prompt-card">
+      <button class="play-btn" id="btn-play" aria-label="Play audio">🔊</button>
+      <span class="prompt-hint">Tap to hear it again</span>
+      <span class="play-count" id="play-count"></span>
+    </div>
+
+    <div class="options" id="options"></div>
+  </section>
+
+  <!-- ===== Results screen ===== -->
+  <section id="screen-results" class="screen" aria-label="Results">
+    <div class="result-card">
+      <div class="result-pct" id="result-pct">0%</div>
+      <div class="result-label" id="result-count"></div>
+      <div class="result-detail" id="result-detail"></div>
+      <div class="result-best" id="result-best"></div>
+    </div>
+    <button class="btn btn-primary" id="btn-again">Play again</button>
+    <button class="btn btn-ghost" id="btn-back-menu">Choose a different pool</button>
+  </section>
+
+  <footer>More words will join once they've got real recordings.</footer>
+</div>
+
+<script src="progress.js"></script>
+<script src="rotation.js"></script>
+<script>
+  const $ = (id) => document.getElementById(id);
+
+  // ---------- Word pool ----------
+  // Only words with a real recorded clip belong here. Each entry mirrors the
+  // shape other games use (pinyin/english/hanzi) plus its audio file, so
+  // MandarinProgress.record() can share the same mistake-tracking key.
+  const WORDS = [
+    { pinyin: "jīròu",     english: "chicken",       hanzi: "鸡肉",   audio: "streak-food-jirou.mp3" },
+    { pinyin: "yú",        english: "fish",          hanzi: "鱼",     audio: "streak-food-yu.mp3" },
+    { pinyin: "mǐfàn",     english: "rice",          hanzi: "米饭",   audio: "streak-food-mifan.mp3" },
+    { pinyin: "miàntiáo",  english: "noodles",       hanzi: "面条",   audio: "streak-food-miantiao.mp3" },
+    { pinyin: "chá",       english: "tea",           hanzi: "茶",     audio: "streak-food-cha.mp3" },
+    { pinyin: "kāfēi",     english: "coffee",        hanzi: "咖啡",   audio: "streak-food-kafei.mp3" },
+    { pinyin: "shuǐ",      english: "water",         hanzi: "水",     audio: "streak-food-shui.mp3" },
+    { pinyin: "píjiǔ",     english: "beer",          hanzi: "啤酒",   audio: "streak-food-pijiu.mp3" },
+    { pinyin: "niúnǎi",    english: "milk",          hanzi: "牛奶",   audio: "streak-food-niunai.mp3" },
+    { pinyin: "huǒchēzhàn",english: "train station", hanzi: "火车站", audio: "streak-place-huochezhan.mp3" },
+    { pinyin: "jīchǎng",   english: "airport",       hanzi: "机场",   audio: "streak-place-jichang.mp3" },
+    { pinyin: "shāngdiàn", english: "shop",          hanzi: "商店",   audio: "streak-place-shangdian.mp3" },
+    { pinyin: "fànguǎn",   english: "restaurant",    hanzi: "饭馆",   audio: "streak-place-fanguan.mp3" },
+    { pinyin: "yīyuàn",    english: "hospital",      hanzi: "医院",   audio: "streak-place-yiyuan.mp3" },
+    { pinyin: "Běijīng",   english: "Beijing",       hanzi: "北京",   audio: "streak-place-beijing.mp3" },
+  ];
+
+  const MODES = [
+    { id: "mix", name: "Everything", emoji: "🎧", sub: WORDS.length + " recorded words, mixed together" },
+    { id: "food", name: "Food & drink", emoji: "🍜", sub: "9 words" },
+    { id: "places", name: "Places around town", emoji: "📍", sub: "6 words" },
+  ];
+
+  function poolForMode(mode) {
+    if (mode.id === "food") return WORDS.filter(w => w.audio.startsWith("streak-food-"));
+    if (mode.id === "places") return WORDS.filter(w => w.audio.startsWith("streak-place-"));
+    return WORDS;
+  }
+
+  // ---------- State ----------
+  let currentMode = null;
+  let pool = [];
+  let roundLength = 0;
+  let questionBag = null;
+  let qIndex = 0;
+  let correctCount = 0;
+  let answered = false;
+  let currentWord = null;
+  let currentAudio = null;
+  let playCount = 0;
+
+  let bestPct = {};
+  try { bestPct = JSON.parse(localStorage.getItem("listeningBestPct") || "{}"); }
+  catch (e) { bestPct = {}; }
+
+  function saveBest() {
+    try { localStorage.setItem("listeningBestPct", JSON.stringify(bestPct)); }
+    catch (e) { /* best lasts this visit only */ }
+  }
+
+  function show(screenId) {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    $(screenId).classList.add("active");
+    window.scrollTo({ top: 0 });
+  }
+
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  // ---------- Menu ----------
+  function renderMenu() {
+    const list = $("mode-list");
+    list.innerHTML = "";
+    MODES.forEach(mode => {
+      const btn = document.createElement("button");
+      btn.className = "topic-btn";
+      const pct = bestPct[mode.id];
+      btn.innerHTML =
+        '<span class="topic-emoji">' + mode.emoji + '</span>' +
+        '<span><span class="topic-name">' + mode.name + '</span><br>' +
+        '<span class="topic-sub">' + mode.sub + '</span></span>' +
+        (typeof pct === "number" ? '<span class="topic-pct">' + pct + '%</span>' : '');
+      btn.addEventListener("click", () => chooseMode(mode));
+      list.appendChild(btn);
+    });
+  }
+
+  function chooseMode(mode) {
+    currentMode = mode;
+    pool = poolForMode(mode);
+    startRound();
+  }
+
+  // ---------- Play ----------
+  function startRound() {
+    roundLength = pool.length;
+    qIndex = 0;
+    correctCount = 0;
+    answered = false;
+    // Every word in the round exactly once — the pool is small enough that
+    // a full pass is the natural round length, no length picker needed.
+    questionBag = window.MandarinRotation ? window.MandarinRotation.createBag(pool) : { next: (() => { let i = 0; const s = shuffle(pool); return () => s[i++ % s.length]; })() };
+    show("screen-play");
+    nextQuestion();
+  }
+
+  function pickDistractors(correct, count) {
+    const others = pool.filter(w => w.pinyin !== correct.pinyin);
+    return shuffle(others).slice(0, count);
+  }
+
+  function playClip() {
+    if (currentAudio) {
+      try { currentAudio.pause(); currentAudio.currentTime = 0; } catch (e) {}
+    }
+    currentAudio = new Audio("audio/" + currentWord.audio);
+    currentAudio.play().catch(() => { /* autoplay-block on first load is fine — the button still works on tap */ });
+    playCount++;
+    $("play-count").textContent = playCount > 1 ? "played " + playCount + "×" : "";
+  }
+
+  function nextQuestion() {
+    if (qIndex >= roundLength) { finishRound(); return; }
+    answered = false;
+    currentWord = questionBag.next();
+    playCount = 0;
+    $("play-count").textContent = "";
+
+    const distractorCount = Math.min(3, Math.max(0, pool.length - 1));
+    const distractors = pickDistractors(currentWord, distractorCount);
+    const options = shuffle([currentWord, ...distractors]);
+
+    const optionsEl = $("options");
+    optionsEl.innerHTML = "";
+    const optionButtons = [];
+    options.forEach(word => {
+      const btn = document.createElement("button");
+      btn.className = "option-btn";
+      btn.innerHTML = '<span class="option-english">' + word.english + '</span>';
+      btn.addEventListener("click", () => selectOption(btn, word, optionButtons));
+      optionsEl.appendChild(btn);
+      optionButtons.push({ btn, word });
+    });
+
+    updateProgress();
+    // Auto-play as soon as the question loads, then the button re-plays it.
+    playClip();
+  }
+
+  function selectOption(btn, word, optionButtons) {
+    if (answered) return;
+    answered = true;
+
+    const isCorrect = word.pinyin === currentWord.pinyin;
+    if (window.MandarinProgress) MandarinProgress.record(currentWord.pinyin, isCorrect);
+
+    optionButtons.forEach(({ btn: el }) => {
+      el.classList.add("locked");
+      if (el !== btn) el.classList.add("dimmed");
+    });
+
+    if (isCorrect) {
+      correctCount++;
+      btn.classList.add("correct");
+    } else {
+      btn.classList.add("wrong");
+      optionButtons.forEach(({ btn: el, word: w }) => {
+        if (w.pinyin === currentWord.pinyin) {
+          el.classList.remove("dimmed");
+          el.classList.add("correct");
+        }
+      });
+    }
+
+    qIndex++;
+    updateProgress();
+    setTimeout(nextQuestion, isCorrect ? 650 : 1100);
+  }
+
+  function updateProgress() {
+    $("progress-count").textContent = "Q " + Math.min(qIndex + 1, roundLength) + "/" + roundLength;
+    const pct = qIndex === 0 ? 100 : Math.round((correctCount / qIndex) * 100);
+    $("progress-pct").textContent = pct + "%";
+    $("progress-fill").style.width = (qIndex / roundLength * 100) + "%";
+  }
+
+  function finishRound() {
+    const pct = roundLength === 0 ? 0 : Math.round((correctCount / roundLength) * 100);
+    $("result-pct").textContent = pct + "%";
+    $("result-pct").className = "result-pct" + (pct < 60 ? " low" : pct < 85 ? " mid" : "");
+    $("result-count").textContent = correctCount + " correct out of " + roundLength;
+    $("result-detail").textContent = resultMessage(pct);
+
+    const prevBest = bestPct[currentMode.id];
+    if (prevBest === undefined || pct > prevBest) {
+      bestPct[currentMode.id] = pct;
+      saveBest();
+      $("result-best").textContent = prevBest === undefined ? "🔥 First run on this pool!" : "🔥 New best for this pool!";
+    } else {
+      $("result-best").textContent = "Best for this pool: " + prevBest + "%";
+    }
+
+    show("screen-results");
+  }
+
+  function resultMessage(pct) {
+    if (pct === 100) return "Perfect ears! 🎉";
+    if (pct >= 85) return "Really strong listening — jiāyóu!";
+    if (pct >= 60) return "Solid — a couple more passes will lock it in.";
+    return "Good warm-up — listen again and try once more.";
+  }
+
+  // ---------- Wire up ----------
+  $("btn-play").addEventListener("click", () => {
+    $("btn-play").classList.add("replaying");
+    setTimeout(() => $("btn-play").classList.remove("replaying"), 500);
+    playClip();
+  });
+  $("btn-back-menu").addEventListener("click", () => { renderMenu(); show("screen-menu"); });
+  $("btn-again").addEventListener("click", () => startRound());
+
+  renderMenu();
+</script>
+<script src="site-nav.js"></script>
+</body>
+</html>

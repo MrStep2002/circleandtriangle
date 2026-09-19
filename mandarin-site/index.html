@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Language Games</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --celadon: #EAF0E6;   /* pale jade background */
+    --ink: #26312A;       /* green-black text */
+    --jade: #3E7C59;
+    --jade-deep: #2C5C42;
+    --gold: #C9A227;
+    --card: #FFFFFF;
+    --radius: 14px;
+    --shadow: 0 2px 6px rgba(38, 49, 42, 0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', system-ui, sans-serif;
+    background: var(--celadon);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .page {
+    width: 100%;
+    max-width: 560px;
+    padding: 32px 16px 48px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  h1 {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 2rem;
+    line-height: 1.15;
+  }
+  h1 span { color: var(--jade); }
+  .tagline {
+    color: #5C6B5E;
+    margin-top: 4px;
+  }
+
+  .games {
+    display: grid;
+    gap: 12px;
+  }
+  .section-title {
+    font-family: 'Baloo 2', sans-serif;
+    color: var(--jade-deep);
+    font-size: 1.15rem;
+    margin: 22px 2px 8px;
+  }
+  .section-title:first-child { margin-top: 0; }
+
+  /* Each game is one card — copy a whole <a class="game-card"> block to add a new one */
+  .game-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--card);
+    border: 2px solid transparent;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px;
+    text-decoration: none;
+    color: var(--ink);
+    transition: transform 0.12s ease, border-color 0.12s ease;
+  }
+  .game-card:hover,
+  .game-card:focus-visible {
+    border-color: var(--jade);
+    transform: translateY(-2px);
+  }
+  .game-card:focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 2px;
+  }
+
+  .game-emoji {
+    font-size: 1.6rem;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    background: var(--celadon);
+    border-radius: 12px;
+  }
+  .game-name {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+  .game-desc {
+    font-size: 0.9rem;
+    color: #5C6B5E;
+  }
+  .game-arrow {
+    margin-left: auto;
+    color: var(--jade);
+    font-weight: 700;
+    font-size: 1.2rem;
+  }
+
+  footer {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #7A8A7C;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <h1>My Mandarin <span>Games</span></h1>
+    <p class="tagline">Small bites of vocabulary and useful sentences</p>
+  </header>
+
+  <nav class="games" aria-label="Games">
+
+    <a class="game-card" href="progress-page.html">
+      <span class="game-emoji">🔓</span>
+      <span>
+        <span class="game-name">My Progress</span><br>
+        <span class="game-desc">Choose which topics you're ready to practise</span>
+      </span>
+      <span class="game-arrow">→</span>
+    </a>
+
+    <!-- ============================================================
+         TO ADD A NEW GAME:
+         Copy the whole <a> block below, then change:
+           - href  → the game's file name (e.g. "flashcards.html")
+           - emoji → any emoji you like
+           - name  → the game's title
+           - desc  → a one-line description
+         ============================================================ -->
+
+    <h2 class="section-title">Learn and match</h2>
+
+    <a class="game-card" href="pinyin-match.html">
+      <span class="game-emoji">🧩</span>
+      <span>
+        <span class="game-name">Topic Match</span><br>
+        <span class="game-desc">Study and match ten words from one topic</span>
+      </span>
+      <span class="game-arrow">→</span>
+    </a>
+
+    <a class="game-card" href="pinyin-mix.html">
+      <span class="game-emoji">🎲</span>
+      <span>
+        <span class="game-name">Mixed Match</span><br>
+        <span class="game-desc">Match random words from your full vocabulary</span>
+      </span>
+      <span class="game-arrow">→</span>
+    </a>
+
+    <a class="game-card" href="quick-tap.html">
+      <span class="game-emoji">⚡</span>
+      <span>
+        <span class="game-name">Quick Tap</span><br>
+        <span class="game-desc">Rapid-fire multiple choice — built for your phone</span>
+      </span>
+      <span class="game-arrow">→</span>
+    </a>
+
+    <a class="game-card" href="numbers-learn.html">
+      <span class="game-emoji">🔢</span>
+      <span>
+        <span class="game-name">Numbers Beyond Ten</span><br>
+        <span class="game-desc">Learn and match larger Mandarin numbers</span>
+      </span>
+      <span class="game-arrow">→</span>
+    </a>
+
+    <a class="game-card" href="listening.html">
+      <span class="game-emoji">🎧</span>
+      <span>
+        <span class="game-name">Listening Round</span><br>
+        <span class="game-desc">Hear real recordings and tap what they mean</span>
+      </span>
+      <span class="game-arrow">→</span>
+    </a>
+
+    <a class="game-card" href="sprint.html">
+      <span class="game-emoji">⏳</span>
+      <span>
+        <span class="game-name">Sprint</span><br>
+        <span class="game-desc">Beat the clock with rapid multiple choice</span>
+      </span>
+      <span class="game-arrow">→</span>
+    </a>
+
+    <a class="game-card" href="memory.html">
+      <span class="game-emoji">🃏</span>
+      <span>
+        <span class="game-name">Memory</span><br>
+        <span class="game-desc">Flip tiles and match pinyin to English</span>
+      </span>
+      <span class="game-arrow">→</span>
+    </a>
+
+    <h2 class="section-title">Recall from memory</h2>
+
+    <a class="game-card" href="pinyin-recall.html">
+      <span class="game-emoji">⌨️</span>
+      <span>
+        <span class="game-name">Type the English</span><br>
+        <span class="game-desc">See Mandarin and type what it means</span>
+      </span>
+      <span class="game-arrow">→</span>
+    </a>
+
+    <a class="game-card" href="pinyin-type.html">
+      <span class="game-emoji">🌱</span>
+      <span>
+        <span class="game-name">Type the Pinyin</span><br>
+        <span class="game-desc">See English and recall the Mandarin yourself</span>
+      </span>
+      <span class="game-arrow">→</span>
+    </a>
+
+    <a class="game-card" href="number-quiz.html">
+      <span class="game-emoji">🔣</span>
+      <span>
+        <span class="game-name">Number Decoder</span><br>
+        <span class="game-desc">Read a pinyin number and type the digits</span>
+      </span>
+      <span class="game-arrow">→</span>
+    </a>
+
+    <h2 class="section-title">Quick daily practice</h2>
+
+    <a class="game-card" href="daily-circuit.html">
+      <span class="game-emoji">⏱️</span>
+      <span>
+        <span class="game-name">Five-Minute Circuit</span><br>
+        <span class="game-desc">Match, recall, produce, build and review</span>
+      </span>
+      <span class="game-arrow">→</span>
+    </a>
+
+    <a class="game-card" href="missing-word.html">
+      <span class="game-emoji">🧩</span>
+      <span>
+        <span class="game-name">Missing Word</span><br>
+        <span class="game-desc">Complete short Mandarin sentences</span>
+      </span>
+      <span class="game-arrow">→</span>
+    </a>
+
+    <a class="game-card" href="sensible-sentence.html">
+      <span class="game-emoji">🤔</span>
+      <span>
+        <span class="game-name">Which Sentence Makes Sense?</span><br>
+        <span class="game-desc">Choose the Mandarin that fits the situation</span>
+      </span>
+      <span class="game-arrow">→</span>
+    </a>
+
+    <h2 class="section-title">Build sentences</h2>
+
+    <a class="game-card" href="phrase-builder.html">
+      <span class="game-emoji">💬</span>
+      <span>
+        <span class="game-name">Useful Phrases</span><br>
+        <span class="game-desc">Build practical Mandarin phrases word by word</span>
+      </span>
+      <span class="game-arrow">→</span>
+    </a>
+
+    <a class="game-card" href="casual-phrases.html">
+      <span class="game-emoji">😄</span>
+      <span>
+        <span class="game-name">Relaxed Everyday Phrases</span><br>
+        <span class="game-desc">More natural phrases for friends and daily life</span>
+      </span>
+      <span class="game-arrow">→</span>
+    </a>
+
+    <a class="game-card" href="home-people.html">
+      <span class="game-emoji">🏠</span>
+      <span>
+        <span class="game-name">Home &amp; People</span><br>
+        <span class="game-desc">Build new sentences using the added nouns</span>
+      </span>
+      <span class="game-arrow">→</span>
+    </a>
+
+    <a class="game-card" href="directions-plans.html">
+      <span class="game-emoji">🧭</span>
+      <span>
+        <span class="game-name">Directions &amp; Plans</span><br>
+        <span class="game-desc">Practise places, directions and meeting up</span>
+      </span>
+      <span class="game-arrow">→</span>
+    </a>
+
+     <a class="game-card" href="pinyin-daily-more.html">
+      <span class="game-emoji">🍜</span>
+      <span>
+        <span class="game-name">Everyday Sentences Plus</span><br>
+        <span class="game-desc">Food, errands, time, possessions and polite requests</span>
+      </span>
+      <span class="game-arrow">→</span>
+    </a>
+
+<a class="game-card" href="pinyin-streak.html">
+      <span class="game-emoji">🔥</span>
+      <span>
+        <span class="game-name">Sentence Streak</span><br>
+        <span class="game-desc">Build short sentences and keep your run alive</span>
+      </span>
+      <span class="game-arrow">→</span>
+    </a>
+
+<a class="game-card" href="pinyin-daily.html">
+      <span class="game-emoji">☀️</span>
+      <span>
+        <span class="game-name">Everyday Sentences</span><br>
+        <span class="game-desc">Build short sentences from familiar vocabulary</span>
+      </span>
+      <span class="game-arrow">→</span>
+    </a>
+
+    <a class="game-card" href="pinyin-master.html">
+      <span class="game-emoji">🏆</span>
+      <span>
+        <span class="game-name">Sentence Challenge</span><br>
+        <span class="game-desc">Longer questions and sentences using everything you know</span>
+      </span>
+      <span class="game-arrow">→</span>
+    </a>
+
+  </nav>
+
+  <footer>Small daily practice beats one enormous lesson.</footer>
+
+</div>
+</body>
+</html>

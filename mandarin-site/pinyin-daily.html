@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pīnyīn Streak — Endless Mandarin Sentence Runs</title>
+<title>Pīnyīn Daily — Everyday Mandarin Sentence Runs</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
@@ -22,7 +22,7 @@
 
     --role-person: #A07E17;      --role-person-bg: #F6EEDA;
     --role-frame: #2C5C42;       --role-frame-bg: #E3EFE7;
-    --role-amount: #7B5AA6;      --role-amount-bg: #EEE8F5;
+    --role-adj: #7B5AA6;         --role-adj-bg: #EEE8F5;
     --role-thing: #3D6395;       --role-thing-bg: #E4EBF4;
   }
 
@@ -181,7 +181,7 @@
   }
   .placed.person { background: var(--role-person); }
   .placed.frame  { background: var(--jade); }
-  .placed.amount { background: var(--role-amount); }
+  .placed.adj    { background: var(--role-adj); }
   .placed.thing  { background: var(--role-thing); }
   @keyframes pop {
     from { transform: scale(0.6); opacity: 0; }
@@ -214,7 +214,7 @@
   }
   .tile.person { color: var(--role-person); background: var(--role-person-bg); }
   .tile.frame  { color: var(--role-frame);  background: var(--role-frame-bg); }
-  .tile.amount { color: var(--role-amount); background: var(--role-amount-bg); }
+  .tile.adj    { color: var(--role-adj);    background: var(--role-adj-bg); }
   .tile.thing  { color: var(--role-thing);  background: var(--role-thing-bg); }
   .tile:hover, .tile:focus-visible { border-color: var(--jade); }
   .tile:active { transform: scale(0.96); }
@@ -263,37 +263,7 @@
     margin-bottom: 4px;
   }
   .done-phon { font-style: italic; font-size: 0.95rem; color: #7A8A7C; margin-bottom: 6px; }
-  .done-literal { font-size: 0.9rem; color: #5C6B5E; font-style: italic; margin-bottom: 10px; }
-
-  /* ---------- Speaker button ---------- */
-  .btn-speak {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin: 0 auto;
-    background: var(--celadon);
-    color: var(--jade-deep);
-    border: 2px solid var(--jade);
-    border-radius: 999px;
-    padding: 8px 18px;
-    font-family: 'Baloo 2', sans-serif;
-    font-weight: 700;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: background 0.12s ease, transform 0.12s ease;
-  }
-  .btn-speak:hover, .btn-speak:focus-visible { background: #DCE9D6; }
-  .btn-speak:active { transform: scale(0.97); }
-  .btn-speak[disabled] { opacity: 0.55; cursor: default; }
-  .btn-speak .spin {
-    display: inline-block;
-    width: 12px; height: 12px;
-    border: 2px solid var(--jade-deep);
-    border-top-color: transparent;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  .done-literal { font-size: 0.9rem; color: #5C6B5E; font-style: italic; }
 
   /* ---------- Buttons ---------- */
   .btn {
@@ -334,14 +304,14 @@
 <body>
 <div class="app">
   <header>
-    <div class="logo">P<span class="tone">ī</span>ny<span class="tone">ī</span>n Streak</div>
-    <div class="tagline">Endless sentences — how long can your run go?</div>
+    <div class="logo">P<span class="tone">ī</span>ny<span class="tone">ī</span>n Daily</div>
+    <div class="tagline">Everyday sentences from words you already know</div>
   </header>
 
   <!-- ===== Menu screen ===== -->
-  <section id="screen-menu" class="screen active" aria-label="Choose a mode">
+  <section id="screen-menu" class="screen active" aria-label="Choose a run">
     <h2>Pick your run</h2>
-    <p class="hint">Sentences are generated at random and never stop coming. Build each one perfectly to grow your streak — one wrong tap and the run resets to zero!</p>
+    <p class="hint">Endless everyday sentences — eating, errands, weather, feelings — built only from your vocab lists. Perfect builds grow your streak; one wrong tap resets the run!</p>
     <div class="topics" id="topic-list"></div>
   </section>
 
@@ -369,7 +339,6 @@
       <div class="done-pinyin" id="done-pinyin"></div>
       <div class="done-phon" id="done-phon"></div>
       <div class="done-literal" id="done-literal"></div>
-      <button class="btn-speak" id="btn-speak" type="button">🔊 Hear it said</button>
     </div>
 
     <button class="btn btn-primary" id="btn-next" hidden>Next sentence</button>
@@ -380,95 +349,114 @@
 </div>
 
 <script>
-  // ---------- Vocabulary pools ----------
-  // Each entry's `aid` is its audio-clip id suffix — see the modular audio section below.
+  // ---------- Vocabulary (all from the Pīnyīn Match lists) ----------
   const PRONOUNS = [
-    { pin: "wǒ",    phon: "waw",     en: "I",    third: false, aid: "wo" },
-    { pin: "nǐ",    phon: "nee",     en: "You",  third: false, aid: "ni" },
-    { pin: "tā",    phon: "tah",     en: "He",   third: true,  aid: "ta" },
-    { pin: "tā",    phon: "tah",     en: "She",  third: true,  aid: "ta" },
-    { pin: "wǒmen", phon: "waw-mun", en: "We",   third: false, aid: "women" },
-    { pin: "tāmen", phon: "tah-mun", en: "They", third: false, aid: "tamen" }
+    { pin: "wǒ",    phon: "waw",     en: "I",    third: false },
+    { pin: "nǐ",    phon: "nee",     en: "You",  third: false },
+    { pin: "tā",    phon: "tah",     en: "He",   third: true },
+    { pin: "tā",    phon: "tah",     en: "She",  third: true },
+    { pin: "wǒmen", phon: "waw-mun", en: "We",   third: false },
+    { pin: "tāmen", phon: "tah-mun", en: "They", third: false }
   ];
+  const be = (p) => p.en === "I" ? "am" : (p.third ? "is" : "are");
 
-  const FOODS = [
-    { pin: "jīròu",    phon: "jee-roh",   en: "chicken", aid: "jirou" },
-    { pin: "yú",       phon: "yoo",       en: "fish",    aid: "yu" },
-    { pin: "mǐfàn",    phon: "mee-fahn",  en: "rice",    aid: "mifan" },
-    { pin: "miàntiáo", phon: "myen-tyow", en: "noodles", aid: "miantiao" },
-    { pin: "chá",      phon: "chah",      en: "tea",     aid: "cha" },
-    { pin: "kāfēi",    phon: "kah-fay",   en: "coffee",  aid: "kafei" },
-    { pin: "shuǐ",     phon: "shway",     en: "water",   aid: "shui" },
-    { pin: "píjiǔ",    phon: "pee-jyoh",  en: "beer",    aid: "pijiu" },
-    { pin: "niúnǎi",   phon: "nyoh-nye",  en: "milk",    aid: "niunai" }
+  const EAT_FOODS = [
+    { pin: "jiǎozi",   phon: "jyow-dzuh", sen: "dumplings" },
+    { pin: "miàntiáo", phon: "myen-tyow", sen: "noodles" },
+    { pin: "mǐfàn",    phon: "mee-fahn",  sen: "rice" },
+    { pin: "yú",       phon: "yoo",       sen: "fish" },
+    { pin: "jī",       phon: "jee",       sen: "chicken" },
+    { pin: "zhūròu",   phon: "joo-roh",   sen: "pork" },
+    { pin: "niúròu",   phon: "nyoh-roh",  sen: "beef" },
+    { pin: "yángròu",  phon: "yahng-roh", sen: "lamb" },
+    { pin: "jīdàn",    phon: "jee-dahn",  sen: "eggs" },
+    { pin: "miànbāo",  phon: "myen-baow", sen: "bread" },
+    { pin: "shūcài",   phon: "shoo-tsye", sen: "vegetables" },
+    { pin: "píngguǒ",  phon: "ping-gwaw", sen: "an apple" }
+  ];
+  const DRINKS = [
+    { pin: "chá",    phon: "chah",     sen: "tea" },
+    { pin: "kāfēi",  phon: "kah-fay",  sen: "coffee" },
+    { pin: "shuǐ",   phon: "shway",    sen: "water" },
+    { pin: "píjiǔ",  phon: "pee-jyoh", sen: "beer" },
+    { pin: "niúnǎi", phon: "nyoh-nye", sen: "milk" },
+    { pin: "guǒzhī", phon: "gwaw-jrr", sen: "juice" }
   ];
 
   const PLACES = [
-    { pin: "huǒchēzhàn", phon: "hwaw-chuh-jahn", en: "the train station", aid: "huochezhan" },
-    { pin: "jīchǎng",    phon: "jee-chahng",     en: "the airport",       aid: "jichang" },
-    { pin: "shāngdiàn",  phon: "shahng-dyen",    en: "the shop",          aid: "shangdian" },
-    { pin: "fànguǎn",    phon: "fahn-gwahn",     en: "the restaurant",    aid: "fanguan" },
-    { pin: "yīyuàn",     phon: "ee-ywen",        en: "the hospital",      aid: "yiyuan" },
-    { pin: "Běijīng",    phon: "bay-jing",       en: "Beijing",           aid: "beijing" }
+    { pin: "gōngyuán",   phon: "gohng-ywen",     sen: "the park" },
+    { pin: "huǒchēzhàn", phon: "hwaw-chuh-jahn", sen: "the train station" },
+    { pin: "jīchǎng",    phon: "jee-chahng",     sen: "the airport" },
+    { pin: "jiǔbā",      phon: "jyoh-bah",       sen: "the bar" },
+    { pin: "fànguǎn",    phon: "fahn-gwahn",     sen: "the restaurant" },
+    { pin: "shāngdiàn",  phon: "shahng-dyen",    sen: "the shop" },
+    { pin: "chāoshì",    phon: "chow-shrr",      sen: "the supermarket" },
+    { pin: "yīyuàn",     phon: "ee-ywen",        sen: "the hospital" },
+    { pin: "xuéxiào",    phon: "shweh-shyow",    sen: "school" },
+    { pin: "yínháng",    phon: "yeen-hahng",     sen: "the bank" }
   ];
 
-  const NUMBERS = [
-    { pin: "yī",    phon: "ee",     en: "one",   n: 1, aid: "yi" },
-    { pin: "liǎng", phon: "lyahng", en: "two",   n: 2, aid: "liang" },
-    { pin: "sān",   phon: "sahn",   en: "three", n: 3, aid: "san" }
+  const LIKE_THINGS = [
+    { pin: "chá",      phon: "chah",      sen: "tea" },
+    { pin: "kāfēi",    phon: "kah-fay",   sen: "coffee" },
+    { pin: "píjiǔ",    phon: "pee-jyoh",  sen: "beer" },
+    { pin: "jiǎozi",   phon: "jyow-dzuh", sen: "dumplings" },
+    { pin: "miàntiáo", phon: "myen-tyow", sen: "noodles" },
+    { pin: "yú",       phon: "yoo",       sen: "fish" },
+    { pin: "gǒu",      phon: "goh",       sen: "dogs" },
+    { pin: "māo",      phon: "maow",      sen: "cats" },
+    { pin: "xià yǔ",   phon: "shyah yoo",   sen: "the rain" },
+    { pin: "xià xuě",  phon: "shyah shweh", sen: "the snow" },
+    { pin: "tàiyáng",  phon: "tye-yahng",   sen: "the sun" }
   ];
-  const ER_TRAP = { pin: "èr", phon: "arr" }; // "two" for counting — the classic wrong answer!
 
-  const MEASURES = [
-    { pin: "bēi",  phon: "bay",  en: "cup",    items: ["chá", "kāfēi", "shuǐ", "niúnǎi"], aid: "bei" },
-    { pin: "wǎn",  phon: "wahn", en: "bowl",   items: ["mǐfàn", "miàntiáo"],               aid: "wan" },
-    { pin: "píng", phon: "ping", en: "bottle", items: ["píjiǔ", "shuǐ", "niúnǎi"],         aid: "ping" }
+  const ADJS = {
+    "hǎo":  { phon: "how",   en: "good", enPerson: "well" },
+    "lěng": { phon: "lung",  en: "cold" },
+    "rè":   { phon: "ruh",   en: "hot" },
+    "dà":   { phon: "dah",   en: "big" },
+    "xiǎo": { phon: "shyow", en: "small" },
+    "kuài": { phon: "kwye",  en: "fast" },
+    "xīn":  { phon: "sheen", en: "new" },
+    "lèi":  { phon: "lay",   en: "tired" }
+  };
+  const DESCRIBE_SUBJECTS = [
+    { pin: "tiānqì", phon: "tyen-chee", sen: "weather", adjs: ["hǎo", "lěng", "rè"] },
+    { pin: "chá",    phon: "chah",      sen: "tea",     adjs: ["rè"] },
+    { pin: "kāfēi",  phon: "kah-fay",   sen: "coffee",  adjs: ["rè"] },
+    { pin: "tāng",   phon: "tahng",     sen: "soup",    adjs: ["rè"] },
+    { pin: "píjiǔ",  phon: "pee-jyoh",  sen: "beer",    adjs: ["lěng"] },
+    { pin: "shuǐ",   phon: "shway",     sen: "water",   adjs: ["lěng"] },
+    { pin: "gǒu",    phon: "goh",       sen: "dog",     adjs: ["dà", "xiǎo"] },
+    { pin: "māo",    phon: "maow",      sen: "cat",     adjs: ["dà", "xiǎo"] },
+    { pin: "chē",    phon: "chuh",      sen: "car",     adjs: ["kuài", "xīn", "dà"] },
+    { pin: "shǒujī", phon: "shoh-jee",  sen: "phone",   adjs: ["xīn"] }
   ];
+  const PERSON_ADJS = ["lèi", "lèi", "hǎo"]; // tired twice — it's the daily classic!
 
-  // ---------- Modular pre-recorded audio ----------
-  // Each generated sentence is spoken by chaining a small number of real recorded
-  // clips: a pronoun+verb "frame" (recorded as one piece, so its internal tone
-  // sandhi is already correct) followed by the content word(s). This covers every
-  // sentence the generators can produce using only 44 total recordings instead of
-  // one per sentence. The frame phrases were chosen because they all end on a
-  // tone (4th or 2nd) that never triggers third-tone sandhi with whatever follows,
-  // so the frame-to-content join is always safe. The one known rough edge: "wǎn"
-  // (bowl) is itself 3rd tone, so "liǎng wǎn" + a 3rd-tone-initial food (mǐfàn)
-  // can sound slightly off at that join — a minor, isolated case, not fixable
-  // without recording that exact triple combination too.
-  function clipUrl(id) { return "audio/streak-" + id + ".mp3"; }
-
-  const AUDIO_CACHE = new Map(); // clip id -> reusable Audio element
-  function getClipAudio(id) {
-    let audio = AUDIO_CACHE.get(id);
-    if (!audio) {
-      audio = new Audio(clipUrl(id));
-      AUDIO_CACHE.set(id, audio);
-    } else {
-      audio.currentTime = 0;
-    }
-    return audio;
-  }
-
-  function playSequence(clipIds, onDone) {
-    let i = 0;
-    function playNext() {
-      if (i >= clipIds.length) { if (onDone) onDone(); return; }
-      const audio = getClipAudio(clipIds[i]);
-      i++;
-      const advance = () => playNext();
-      audio.addEventListener("ended", advance, { once: true });
-      audio.addEventListener("error", advance, { once: true }); // skip a clip that fails, don't stall
-      audio.play().catch(advance);
-    }
-    playNext();
-  }
-
-  function speakClips(clipIds, btn) {
-    if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Playing…'; }
-    const reset = () => { if (btn) { btn.disabled = false; btn.innerHTML = "🔊 Hear it said"; } };
-    playSequence(clipIds, reset);
-  }
+  const ERRANDS = [
+    { placePins: ["chāoshì", "shāngdiàn"], verb: { pin: "mǎi", phon: "my", en: "buy" },
+      items: [
+        { pin: "miànbāo", phon: "myen-baow", sen: "bread" },
+        { pin: "niúnǎi",  phon: "nyoh-nye",  sen: "milk" },
+        { pin: "jīdàn",   phon: "jee-dahn",  sen: "eggs" },
+        { pin: "shuǐguǒ", phon: "shway-gwaw", sen: "fruit" },
+        { pin: "shūcài",  phon: "shoo-tsye", sen: "vegetables" },
+        { pin: "guǒzhī",  phon: "gwaw-jrr",  sen: "juice" },
+        { pin: "kāfēi",   phon: "kah-fay",   sen: "coffee" }
+      ] },
+    { placePins: ["fànguǎn"], verb: { pin: "chī", phon: "chrr", en: "eat" },
+      items: [
+        { pin: "jiǎozi",   phon: "jyow-dzuh", sen: "dumplings" },
+        { pin: "miàntiáo", phon: "myen-tyow", sen: "noodles" },
+        { pin: "mǐfàn",    phon: "mee-fahn",  sen: "rice" },
+        { pin: "yú",       phon: "yoo",       sen: "fish" }
+      ] },
+    { placePins: ["jiǔbā"], verb: { pin: "hē", phon: "huh", en: "drink" },
+      items: [
+        { pin: "píjiǔ", phon: "pee-jyoh", sen: "beer" }
+      ] }
+  ];
 
   // ---------- Helpers ----------
   const $ = (id) => document.getElementById(id);
@@ -490,123 +478,178 @@
     window.scrollTo({ top: 0 });
   }
 
+  const tok = (o, role, gloss) => ({ pin: o.pin, phon: o.phon, role, gloss: gloss || o.sen });
+  const dis = (o, role) => ({ pin: o.pin, phon: o.phon, role });
+  const findPlace = (pin) => PLACES.find(p => p.pin === pin);
+  const adjTok = (pin, forPerson) => ({
+    pin, phon: ADJS[pin].phon, role: "adj",
+    gloss: forPerson ? (ADJS[pin].enPerson || ADJS[pin].en) : ADJS[pin].en
+  });
+
   // ---------- Sentence generators ----------
   // Each returns { en, tokens: [{pin, phon, role, gloss}], distract: [{pin, phon, role}] }
   const GENERATORS = {
-    wouldlike() {
+
+    // [P] (yào) chī/hē [food or drink]
+    eatdrink() {
       const p = pick(PRONOUNS);
-      const food = pick(FOODS);
+      const isDrink = Math.random() < 0.45;
+      const food = pick(isDrink ? DRINKS : EAT_FOODS);
+      const verb = isDrink
+        ? { pin: "hē", phon: "huh", en: "drink" }
+        : { pin: "chī", phon: "chrr", en: "eat" };
+      const wrongVerb = isDrink
+        ? { pin: "chī", phon: "chrr" }
+        : { pin: "hē", phon: "huh" };
+      const want = Math.random() < 0.4;
+
+      const tokens = [tok(p, "person", p.en)];
+      let en;
+      if (want) {
+        tokens.push({ pin: "yào", phon: "yow", role: "frame", gloss: "want" });
+        en = p.en + " " + (p.third ? "wants" : "want") + " to " + verb.en + " " + food.sen + ".";
+      } else {
+        en = p.en + " " + be(p) + " " + verb.en.replace("eat", "eating").replace("drink", "drinking") + " " + food.sen + ".";
+      }
+      tokens.push({ pin: verb.pin, phon: verb.phon, role: "frame", gloss: verb.en });
+      tokens.push(tok(food, "thing"));
+
       return {
-        en: p.en + " would like " + food.en + ".",
-        tokens: [
-          { pin: p.pin, phon: p.phon, role: "person", gloss: p.en },
-          { pin: "yào", phon: "yow", role: "frame", gloss: "would like" },
-          { pin: food.pin, phon: food.phon, role: "thing", gloss: food.en }
-        ],
+        en, tokens,
         distract: [
-          rolify(pickOther(PRONOUNS, p.pin), "person"),
-          rolify(pickOther(FOODS, food.pin), "thing")
-        ],
-        audioClips: ["frame-wouldlike-" + p.aid, "food-" + food.aid]
+          dis(pickOther(PRONOUNS, p.pin), "person"),
+          dis(pickOther(isDrink ? DRINKS : EAT_FOODS, food.pin), "thing"),
+          { pin: wrongVerb.pin, phon: wrongVerb.phon, role: "frame" } // the chī/hē trap!
+        ]
       };
     },
 
-    likes() {
-      const p = pick(PRONOUNS);
-      const thing = pick(FOODS);
-      const negative = Math.random() < 0.45;
-      const verb = p.third ? (negative ? "doesn't like" : "likes")
-                           : (negative ? "don't like" : "like");
-      const tokens = [
-        { pin: p.pin, phon: p.phon, role: "person", gloss: p.en }
-      ];
-      if (negative) tokens.push({ pin: "bù", phon: "boo", role: "frame", gloss: "not" });
-      tokens.push({ pin: "xǐhuan", phon: "shee-hwahn", role: "frame", gloss: "like" });
-      tokens.push({ pin: thing.pin, phon: thing.phon, role: "thing", gloss: thing.en });
-
-      const distract = [
-        rolify(pickOther(PRONOUNS, p.pin), "person"),
-        rolify(pickOther(FOODS, thing.pin), "thing")
-      ];
-      // In positive sentences, bù lurks as a trap.
-      if (!negative) distract.push({ pin: "bù", phon: "boo", role: "frame" });
-
-      const frameAid = negative ? "frame-notlikes-" : "frame-likes-";
-      return {
-        en: p.en + " " + verb + " " + thing.en + ".",
-        tokens, distract,
-        audioClips: [frameAid + p.aid, "food-" + thing.aid]
-      };
-    },
-
+    // [P] (bù) qù [place]
     going() {
       const p = pick(PRONOUNS);
       const place = pick(PLACES);
-      const verb = p.third ? "wants to go to" : "want to go to";
+      const negative = Math.random() < 0.3;
+
+      const tokens = [tok(p, "person", p.en)];
+      if (negative) tokens.push({ pin: "bù", phon: "boo", role: "frame", gloss: "not" });
+      tokens.push({ pin: "qù", phon: "chyoo", role: "frame", gloss: "go" });
+      tokens.push(tok(place, "thing"));
+
+      const en = p.en + " " + be(p) + (negative ? " not" : "") + " going to " + place.sen + ".";
+      const distract = [
+        dis(pickOther(PRONOUNS, p.pin), "person"),
+        dis(pickOther(PLACES, place.pin), "thing")
+      ];
+      if (!negative) distract.push({ pin: "bù", phon: "boo", role: "frame" });
+
+      return { en, tokens, distract };
+    },
+
+    // [P] (bù) xǐhuan / ài [thing]
+    likes() {
+      const p = pick(PRONOUNS);
+      const thing = pick(LIKE_THINGS);
+      const negative = Math.random() < 0.4;
+      const love = !negative && Math.random() < 0.4;
+
+      const tokens = [tok(p, "person", p.en)];
+      if (negative) tokens.push({ pin: "bù", phon: "boo", role: "frame", gloss: "not" });
+      tokens.push(love
+        ? { pin: "ài", phon: "eye", role: "frame", gloss: "love" }
+        : { pin: "xǐhuan", phon: "shee-hwahn", role: "frame", gloss: "like" });
+      tokens.push(tok(thing, "thing"));
+
+      let en;
+      if (negative) en = p.en + " " + (p.third ? "doesn't" : "don't") + " like " + thing.sen + ".";
+      else if (love) en = p.en + " " + (p.third ? "loves" : "love") + " " + thing.sen + ".";
+      else en = p.en + " " + (p.third ? "likes" : "like") + " " + thing.sen + ".";
+
+      const distract = [
+        dis(pickOther(PRONOUNS, p.pin), "person"),
+        dis(pickOther(LIKE_THINGS, thing.pin), "thing")
+      ];
+      if (!negative) distract.push({ pin: "bù", phon: "boo", role: "frame" });
+      else distract.push({ pin: love ? "xǐhuan" : "ài", phon: love ? "shee-hwahn" : "eye", role: "frame" });
+
+      return { en, tokens, distract };
+    },
+
+    // [subject] hěn [adjective]  — the weather is very cold, I am very tired…
+    describe() {
+      const personSubject = Math.random() < 0.35;
+      const hen = { pin: "hěn", phon: "hun", role: "frame", gloss: "very" };
+
+      if (personSubject) {
+        const p = pick(PRONOUNS);
+        const adjPin = pick(PERSON_ADJS);
+        const adj = adjTok(adjPin, true);
+        const wrongAdj = pick(Object.keys(ADJS).filter(a => a !== adjPin));
+        return {
+          en: p.en + " " + be(p) + " very " + adj.gloss + ".",
+          tokens: [tok(p, "person", p.en), hen, adj],
+          distract: [
+            dis(pickOther(PRONOUNS, p.pin), "person"),
+            { pin: wrongAdj, phon: ADJS[wrongAdj].phon, role: "adj" }
+          ]
+        };
+      }
+
+      const subj = pick(DESCRIBE_SUBJECTS);
+      const adjPin = pick(subj.adjs);
+      const adj = adjTok(adjPin, false);
+      const wrongAdj = pick(Object.keys(ADJS).filter(a => a !== adjPin));
       return {
-        en: p.en + " " + verb + " " + place.en + ".",
-        tokens: [
-          { pin: p.pin, phon: p.phon, role: "person", gloss: p.en },
-          { pin: "yào", phon: "yow", role: "frame", gloss: "want" },
-          { pin: "qù", phon: "chyoo", role: "frame", gloss: "go" },
-          { pin: place.pin, phon: place.phon, role: "thing", gloss: place.en }
-        ],
+        en: "The " + subj.sen + " is very " + adj.gloss + ".",
+        tokens: [tok(subj, "thing"), hen, adj],
         distract: [
-          rolify(pickOther(PRONOUNS, p.pin), "person"),
-          rolify(pickOther(PLACES, place.pin), "thing")
-        ],
-        audioClips: ["frame-going-" + p.aid, "place-" + place.aid]
+          dis(pickOther(DESCRIBE_SUBJECTS, subj.pin), "thing"),
+          { pin: wrongAdj, phon: ADJS[wrongAdj].phon, role: "adj" }
+        ]
       };
     },
 
-    amounts() {
+    // [P] qù [place] chī/hē/mǎi [thing] — going somewhere to do something
+    errand() {
       const p = pick(PRONOUNS);
-      const measure = pick(MEASURES);
-      const item = FOODS.find(f => f.pin === pick(measure.items));
-      const num = pick(NUMBERS);
-      const plural = num.n > 1 ? "s" : "";
-      const en = p.en + " would like " + num.en + " " + measure.en + plural + " of " + item.en + ".";
+      const errand = pick(ERRANDS);
+      const place = findPlace(pick(errand.placePins));
+      const item = pick(errand.items);
 
-      const distract = [
-        rolify(pickOther(MEASURES, measure.pin), "amount")
+      const en = p.en + " " + be(p) + " going to " + place.sen +
+                 " to " + errand.verb.en + " " + item.sen + ".";
+      const tokens = [
+        tok(p, "person", p.en),
+        { pin: "qù", phon: "chyoo", role: "frame", gloss: "go" },
+        tok(place, "thing"),
+        { pin: errand.verb.pin, phon: errand.verb.phon, role: "frame", gloss: errand.verb.en },
+        tok(item, "thing")
       ];
-      // If the number is liǎng (two), sneak in èr — the classic mistake.
-      if (num.pin === "liǎng") {
-        distract.push({ pin: ER_TRAP.pin, phon: ER_TRAP.phon, role: "amount" });
-      } else {
-        distract.push(rolify(pickOther(NUMBERS, num.pin), "amount"));
-      }
 
-      return {
-        en,
-        tokens: [
-          { pin: p.pin, phon: p.phon, role: "person", gloss: p.en },
-          { pin: "yào", phon: "yow", role: "frame", gloss: "would like" },
-          { pin: num.pin, phon: num.phon, role: "amount", gloss: num.en },
-          { pin: measure.pin, phon: measure.phon, role: "amount", gloss: measure.en },
-          { pin: item.pin, phon: item.phon, role: "thing", gloss: item.en }
-        ],
-        distract,
-        audioClips: ["frame-wouldlike-" + p.aid, "amt-" + num.aid + "-" + measure.aid, "food-" + item.aid]
-      };
+      // Distractors: a wrong place, plus a wrong verb from another errand type.
+      const otherErrand = pick(ERRANDS.filter(e => e.verb.pin !== errand.verb.pin));
+      const distract = [
+        dis(pickOther(PRONOUNS, p.pin), "person"),
+        dis(pickOther(PLACES, place.pin), "thing"),
+        { pin: otherErrand.verb.pin, phon: otherErrand.verb.phon, role: "frame" }
+      ];
+
+      return { en, tokens, distract };
     }
   };
 
-  function rolify(item, role) {
-    return { pin: item.pin, phon: item.phon, role: role };
-  }
-
   const MODES = [
-    { id: "mix", name: "Mix it up", emoji: "🎲", sub: "Every pattern, at random — the full challenge",
-      gens: ["wouldlike", "likes", "going", "amounts"] },
-    { id: "wouldlike", name: "Would like…", emoji: "🙋", sub: "I'd like chicken, she'd like fish…",
-      gens: ["wouldlike"] },
-    { id: "likes", name: "Likes & dislikes", emoji: "❤️", sub: "I like tea, he doesn't like fish…",
-      gens: ["likes"] },
-    { id: "going", name: "Going places", emoji: "🚕", sub: "I want to go to the station…",
+    { id: "mix", name: "Mix it up", emoji: "🎲", sub: "Every pattern, at random — a whole day in one run",
+      gens: ["eatdrink", "going", "likes", "describe", "errand"] },
+    { id: "eatdrink", name: "Eating & drinking", emoji: "🍜", sub: "I'm eating dumplings, she wants to drink tea…",
+      gens: ["eatdrink"] },
+    { id: "going", name: "Out & about", emoji: "🚶", sub: "I'm going to the park, he isn't going to school…",
       gens: ["going"] },
-    { id: "amounts", name: "Ordering amounts", emoji: "🍵", sub: "One cup of tea, two bowls of noodles…",
-      gens: ["amounts"] }
+    { id: "likes", name: "Likes & loves", emoji: "❤️", sub: "We love dumplings, she doesn't like the rain…",
+      gens: ["likes"] },
+    { id: "describe", name: "How things are", emoji: "☀️", sub: "The weather is very cold, I am very tired…",
+      gens: ["describe"] },
+    { id: "errand", name: "Errands", emoji: "🧺", sub: "Going to the supermarket to buy bread…",
+      gens: ["errand"] }
   ];
 
   // ---------- State ----------
@@ -614,19 +657,16 @@
   let phrase = null;
   let tokenPos = 0;
   let streak = 0;
-  let dirty = false; // a mistake was made in the current sentence
+  let dirty = false;
   let lastEn = "";
 
-  // Best streaks persist between visits where the browser allows it.
   let bestStreaks = {};
-  try {
-    bestStreaks = JSON.parse(localStorage.getItem("pinyinStreakBest") || "{}");
-  } catch (e) { bestStreaks = {}; }
+  try { bestStreaks = JSON.parse(localStorage.getItem("pinyinDailyBest") || "{}"); }
+  catch (e) { bestStreaks = {}; }
 
   function saveBest() {
-    try {
-      localStorage.setItem("pinyinStreakBest", JSON.stringify(bestStreaks));
-    } catch (e) { /* storage unavailable — best streaks last for this visit only */ }
+    try { localStorage.setItem("pinyinDailyBest", JSON.stringify(bestStreaks)); }
+    catch (e) { /* storage unavailable — best streaks last this visit only */ }
   }
 
   // ---------- Menu ----------
@@ -658,7 +698,6 @@
   }
 
   function nextSentence() {
-    // Generate a sentence, avoiding an exact repeat of the previous one.
     let attempt = 0;
     do {
       phrase = GENERATORS[pick(currentMode.gens)]();
@@ -675,9 +714,9 @@
     area.classList.remove("complete");
     area.innerHTML = '<span class="slot-hint" id="slot-hint">Tap the words below, in order…</span>';
 
+    // Bank = tokens + distractors, minus any duplicated pinyin.
     const bank = $("bank");
     bank.innerHTML = "";
-    // Drop any distractor that duplicates a real token or another distractor.
     const usedPins = new Set(phrase.tokens.map(t => t.pin));
     const cleanDistract = [];
     phrase.distract.forEach(d => {
@@ -699,7 +738,7 @@
 
   function tapTile(tile) {
     if (tile.classList.contains("used")) return;
-    if (!$("btn-next").hidden) return; // sentence already complete
+    if (!$("btn-next").hidden) return;
     const expected = phrase.tokens[tokenPos];
 
     if (tile.dataset.value === expected.pin) {
@@ -715,7 +754,6 @@
       tokenPos++;
       if (tokenPos === phrase.tokens.length) sentenceComplete();
     } else {
-      // Run broken!
       dirty = true;
       if (streak > 0) {
         streak = 0;
@@ -753,13 +791,6 @@
       "Word by word: " + phrase.tokens.map(t => t.gloss).join(" / ");
     $("done-panel").classList.add("visible");
 
-    // Auto-play the real pronunciation of the completed sentence as the "winner" sound,
-    // by chaining the pre-recorded clips for this exact combination.
-    speakClips(phrase.audioClips, null);
-
-    const speakBtn = $("btn-speak");
-    speakBtn.onclick = () => speakClips(phrase.audioClips, speakBtn);
-
     const nextBtn = $("btn-next");
     nextBtn.hidden = false;
     nextBtn.focus();
@@ -779,7 +810,7 @@
     const now = $("streak-now");
     now.textContent = "🔥 " + streak;
     now.classList.remove("bump", "broken");
-    void now.offsetWidth; // restart animation
+    void now.offsetWidth;
     now.classList.add(broken ? "broken" : "bump");
     setTimeout(() => now.classList.remove("bump", "broken"), 450);
 
@@ -790,11 +821,12 @@
   // ---------- Wire up ----------
   $("btn-next").addEventListener("click", nextSentence);
   $("btn-play-quit").addEventListener("click", () => {
-    renderMenu(); // refresh best streaks
+    renderMenu();
     show("screen-menu");
   });
 
   renderMenu();
 </script>
+<script src="site-nav.js"></script>
 </body>
 </html>

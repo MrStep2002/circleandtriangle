@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seven-Round Mandarin Circuit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EAF0E6;--ink:#26312A;--jade:#3E7C59;--deep:#2C5C42;--red:#C0392B;--gold:#C9A227;--card:#fff;--line:#CBD8C6;--shadow:0 2px 7px rgba(38,49,42,.12)}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:Nunito,system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}.app{width:min(620px,100%);margin:auto;padding:30px 16px 50px}header{text-align:center;margin-bottom:22px}.logo{font:800 2rem/1.1 'Baloo 2',sans-serif}.logo span{color:var(--jade)}.tag{color:#5C6B5E;margin-top:4px}.stagebar{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:18px 0}.stage{height:7px;border-radius:99px;background:#cbd8c6}.stage.done,.stage.current{background:var(--jade)}.stage.current{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--jade)}.card{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:22px;margin-bottom:14px}.intro{text-align:center}.intro h2,.screen-title{font:800 1.45rem 'Baloo 2',sans-serif}.intro p,.hint{color:#5C6B5E;margin:8px 0 18px}.btn{border:0;border-radius:12px;padding:13px 18px;font:800 1rem Nunito;cursor:pointer;width:100%;margin-top:10px}.primary{background:var(--jade);color:#fff}.ghost{background:#fff;color:var(--deep);border:2px solid var(--line)}.status{display:flex;justify-content:space-between;color:#647267;font-size:.9rem;margin-bottom:12px}.match-board{display:grid;grid-template-columns:1fr 1fr;gap:9px}.tile,.choice{border:2px solid var(--line);background:#fff;border-radius:12px;padding:12px 8px;font:700 1rem Nunito;color:var(--deep);cursor:pointer;min-height:52px}.tile.selected{border-color:var(--jade);background:#E3EFE7}.tile.matched{background:var(--jade);border-color:var(--jade);color:#fff;opacity:.55}.wrong{animation:shake .35s;border-color:var(--red)!important}.prompt{text-align:center;padding:24px 12px}.prompt-main{font:800 2rem 'Baloo 2',sans-serif;color:var(--deep)}.prompt-sub{color:#657366;margin-top:4px}.answer-row{display:flex;gap:8px}.answer-row input{min-width:0;flex:1;border:2px solid var(--line);border-radius:12px;padding:13px;font:700 1.05rem Nunito}.answer-row button{width:auto;margin:0}.feedback{text-align:center;min-height:46px;padding:11px;margin-top:10px;border-radius:10px}.good{background:#E3EFE7;color:var(--deep)}.bad{background:#FBE9E7;color:#922B21}.bank{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-top:16px}.bank .tile{width:auto}.sentence{min-height:65px;border:2px dashed var(--line);border-radius:12px;padding:12px;display:flex;flex-wrap:wrap;gap:7px;align-items:center}.placed{background:#E3EFE7;padding:8px 10px;border-radius:9px;font-weight:800}.choices{display:grid;gap:9px;margin-top:14px}.choice:hover{border-color:var(--jade)}.choice.correct{background:var(--jade);border-color:var(--jade);color:#fff}.result{text-align:center}.result .big{font-size:3rem}.hidden{display:none!important}.clock{font:800 1.6rem 'Baloo 2',sans-serif;color:var(--deep);text-align:center;margin-bottom:6px}.clock.urgent{color:var(--red)}@keyframes shake{25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}}@media(max-width:420px){.app{padding-top:24px}.prompt-main{font-size:1.65rem}.tile{font-size:.92rem;padding:10px 5px}}
+</style>
+</head>
+<body>
+<main class="app">
+  <header><div class="logo">Seven-Round <span>Circuit</span></div><div class="tag">Seven small rounds, one useful daily habit</div></header>
+  <div class="stagebar" id="stagebar" aria-label="Circuit progress"></div>
+  <section class="card intro" id="intro"><h2>A little of everything</h2><p>Match 10 words, build three sentences, ten quick-fire questions, a 30-second speed round, ten missing-word sentences, then five Mandarin sentences to translate. No pinyin typing — everything's multiple choice or tap-to-build.</p><button class="btn primary" id="start">Start today's circuit</button></section>
+  <section id="game" class="hidden"></section>
+</main>
+<script src="vocab-data.js"></script>
+<script src="progress.js"></script>
+<script>
+(function(){
+const $=id=>document.getElementById(id), words=window.MANDARIN_WORDS;
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const sample=(a,n)=>shuffle(a).slice(0,n);
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const pickOther=(a,notPin)=>pick(a.filter(x=>x.pin!==notPin));
+
+/* ---------- Round 2 & 6 shared vocab: sentence-builder generators (from Pīnyīn Daily) ---------- */
+const PRONOUNS=[
+ {pin:"wǒ",phon:"waw",en:"I",third:false},{pin:"nǐ",phon:"nee",en:"You",third:false},
+ {pin:"tā",phon:"tah",en:"He",third:true},{pin:"tā",phon:"tah",en:"She",third:true},
+ {pin:"wǒmen",phon:"waw-mun",en:"We",third:false},{pin:"tāmen",phon:"tah-mun",en:"They",third:false}
+];
+const be=p=>p.en==="I"?"am":(p.third?"is":"are");
+const EAT_FOODS=[
+ {pin:"jiǎozi",phon:"jyow-dzuh",sen:"dumplings"},{pin:"miàntiáo",phon:"myen-tyow",sen:"noodles"},
+ {pin:"mǐfàn",phon:"mee-fahn",sen:"rice"},{pin:"yú",phon:"yoo",sen:"fish"},{pin:"jī",phon:"jee",sen:"chicken"},
+ {pin:"zhūròu",phon:"joo-roh",sen:"pork"},{pin:"niúròu",phon:"nyoh-roh",sen:"beef"},{pin:"yángròu",phon:"yahng-roh",sen:"lamb"},
+ {pin:"jīdàn",phon:"jee-dahn",sen:"eggs"},{pin:"miànbāo",phon:"myen-baow",sen:"bread"},
+ {pin:"shūcài",phon:"shoo-tsye",sen:"vegetables"},{pin:"píngguǒ",phon:"ping-gwaw",sen:"an apple"}
+];
+const DRINKS=[
+ {pin:"chá",phon:"chah",sen:"tea"},{pin:"kāfēi",phon:"kah-fay",sen:"coffee"},{pin:"shuǐ",phon:"shway",sen:"water"},
+ {pin:"píjiǔ",phon:"pee-jyoh",sen:"beer"},{pin:"niúnǎi",phon:"nyoh-nye",sen:"milk"},{pin:"guǒzhī",phon:"gwaw-jrr",sen:"juice"}
+];
+const PLACES=[
+ {pin:"gōngyuán",phon:"gohng-ywen",sen:"the park"},{pin:"huǒchēzhàn",phon:"hwaw-chuh-jahn",sen:"the train station"},
+ {pin:"jīchǎng",phon:"jee-chahng",sen:"the airport"},{pin:"jiǔbā",phon:"jyoh-bah",sen:"the bar"},
+ {pin:"fànguǎn",phon:"fahn-gwahn",sen:"the restaurant"},{pin:"shāngdiàn",phon:"shahng-dyen",sen:"the shop"},
+ {pin:"chāoshì",phon:"chow-shrr",sen:"the supermarket"},{pin:"yīyuàn",phon:"ee-ywen",sen:"the hospital"},
+ {pin:"xuéxiào",phon:"shweh-shyow",sen:"school"},{pin:"yínháng",phon:"yeen-hahng",sen:"the bank"}
+];
+const LIKE_THINGS=[
+ {pin:"chá",phon:"chah",sen:"tea"},{pin:"kāfēi",phon:"kah-fay",sen:"coffee"},{pin:"píjiǔ",phon:"pee-jyoh",sen:"beer"},
+ {pin:"jiǎozi",phon:"jyow-dzuh",sen:"dumplings"},{pin:"miàntiáo",phon:"myen-tyow",sen:"noodles"},{pin:"yú",phon:"yoo",sen:"fish"},
+ {pin:"gǒu",phon:"goh",sen:"dogs"},{pin:"māo",phon:"maow",sen:"cats"},{pin:"xià yǔ",phon:"shyah yoo",sen:"the rain"},
+ {pin:"xià xuě",phon:"shyah shweh",sen:"the snow"},{pin:"tàiyáng",phon:"tye-yahng",sen:"the sun"}
+];
+const ADJS={
+ "hǎo":{phon:"how",en:"good",enPerson:"well"},"lěng":{phon:"lung",en:"cold"},"rè":{phon:"ruh",en:"hot"},
+ "dà":{phon:"dah",en:"big"},"xiǎo":{phon:"shyow",en:"small"},"kuài":{phon:"kwye",en:"fast"},
+ "xīn":{phon:"sheen",en:"new"},"lèi":{phon:"lay",en:"tired"}
+};
+const DESCRIBE_SUBJECTS=[
+ {pin:"tiānqì",phon:"tyen-chee",sen:"weather",adjs:["hǎo","lěng","rè"]},{pin:"chá",phon:"chah",sen:"tea",adjs:["rè"]},
+ {pin:"kāfēi",phon:"kah-fay",sen:"coffee",adjs:["rè"]},{pin:"tāng",phon:"tahng",sen:"soup",adjs:["rè"]},
+ {pin:"píjiǔ",phon:"pee-jyoh",sen:"beer",adjs:["lěng"]},{pin:"shuǐ",phon:"shway",sen:"water",adjs:["lěng"]},
+ {pin:"gǒu",phon:"goh",sen:"dog",adjs:["dà","xiǎo"]},{pin:"māo",phon:"maow",sen:"cat",adjs:["dà","xiǎo"]},
+ {pin:"chē",phon:"chuh",sen:"car",adjs:["kuài","xīn","dà"]},{pin:"shǒujī",phon:"shoh-jee",sen:"phone",adjs:["xīn"]}
+];
+const PERSON_ADJS=["lèi","lèi","hǎo"];
+const ERRANDS=[
+ {placePins:["chāoshì","shāngdiàn"],verb:{pin:"mǎi",phon:"my",en:"buy"},items:[
+   {pin:"miànbāo",phon:"myen-baow",sen:"bread"},{pin:"niúnǎi",phon:"nyoh-nye",sen:"milk"},{pin:"jīdàn",phon:"jee-dahn",sen:"eggs"},
+   {pin:"shuǐguǒ",phon:"shway-gwaw",sen:"fruit"},{pin:"shūcài",phon:"shoo-tsye",sen:"vegetables"},{pin:"guǒzhī",phon:"gwaw-jrr",sen:"juice"},{pin:"kāfēi",phon:"kah-fay",sen:"coffee"}
+ ]},
+ {placePins:["fànguǎn"],verb:{pin:"chī",phon:"chrr",en:"eat"},items:[
+   {pin:"jiǎozi",phon:"jyow-dzuh",sen:"dumplings"},{pin:"miàntiáo",phon:"myen-tyow",sen:"noodles"},{pin:"mǐfàn",phon:"mee-fahn",sen:"rice"},{pin:"yú",phon:"yoo",sen:"fish"}
+ ]},
+ {placePins:["jiǔbā"],verb:{pin:"hē",phon:"huh",en:"drink"},items:[{pin:"píjiǔ",phon:"pee-jyoh",sen:"beer"}]}
+];
+const tok=(o,role,gloss)=>({pin:o.pin,phon:o.phon,role,gloss:gloss||o.sen});
+const dis=(o,role)=>({pin:o.pin,phon:o.phon,role});
+const findPlace=pin=>PLACES.find(p=>p.pin===pin);
+const adjTok=(pin,forPerson)=>({pin,phon:ADJS[pin].phon,role:"adj",gloss:forPerson?(ADJS[pin].enPerson||ADJS[pin].en):ADJS[pin].en});
+
+const GENERATORS={
+  eatdrink(){
+    const p=pick(PRONOUNS),isDrink=Math.random()<0.45,food=pick(isDrink?DRINKS:EAT_FOODS);
+    const verb=isDrink?{pin:"hē",phon:"huh",en:"drink"}:{pin:"chī",phon:"chrr",en:"eat"};
+    const wrongVerb=isDrink?{pin:"chī",phon:"chrr"}:{pin:"hē",phon:"huh"};
+    const want=Math.random()<0.4;
+    const tokens=[tok(p,"person",p.en)];let en;
+    if(want){tokens.push({pin:"yào",phon:"yow",role:"frame",gloss:"want"});en=p.en+" "+(p.third?"wants":"want")+" to "+verb.en+" "+food.sen+".";}
+    else{en=p.en+" "+be(p)+" "+verb.en.replace("eat","eating").replace("drink","drinking")+" "+food.sen+".";}
+    tokens.push({pin:verb.pin,phon:verb.phon,role:"frame",gloss:verb.en});tokens.push(tok(food,"thing"));
+    return{en,tokens,distract:[dis(pickOther(PRONOUNS,p.pin),"person"),dis(pickOther(isDrink?DRINKS:EAT_FOODS,food.pin),"thing"),{pin:wrongVerb.pin,phon:wrongVerb.phon,role:"frame"}]};
+  },
+  going(){
+    const p=pick(PRONOUNS),place=pick(PLACES),negative=Math.random()<0.3;
+    const tokens=[tok(p,"person",p.en)];
+    if(negative)tokens.push({pin:"bù",phon:"boo",role:"frame",gloss:"not"});
+    tokens.push({pin:"qù",phon:"chyoo",role:"frame",gloss:"go"});tokens.push(tok(place,"thing"));
+    const en=p.en+" "+be(p)+(negative?" not":"")+" going to "+place.sen+".";
+    const distract=[dis(pickOther(PRONOUNS,p.pin),"person"),dis(pickOther(PLACES,place.pin),"thing")];
+    if(!negative)distract.push({pin:"bù",phon:"boo",role:"frame"});
+    return{en,tokens,distract};
+  },
+  likes(){
+    const p=pick(PRONOUNS),thing=pick(LIKE_THINGS),negative=Math.random()<0.4,love=!negative&&Math.random()<0.4;
+    const tokens=[tok(p,"person",p.en)];
+    if(negative)tokens.push({pin:"bù",phon:"boo",role:"frame",gloss:"not"});
+    tokens.push(love?{pin:"ài",phon:"eye",role:"frame",gloss:"love"}:{pin:"xǐhuan",phon:"shee-hwahn",role:"frame",gloss:"like"});
+    tokens.push(tok(thing,"thing"));
+    let en;
+    if(negative)en=p.en+" "+(p.third?"doesn't":"don't")+" like "+thing.sen+".";
+    else if(love)en=p.en+" "+(p.third?"loves":"love")+" "+thing.sen+".";
+    else en=p.en+" "+(p.third?"likes":"like")+" "+thing.sen+".";
+    const distract=[dis(pickOther(PRONOUNS,p.pin),"person"),dis(pickOther(LIKE_THINGS,thing.pin),"thing")];
+    if(!negative)distract.push({pin:"bù",phon:"boo",role:"frame"});
+    else distract.push({pin:love?"xǐhuan":"ài",phon:love?"shee-hwahn":"eye",role:"frame"});
+    return{en,tokens,distract};
+  },
+  describe(){
+    const personSubject=Math.random()<0.35,hen={pin:"hěn",phon:"hun",role:"frame",gloss:"very"};
+    if(personSubject){
+      const p=pick(PRONOUNS),adjPin=pick(PERSON_ADJS),adj=adjTok(adjPin,true);
+      const wrongAdj=pick(Object.keys(ADJS).filter(a=>a!==adjPin));
+      return{en:p.en+" "+be(p)+" very "+adj.gloss+".",tokens:[tok(p,"person",p.en),hen,adj],
+        distract:[dis(pickOther(PRONOUNS,p.pin),"person"),{pin:wrongAdj,phon:ADJS[wrongAdj].phon,role:"adj"}]};
+    }
+    const subj=pick(DESCRIBE_SUBJECTS),adjPin=pick(subj.adjs),adj=adjTok(adjPin,false);
+    const wrongAdj=pick(Object.keys(ADJS).filter(a=>a!==adjPin));
+    return{en:"The "+subj.sen+" is very "+adj.gloss+".",tokens:[tok(subj,"thing"),hen,adj],
+      distract:[dis(pickOther(DESCRIBE_SUBJECTS,subj.pin),"thing"),{pin:wrongAdj,phon:ADJS[wrongAdj].phon,role:"adj"}]};
+  },
+  errand(){
+    const p=pick(PRONOUNS),errand=pick(ERRANDS),place=findPlace(pick(errand.placePins)),item=pick(errand.items);
+    const en=p.en+" "+be(p)+" going to "+place.sen+" to "+errand.verb.en+" "+item.sen+".";
+    const tokens=[tok(p,"person",p.en),{pin:"qù",phon:"chyoo",role:"frame",gloss:"go"},tok(place,"thing"),
+      {pin:errand.verb.pin,phon:errand.verb.phon,role:"frame",gloss:errand.verb.en},tok(item,"thing")];
+    const otherErrand=pick(ERRANDS.filter(e=>e.verb.pin!==errand.verb.pin));
+    const distract=[dis(pickOther(PRONOUNS,p.pin),"person"),dis(pickOther(PLACES,place.pin),"thing"),{pin:otherErrand.verb.pin,phon:otherErrand.verb.phon,role:"frame"}];
+    return{en,tokens,distract};
+  }
+};
+const GEN_IDS=["eatdrink","going","likes","describe","errand"];
+
+/* ---------- Round 5: Missing Word sentence bank ---------- */
+const MISSING_Q=[
+ ["I want to drink tea.",["wǒ","yào","___","chá"],"hē",["chī","qù","shuō"]],
+ ["I eat noodles.",["wǒ","___","miàntiáo"],"chī",["hē","mǎi","kàn"]],
+ ["She drinks coffee.",["tā","___","kāfēi"],"hē",["chī","qù","lái"]],
+ ["We go to school.",["wǒmen","___","xuéxiào"],"qù",["hē","shuō","yǒu"]],
+ ["I want to buy fruit.",["wǒ","yào","___","shuǐguǒ"],"mǎi",["kàn","hē","lái"]],
+ ["Today's weather is hot.",["jīntiān","tiānqì","hěn","___"],"rè",["lěng","màn","xiǎo"]],
+ ["My phone is new.",["wǒ","de","shǒujī","hěn","___"],"xīn",["lèi","rè","duō"]],
+ ["The cat is inside.",["māo","zài","___"],"lǐmiàn",["wàimiàn","zuǒbian","qiánmiàn"]],
+ ["The bank is on the right.",["yínháng","zài","___"],"yòubian",["zuǒbian","lǐmiàn","hòumiàn"]],
+ ["My father is a doctor.",["wǒ","bàba","shì","___"],"yīshēng",["xuésheng","lǎoshī","tóngshì"]],
+ ["Tomorrow I am going to the airport.",["wǒ","míngtiān","qù","___"],"jīchǎng",["yīyuàn","yínháng","gōngyuán"]],
+ ["I don't know.",["wǒ","bù","___"],"zhīdào",["xǐhuan","shuō","mǎi"]],
+ ["Where is the toilet?",["cèsuǒ","zài","___"],"nǎr",["shénme","shéi","nà"]],
+ ["This is my bag.",["zhè","shì","wǒ","de","___"],"bāo",["mén","chuānghu","xié"]],
+ ["Please sit down.",["qǐng","___"],"zuò",["qù","lái","kàn"]],
+ ["I like dumplings.",["wǒ","___","jiǎozi"],"xǐhuan",["zhīdào","shuō","qù"]],
+ ["The hospital is near.",["yīyuàn","hěn","___"],"jìn",["yuǎn","dà","màn"]],
+ ["My keys are on the table.",["wǒ","de","yàoshi","zài","zhuōzi","___"],"shàng",["xià","lǐmiàn","hòumiàn"]],
+ ["My friend is outside.",["wǒ","de","péngyou","zài","___"],"wàimiàn",["lǐmiàn","qiánmiàn","zuǒbian"]],
+ ["It isn't far.",["bù","___"],"yuǎn",["jìn","kuài","xīn"]],
+ ["Turn left.",["wǎng","___","zhuǎn"],"zuǒ",["yòu","shàng","xià"]],
+ ["Let's meet at the restaurant.",["wǒmen","zài","___","jiàn","ba"],"fànguǎn",["jiǔbā","yīyuàn","yínháng"]],
+ ["No problem.",["méi","___"],"wèntí",["shǒujī","qián","shíjiān"]],
+ ["Wait a second.",["děng","___"],"yīxià",["yīdiǎn","yī cì","yī ge"]],
+ ["I'm almost there.",["wǒ","kuài","___","le"],"dào",["qù","lái","zǒu"]]
+];
+
+/* ---------- State ---------- */
+let stage=0,queue=[],index=0,current=null,dirty=false,selectedP=null,selectedE=null,matched=0,missed=new Map(),built=[];
+let qfCorrect=0,qfIndex=0,qfPool=[],qfCurrent=null;
+let spScore=0,spTimeLeft=30,spTimerId=null,spPool=[],spCurrent=null;
+let lastGenEn="";
+
+function bars(){const bar=$("stagebar");bar.innerHTML="";for(let i=0;i<7;i++){const d=document.createElement("span");d.className="stage "+(i<stage?"done":i===stage?"current":"");bar.appendChild(d)}}
+function miss(w){missed.set(w.pinyin,w);MandarinProgress.record(w,false)}
+function nextStage(){
+  stage++;bars();
+  if(stage===1)startBuild();
+  else if(stage===2)startQuickFire();
+  else if(stage===3)startSpeed();
+  else if(stage===4)startMissing();
+  else if(stage===5)startTranslate();
+  else if(stage===6)finish();
+}
+
+/* ---------- Round 1: Match familiar words (unchanged) ---------- */
+function startMatch(){stage=0;bars();const history=MandarinProgress.load();const familiar=words.filter(w=>history[w.pinyin]&&history[w.pinyin].correct>0);queue=sample(familiar.length>=10?familiar:words,10);matched=0;selectedP=selectedE=null;renderMatch()}
+function renderMatch(){const g=$("game");g.classList.remove("hidden");g.innerHTML=`<div class="status"><span>1. Match familiar words</span><span id="count">0 / 10</span></div><div class="match-board"><div id="pins"></div><div id="engs"></div></div><button class="btn primary hidden" id="continue">Next round</button>`;const p=$("pins"),e=$("engs");p.style.display=e.style.display="grid";p.style.gap=e.style.gap="9px";shuffle(queue).forEach(w=>p.appendChild(matchTile(w.pinyin,"p",w)));shuffle(queue).forEach(w=>e.appendChild(matchTile(w.english,"e",w)));$("continue").onclick=nextStage}
+function matchTile(label,type,w){const b=document.createElement("button");b.className="tile";b.textContent=label;b.dataset.pin=w.pinyin;b.onclick=()=>{if(b.classList.contains("matched"))return;const old=type==="p"?selectedP:selectedE;if(old)old.classList.remove("selected");b.classList.add("selected");if(type==="p")selectedP=b;else selectedE=b;if(selectedP&&selectedE)checkMatch()};return b}
+function checkMatch(){const ok=selectedP.dataset.pin===selectedE.dataset.pin;if(ok){MandarinProgress.record(selectedP.dataset.pin,true);[selectedP,selectedE].forEach(x=>{x.classList.remove("selected");x.classList.add("matched")});matched++;$("count").textContent=`${matched} / 10`;if(matched===10)$("continue").classList.remove("hidden")}else{const w=queue.find(x=>x.pinyin===selectedP.dataset.pin);miss(w);[selectedP,selectedE].forEach(x=>{x.classList.remove("selected");x.classList.add("wrong");setTimeout(()=>x.classList.remove("wrong"),400)})}selectedP=selectedE=null}
+
+/* ---------- Round 2: Sentence builder (tap words in order, like Pīnyīn Daily) ---------- */
+function startBuild(){queue=sample(GEN_IDS,3);index=0;lastGenEn="";renderBuild()}
+function renderBuild(){
+  let phrase;let attempt=0;
+  do{phrase=GENERATORS[queue[index]]();attempt++;}while(phrase.en===lastGenEn&&attempt<10);
+  lastGenEn=phrase.en;built=[];const s={en:phrase.en,tokens:phrase.tokens};
+  const usedPins=new Set(phrase.tokens.map(t=>t.pin));
+  const cleanDistract=[];phrase.distract.forEach(d=>{if(!usedPins.has(d.pin)){cleanDistract.push(d);usedPins.add(d.pin)}});
+  $("game").innerHTML=`<div class="status"><span>2. Build a sentence</span><span>${index+1} / 3</span></div><div class="card prompt"><div class="prompt-main" style="font-size:1.45rem">${s.en}</div></div><div class="sentence" id="sentence"><span class="hint">Tap the words below, in order…</span></div><div class="bank" id="bank"></div><div class="feedback" id="feedback"></div><button class="btn primary hidden" id="next">Next</button>`;
+  shuffle(s.tokens.concat(cleanDistract)).forEach(item=>{
+    const b=document.createElement("button");b.className="tile";b.textContent=item.pin;
+    b.onclick=()=>{
+      const expected=s.tokens[built.length];
+      if(item.pin===expected.pin&&!b.disabled){
+        b.disabled=true;b.style.opacity=.35;built.push(item.pin);
+        const hint=$("sentence").querySelector(".hint");if(hint)hint.remove();
+        const x=document.createElement("span");x.className="placed";x.textContent=item.pin;$("sentence").appendChild(x);
+        if(built.length===s.tokens.length){$("feedback").className="feedback good";$("feedback").textContent="✓ Sentence complete";$("next").classList.remove("hidden");$("next").focus()}
+      }else{b.classList.add("wrong");setTimeout(()=>b.classList.remove("wrong"),400)}
+    };
+    $("bank").appendChild(b);
+  });
+  $("next").onclick=()=>{index++;if(index===3)nextStage();else renderBuild()};
+}
+
+/* ---------- Round 3: Quick-fire, 10 multiple-choice questions ---------- */
+function startQuickFire(){qfPool=words;qfIndex=0;qfCorrect=0;renderQuickFire()}
+function renderQuickFire(){
+  if(qfIndex>=10)return nextStage();
+  qfCurrent=sample(qfPool,1)[0];
+  const distractors=sample(qfPool.filter(w=>w.pinyin!==qfCurrent.pinyin),Math.min(3,qfPool.length-1));
+  const opts=shuffle([qfCurrent,...distractors]);
+  $("game").innerHTML=`<div class="status"><span>3. Quick fire</span><span>${qfIndex+1} / 10 · ✓ ${qfCorrect}</span></div><div class="card prompt"><div class="prompt-main">${qfCurrent.english}</div><div class="prompt-sub">Tap the matching Mandarin</div></div><div class="choices" id="choices"></div>`;
+  opts.forEach(w=>{
+    const b=document.createElement("button");b.className="choice";b.textContent=w.pinyin;
+    b.onclick=()=>{
+      if(b.disabled)return;
+      document.querySelectorAll("#choices .choice").forEach(x=>x.disabled=true);
+      const ok=w.pinyin===qfCurrent.pinyin;MandarinProgress.record(qfCurrent.pinyin,ok);
+      if(ok){b.classList.add("correct");qfCorrect++}
+      else{b.classList.add("wrong");miss(qfCurrent);document.querySelectorAll("#choices .choice").forEach(x=>{if(x.textContent===qfCurrent.pinyin)x.classList.add("correct")})}
+      qfIndex++;setTimeout(renderQuickFire,ok?450:900);
+    };
+    $("choices").appendChild(b);
+  });
+}
+
+/* ---------- Round 4: Speed round, 30-second timed multiple-choice ---------- */
+function startSpeed(){spPool=words;spScore=0;spTimeLeft=30;renderSpeed();spTimerId=setInterval(()=>{spTimeLeft--;updateClock();if(spTimeLeft<=0){clearInterval(spTimerId);nextStage()}},1000)}
+function updateClock(){const c=$("clock");if(!c)return;c.textContent="⏱ "+spTimeLeft+"s";c.classList.toggle("urgent",spTimeLeft<=10)}
+function renderSpeed(){
+  spCurrent=sample(spPool,1)[0];
+  const distractors=sample(spPool.filter(w=>w.pinyin!==spCurrent.pinyin),Math.min(3,spPool.length-1));
+  const opts=shuffle([spCurrent,...distractors]);
+  $("game").innerHTML=`<div class="status"><span>4. Speed round</span><span>Score: ${spScore}</span></div><div class="clock" id="clock">⏱ ${spTimeLeft}s</div><div class="card prompt"><div class="prompt-main">${spCurrent.english}</div><div class="prompt-sub">Tap the matching Mandarin — beat the clock</div></div><div class="choices" id="choices"></div>`;
+  opts.forEach(w=>{
+    const b=document.createElement("button");b.className="choice";b.textContent=w.pinyin;
+    b.onclick=()=>{
+      if(b.disabled||spTimeLeft<=0)return;
+      document.querySelectorAll("#choices .choice").forEach(x=>x.disabled=true);
+      const ok=w.pinyin===spCurrent.pinyin;MandarinProgress.record(spCurrent.pinyin,ok);
+      if(ok){b.classList.add("correct");spScore++}else{b.classList.add("wrong");miss(spCurrent)}
+      setTimeout(()=>{if(spTimeLeft>0)renderSpeed()},ok?300:600);
+    };
+    $("choices").appendChild(b);
+  });
+}
+
+/* ---------- Round 5: Missing Word, ten sentences ---------- */
+function startMissing(){queue=sample(MISSING_Q,10);index=0;dirty=false;renderMissing()}
+function renderMissing(){
+  dirty=false;const q=queue[index],opts=shuffle([q[2],...q[3]]);
+  $("game").innerHTML=`<div class="status"><span>5. Missing word</span><span>${index+1} / 10</span></div><div class="card"><div class="prompt-sub" style="text-align:center;margin-bottom:6px">${q[0]}</div><div class="prompt-main" style="font-size:1.35rem">${q[1].map(x=>x==="___"?'<span style="border-bottom:3px solid var(--jade);color:var(--jade)">?</span>':x).join(" ")}</div></div><div class="choices" id="choices"></div><div class="feedback" id="feedback"></div><button class="btn primary hidden" id="next">${index===9?"Next round":"Next sentence"}</button>`;
+  opts.forEach(opt=>{
+    const b=document.createElement("button");b.className="choice";b.textContent=opt;
+    b.onclick=()=>{
+      if(!$("next").classList.contains("hidden"))return;
+      const w=words.find(w=>w.pinyin===q[2]);
+      if(opt===q[2]){
+        b.classList.add("correct");if(!dirty&&w)MandarinProgress.record(w.pinyin,true);
+        $("feedback").className="feedback good";$("feedback").innerHTML=`✓ ${q[1].map(x=>x==="___"?`<strong>${q[2]}</strong>`:x).join(" ")}`;
+        $("next").classList.remove("hidden");$("next").focus();
+      }else{
+        if(!dirty&&w)miss(w);dirty=true;b.classList.add("wrong");setTimeout(()=>b.classList.remove("wrong"),400);
+        $("feedback").className="feedback bad";$("feedback").textContent="Not that one — try again.";
+      }
+    };
+    $("choices").appendChild(b);
+  });
+  $("next").onclick=()=>{index++;if(index===10)nextStage();else renderMissing()};
+}
+
+/* ---------- Round 6: Read Mandarin, type the English ---------- */
+function startTranslate(){queue=sample(GEN_IDS,5);index=0;lastGenEn="";renderTranslate()}
+function renderTranslate(){
+  let phrase;let attempt=0;
+  do{phrase=GENERATORS[queue[index]]();attempt++;}while(phrase.en===lastGenEn&&attempt<10);
+  lastGenEn=phrase.en;dirty=false;current=phrase;
+  const mandarin=phrase.tokens.map(t=>t.pin).join(" ")+".";
+  $("game").innerHTML=`<div class="status"><span>6. Read &amp; translate</span><span>${index+1} / 5</span></div><div class="card prompt"><div class="prompt-main">${mandarin}</div><div class="prompt-sub">What does this mean in English?</div></div><div class="answer-row"><input id="input" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type the English…"><button class="btn primary" id="check">Check</button></div><div class="feedback" id="feedback"></div><button class="btn ghost hidden" id="skip">Don't know it — show me</button><button class="btn primary hidden" id="next">Next</button>`;
+  $("check").onclick=checkTranslate;$("input").onkeydown=e=>{if(e.key==="Enter")checkTranslate()};
+  $("next").onclick=()=>{index++;if(index===5)nextStage();else renderTranslate()};
+  $("skip").onclick=revealTranslate;$("input").focus();
+}
+function normEnglish(s){return s.toLowerCase().replace(/[’']/g,"").replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ").trim().replace(/^(to|a|an|the) /,"").replace(/\.$/,"")}
+function checkTranslate(){
+  const input=$("input"),guess=normEnglish(input.value.trim());if(!guess)return;
+  const target=normEnglish(current.en);
+  const ok=guess===target||target.includes(guess)&&guess.length>=Math.max(4,target.length-6);
+  if(ok){
+    if(!dirty)current.tokens.forEach(t=>{const w=words.find(w=>w.pinyin===t.pin);if(w)MandarinProgress.record(w.pinyin,true)});
+    $("feedback").className="feedback good";$("feedback").innerHTML=`✓ <strong>${current.en}</strong>`;
+    input.disabled=true;$("check").classList.add("hidden");$("skip").classList.add("hidden");$("next").classList.remove("hidden");$("next").focus();
+  }else{
+    if(!dirty)current.tokens.forEach(t=>{const w=words.find(w=>w.pinyin===t.pin);if(w)miss(w)});
+    dirty=true;$("feedback").className="feedback bad";$("feedback").textContent="Not quite — try again, or skip if you're stuck.";
+    $("skip").classList.remove("hidden");input.select();
+  }
+}
+function revealTranslate(){
+  if(!dirty)current.tokens.forEach(t=>{const w=words.find(w=>w.pinyin===t.pin);if(w)miss(w)});
+  dirty=true;const input=$("input");
+  $("feedback").className="feedback bad";$("feedback").innerHTML=`<strong>${current.en}</strong>`;
+  input.disabled=true;$("check").classList.add("hidden");$("skip").classList.add("hidden");$("next").classList.remove("hidden");$("next").focus();
+}
+
+/* ---------- Finish ---------- */
+function finish(){stage=7;bars();$("game").innerHTML=`<div class="card result"><div class="big">🏆</div><h2 class="screen-title">Circuit complete</h2><p class="hint">Speed round score: ${spScore}. ${missed.size?`${missed.size} word${missed.size===1?"":"s"} flagged for review in your progress.`:"Clean run — nice work."}</p><button class="btn primary" id="again">Run another circuit</button></div>`;$("again").onclick=()=>{missed.clear();startMatch()}}
+
+$("start").onclick=()=>{$("intro").classList.add("hidden");startMatch()};bars();
+}());
+</script>
+<script src="site-nav.js"></script>
+</body>
+</html>

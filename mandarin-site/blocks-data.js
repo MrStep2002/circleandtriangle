@@ -1,0 +1,21 @@
+/* Random practice blocks — a fixed, one-time random split of the whole
+   vocabulary into arbitrary chunks (not by topic), sized around ~37-38
+   words each. Meant as a middle ground between drilling one 10-word topic
+   and drilling all 186+ words at once — a fixed "next handful" to work
+   through. Regenerating this file reshuffles which words land in which
+   block; the ids themselves point back at vocab-data.js entries. */
+window.MANDARIN_BLOCKS = [
+  { id: "block1", name: "Block 1", emoji: "1️⃣", wordIds: ["chat:jiàn", "places:huǒchēzhàn", "time:xīngqīyī", "food:jī", "verbs:lái", "directions:shàng", "directions:xià", "numbers:qī", "places:xuéxiào", "directions:zuǒbian", "chat:chīfàn", "adjectives:kuài", "nouns:rén", "numbers:jiǔ", "numbers:bā", "numbers:sān", "school:zuò de hǎo", "basics:nà", "weather:yún", "people:tóngshì", "chat:xiāoxi", "chat:dào", "school:zài shì yī cì", "adjectives:rè", "chat:shuōhuà", "places:chūzūchē", "nouns:gǒu", "verbs:ài", "basics:bù shì", "verbs:kàn", "time:míngtiān", "nouns:mén", "food2:tāng", "food2:guǒzhī", "chat:kāi", "home:yīfu", "chat:jīnwǎn", "places:jiǔbā"] },
+  { id: "block2", name: "Block 2", emoji: "2️⃣", wordIds: ["school:jiāyóu", "nouns:jiā", "directions:hòumiàn", "food2:zhūròu", "chat:hǎoxiào", "greetings:qǐng", "places:gōngyuán", "greetings:nǐ hǎo", "numbers:sì", "places:yínháng", "people:yīshēng", "adjectives:duō", "weather:xià yǔ", "people:xuésheng", "people:lǎoshī", "home:fángjiān", "basics:kěyǐ", "home:yàoshi", "weather:xuě", "food2:yángròu", "school:hěn hǎo", "weather:qíngtiān", "chat:zǒu", "food:miàntiáo", "greetings:duìbuqǐ", "places:chāoshì", "basics:hěn", "school:búcuò", "verbs:chī", "places:jīchǎng", "time:zuótiān", "food:niúnǎi", "basics:zhè", "food:shuǐ", "numbers:èr", "people:nǚrén", "directions:lǐmiàn"] },
+  { id: "block3", name: "Block 3", emoji: "3️⃣", wordIds: ["food2:shuǐguǒ", "nouns:péngyou", "time:xīngqīsān", "food:píjiǔ", "people:nánrén", "school:qǐng zuò", "nouns:māo", "chat:yīqǐ", "weather:tiānqì", "verbs:shuō", "people:háizi", "adjectives:lèi", "time:nián", "school:wǒ wèi nǐ jiāo'ào", "weather:duōyún", "numbers:liù", "greetings:wǎn'ān", "greetings:hǎo de", "time:xiànzài", "time:xīngqī", "time:zǎoshang", "verbs:yǒu", "home:xié", "directions:wàimiàn", "school:qǐng ānjìng", "directions:cuò", "adjectives:xīn", "school:rènzhēn tīng", "time:jīntiān", "basics:bù", "directions:zuǒ", "time:xīngqīsì", "places:fànguǎn", "basics:hé", "chat:zěnmeyàng", "food:chá", "places:cèsuǒ"] },
+  { id: "block4", name: "Block 4", emoji: "4️⃣", wordIds: ["adjectives:lěng", "home:diànnǎo", "home:chuáng", "food2:shūcài", "numbers:wǔ", "basics:yě", "directions:yuǎn", "verbs:mǎi", "verbs:yào", "weather:xià xuě", "home:chuānghu", "time:xīngqīwǔ", "basics:nǎr", "directions:qiánmiàn", "people:fúwùyuán", "adjectives:xiǎo", "basics:kěnéng", "time:yuè", "directions:tíng", "food2:jiǎozi", "school:nǐ zhēn bàng", "people:māma", "nouns:chē", "adjectives:dà", "chat:hǎojiǔ", "chat:lùshang", "time:xīngqīliù", "chat:méishìr", "food:yú", "greetings:xièxie", "numbers:yī", "verbs:qù", "basics:duì", "weather:tàiyáng", "verbs:hē", "nouns:shū", "time:tiān"] },
+  { id: "block5", name: "Block 5", emoji: "5️⃣", wordIds: ["greetings:méi guānxi", "food2:niúròu", "home:yǐzi", "adjectives:hǎo", "basics:shì", "people:bàba", "nouns:qián", "food2:jīdàn", "home:zhuōzi", "chat:zuìjìn", "directions:wǎng", "chat:wèntí", "basics:wǒ bù zhīdào", "adjectives:màn", "directions:zhuǎn", "food2:miànbāo", "places:shāngdiàn", "greetings:bù kèqi", "greetings:zàijiàn", "time:xīngqītiān", "food:mǐfàn", "basics:shénme", "time:xīngqī'èr", "greetings:zǎoshang hǎo", "directions:yòubian", "weather:yǔ", "numbers:shí", "directions:yòu", "time:wǎnshang", "nouns:shǒujī", "food:kāfēi", "home:bāo", "basics:shéi", "directions:jìn", "food:píngguǒ", "weather:fēng", "places:yīyuàn"] },
+];
+
+// Resolve each block's word ids against the live vocab list, so edits to
+// vocab-data.js (renamed/removed words) don't leave a block pointing at
+// nothing — a missing id is just skipped rather than breaking the block.
+window.MANDARIN_BLOCKS.forEach(block => {
+  const byId = new Map(window.MANDARIN_WORDS.map(w => [w.id, w]));
+  block.words = block.wordIds.map(id => byId.get(id)).filter(Boolean);
+});

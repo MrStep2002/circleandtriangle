@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Sprint — Beat the Clock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --celadon: #EAF0E6;
+    --ink: #26312A;
+    --jade: #3E7C59;
+    --jade-deep: #2C5C42;
+    --cinnabar: #C0392B;
+    --gold: #C9A227;
+    --card: #FFFFFF;
+    --line: #CBD8C6;
+    --radius: 14px;
+    --shadow: 0 2px 6px rgba(38, 49, 42, 0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: 'Nunito', system-ui, sans-serif;
+    background: var(--celadon);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overscroll-behavior-y: contain;
+  }
+
+  .app { width: 100%; max-width: 480px; padding: 16px 14px 32px; }
+
+  /* ---------- Header ---------- */
+  header { text-align: center; padding: 8px 0 14px; }
+  .logo {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 1.7rem;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .logo .tone { color: var(--jade); }
+  .tagline { font-size: 0.88rem; color: #5C6B5E; margin-top: 2px; }
+
+  /* ---------- Screens ---------- */
+  .screen { display: none; }
+  .screen.active { display: block; animation: rise 0.3s ease both; }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  h2 {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin-bottom: 4px;
+  }
+  .hint { color: #5C6B5E; font-size: 0.9rem; margin-bottom: 16px; }
+
+  /* ---------- Mode menu ---------- */
+  .topics { display: grid; gap: 10px; }
+  .topic-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    background: var(--card);
+    border: 2px solid transparent;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 14px;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--ink);
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.1s ease, border-color 0.1s ease;
+  }
+  .topic-btn:active { transform: scale(0.98); }
+  .topic-emoji {
+    font-size: 1.4rem;
+    width: 42px; height: 42px;
+    flex-shrink: 0;
+    display: grid; place-items: center;
+    background: var(--celadon);
+    border-radius: 11px;
+  }
+  .topic-name { font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 1.02rem; }
+  .topic-sub { font-size: 0.8rem; color: #5C6B5E; }
+  .topic-best {
+    margin-left: auto;
+    font-weight: 700;
+    color: var(--gold);
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+
+  /* ---------- Duration picker (shown after mode chosen) ---------- */
+  .length-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 6px; }
+  .length-btn {
+    background: var(--card);
+    border: 2px solid transparent;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px 8px;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--jade-deep);
+    text-align: center;
+    cursor: pointer;
+  }
+  .length-btn:active { transform: scale(0.97); }
+  .length-btn .length-sub { display: block; font-family: 'Nunito', sans-serif; font-weight: 600; font-size: 0.72rem; color: #7A8A7C; margin-top: 2px; }
+
+  /* ---------- Play screen ---------- */
+  .clock-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .clock-time {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 1.6rem;
+    color: var(--jade-deep);
+  }
+  .clock-time.urgent { color: var(--cinnabar); animation: pulse 0.6s ease infinite; }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+  .clock-score {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: #5C6B5E;
+  }
+  .clock-score strong { color: var(--jade-deep); font-size: 1.15rem; }
+
+  .clock-track {
+    height: 8px;
+    background: var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .clock-fill {
+    height: 100%;
+    background: var(--jade);
+    border-radius: 999px;
+    transition: width 1s linear, background 0.3s ease;
+  }
+  .clock-fill.urgent { background: var(--cinnabar); }
+
+  .prompt-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 26px 16px;
+    text-align: center;
+    margin-bottom: 18px;
+    min-height: 96px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .prompt-text {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    line-height: 1.25;
+  }
+
+  .options { display: grid; gap: 10px; }
+  .option-btn {
+    display: block;
+    width: 100%;
+    background: var(--card);
+    border: 2.5px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px 14px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.08s ease, background 0.08s ease, transform 0.08s ease;
+  }
+  .option-btn:active { transform: scale(0.98); }
+  .option-pinyin {
+    display: block;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--jade-deep);
+  }
+  .option-hanzi {
+    display: block;
+    font-size: 1rem;
+    color: #5C6B5E;
+    margin-top: 2px;
+  }
+
+  .option-btn.correct {
+    border-color: var(--jade);
+    background: #E3EFE7;
+  }
+  .option-btn.correct .option-pinyin::after { content: " ✓"; color: var(--jade); }
+  .option-btn.wrong {
+    border-color: var(--cinnabar);
+    background: #FBEAE7;
+    animation: shake 0.3s ease;
+  }
+  .option-btn.wrong .option-pinyin::after { content: " ✗"; color: var(--cinnabar); }
+  .option-btn.dimmed { opacity: 0.45; }
+  .option-btn.locked { pointer-events: none; }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-3px); }
+  }
+
+  /* ---------- Results screen ---------- */
+  .result-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px 20px;
+    text-align: center;
+    margin-bottom: 18px;
+  }
+  .result-count {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 3rem;
+    color: var(--jade-deep);
+    line-height: 1;
+  }
+  .result-label { font-size: 0.95rem; color: #5C6B5E; margin: 6px 0 14px; }
+  .result-detail {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+  }
+  .result-best { margin-top: 10px; font-size: 0.85rem; color: var(--gold); font-weight: 700; }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: block;
+    width: 100%;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    padding: 14px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--jade); color: #fff; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--jade-deep);
+    border: 2px solid var(--jade);
+    margin-top: 10px;
+  }
+  .btn:focus-visible, .topic-btn:focus-visible, .option-btn:focus-visible, .length-btn:focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 2px;
+  }
+
+  footer { margin-top: 20px; text-align: center; font-size: 0.75rem; color: #7A8A7C; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">Sp<span class="tone">r</span>int</div>
+    <div class="tagline">Beat the clock — how many can you get?</div>
+  </header>
+
+  <!-- ===== Menu screen: pick a pool ===== -->
+  <section id="screen-menu" class="screen active" aria-label="Choose a pool">
+    <h2>Pick your pool</h2>
+    <p class="hint">Answer as many as you can before time runs out. Score is your correct count, not a percentage — a wrong answer costs no time, it just doesn't add to your score.</p>
+    <div class="topics" id="mode-list"></div>
+  </section>
+
+  <!-- ===== Duration screen ===== -->
+  <section id="screen-length" class="screen" aria-label="Choose sprint length">
+    <h2 id="length-title">How long?</h2>
+    <p class="hint" id="length-sub"></p>
+    <div class="length-grid" id="length-grid"></div>
+    <button class="btn btn-ghost" id="btn-back-menu-1">Choose a different pool</button>
+  </section>
+
+  <!-- ===== Play screen ===== -->
+  <section id="screen-play" class="screen" aria-label="Sprint round">
+    <div class="clock-row">
+      <span class="clock-time" id="clock-time">0:60</span>
+      <span class="clock-score">Score: <strong id="clock-score">0</strong></span>
+    </div>
+    <div class="clock-track"><div class="clock-fill" id="clock-fill" style="width:100%"></div></div>
+
+    <div class="prompt-card">
+      <div class="prompt-text" id="prompt-text">word</div>
+    </div>
+
+    <div class="options" id="options"></div>
+  </section>
+
+  <!-- ===== Results screen ===== -->
+  <section id="screen-results" class="screen" aria-label="Results">
+    <div class="result-card">
+      <div class="result-count" id="result-count">0</div>
+      <div class="result-label" id="result-label">correct</div>
+      <div class="result-detail" id="result-detail"></div>
+      <div class="result-best" id="result-best"></div>
+    </div>
+    <button class="btn btn-primary" id="btn-again">Sprint again</button>
+    <button class="btn btn-ghost" id="btn-back-menu-2">Choose a different pool</button>
+  </section>
+
+  <footer>Time only runs out on the clock — take a beat if you need it.</footer>
+</div>
+
+<script src="vocab-data.js"></script>
+<script src="blocks-data.js"></script>
+<script src="progress.js"></script>
+<script src="unlocks.js"></script>
+<script src="rotation.js"></script>
+<script>
+  const $ = (id) => document.getElementById(id);
+
+  // ---------- Pools ----------
+  // Same pool choices as Quick Tap: everything (unlocked-aware), weak words,
+  // blocks, or a single topic.
+  const EVERYTHING_WORDS = window.MandarinUnlocks.buildPracticePool(window.MANDARIN_WORDS);
+  const BLOCKS = window.MANDARIN_BLOCKS || [];
+
+  const MODES = [
+    { id: "mix", name: "Everything", emoji: "🎲", sub: EVERYTHING_WORDS.length + " words, your unlocked vocabulary" },
+    { id: "weak", name: "Words to revisit", emoji: "🌱", sub: "Words you've missed in the shared games" },
+    ...BLOCKS.map(b => ({ id: b.id, name: b.name, emoji: b.emoji, sub: b.words.length + " words, mixed from everywhere" })),
+    ...window.MANDARIN_TOPICS.map(t => ({ id: t.id, name: t.name, emoji: t.emoji, sub: t.sub }))
+  ];
+
+  function poolForMode(mode) {
+    if (mode.id === "mix") return EVERYTHING_WORDS;
+    if (mode.id === "weak") return MandarinProgress.weakWords(window.MANDARIN_WORDS, 40);
+    const block = BLOCKS.find(b => b.id === mode.id);
+    if (block) return block.words;
+    const topic = window.MANDARIN_TOPICS.find(t => t.id === mode.id);
+    return topic ? topic.words : EVERYTHING_WORDS;
+  }
+
+  const DURATIONS = [30, 60, 120]; // seconds
+
+  // ---------- State ----------
+  let currentMode = null;
+  let pool = [];
+  let duration = 60;
+  let timeLeft = 60;
+  let timerId = null;
+  let questionBag = null;   // shuffled bag over the round's word pool — see rotation.js
+  let score = 0;
+  let answeredCount = 0;
+  let answered = false;
+  let currentWord = null;
+
+  let bestScores = {};
+  try { bestScores = JSON.parse(localStorage.getItem("sprintBestByModeAndDuration") || "{}"); }
+  catch (e) { bestScores = {}; }
+
+  function bestKey(modeId, dur) { return modeId + ":" + dur; }
+
+  function saveBest() {
+    try { localStorage.setItem("sprintBestByModeAndDuration", JSON.stringify(bestScores)); }
+    catch (e) { /* best lasts this visit only */ }
+  }
+
+  function show(screenId) {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    $(screenId).classList.add("active");
+    window.scrollTo({ top: 0 });
+  }
+
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  // ---------- Menu ----------
+  function renderMenu() {
+    const list = $("mode-list");
+    list.innerHTML = "";
+    MODES.forEach(mode => {
+      const btn = document.createElement("button");
+      btn.className = "topic-btn";
+      // Show the best score across whichever duration was best, as a quick teaser.
+      const bestAny = Math.max(0, ...DURATIONS.map(d => bestScores[bestKey(mode.id, d)] || 0));
+      btn.innerHTML =
+        '<span class="topic-emoji">' + mode.emoji + '</span>' +
+        '<span><span class="topic-name">' + mode.name + '</span><br>' +
+        '<span class="topic-sub">' + mode.sub + '</span></span>' +
+        (bestAny > 0 ? '<span class="topic-best">🏆 ' + bestAny + '</span>' : '');
+      btn.addEventListener("click", () => chooseMode(mode));
+      list.appendChild(btn);
+    });
+  }
+
+  function chooseMode(mode) {
+    const modePool = poolForMode(mode);
+    if (!modePool.length) {
+      // "Words to revisit" can be empty — fall back rather than stranding the player.
+      chooseMode(MODES[0]);
+      return;
+    }
+    currentMode = mode;
+    pool = modePool;
+    renderLengthScreen();
+    show("screen-length");
+  }
+
+  function renderLengthScreen() {
+    $("length-title").textContent = currentMode.name;
+    $("length-sub").textContent = pool.length + " words available — pick a sprint length.";
+    const grid = $("length-grid");
+    grid.innerHTML = "";
+    DURATIONS.forEach(sec => {
+      const best = bestScores[bestKey(currentMode.id, sec)];
+      const btn = document.createElement("button");
+      btn.className = "length-btn";
+      btn.innerHTML = sec + 's<span class="length-sub">' + (best ? "best: " + best : "seconds") + '</span>';
+      btn.addEventListener("click", () => startSprint(sec));
+      grid.appendChild(btn);
+    });
+  }
+
+  // ---------- Play ----------
+  function startSprint(sec) {
+    duration = sec;
+    timeLeft = sec;
+    score = 0;
+    answeredCount = 0;
+    answered = false;
+    // The bag deals every word once before repeating — a long sprint on a
+    // small pool wraps around cleanly instead of clustering on a few words.
+    questionBag = window.MandarinRotation.createBag(pool);
+    show("screen-play");
+    updateClock();
+    nextQuestion();
+
+    clearInterval(timerId);
+    timerId = setInterval(() => {
+      timeLeft--;
+      updateClock();
+      if (timeLeft <= 0) {
+        clearInterval(timerId);
+        finishSprint();
+      }
+    }, 1000);
+  }
+
+  function updateClock() {
+    const mins = Math.floor(timeLeft / 60);
+    const secs = timeLeft % 60;
+    const timeEl = $("clock-time");
+    timeEl.textContent = mins + ":" + String(secs).padStart(2, "0");
+    const urgent = timeLeft <= 10 && timeLeft > 0;
+    timeEl.classList.toggle("urgent", urgent);
+    $("clock-fill").classList.toggle("urgent", urgent);
+    $("clock-fill").style.width = Math.max(0, (timeLeft / duration) * 100) + "%";
+    $("clock-score").textContent = score;
+  }
+
+  function pickDistractors(correct, count) {
+    const others = pool.filter(w => w.pinyin !== correct.pinyin || w.english !== correct.english);
+    return shuffle(others).slice(0, count);
+  }
+
+  function nextQuestion() {
+    if (timeLeft <= 0) return; // clock already stopped the round
+    answered = false;
+    currentWord = questionBag.next();
+
+    const distractorCount = Math.min(3, Math.max(0, pool.length - 1));
+    const distractors = pickDistractors(currentWord, distractorCount);
+    const options = shuffle([currentWord, ...distractors]);
+
+    $("prompt-text").textContent = currentWord.english.split("/")[0].trim();
+
+    const optionsEl = $("options");
+    optionsEl.innerHTML = "";
+    const optionButtons = []; // [{ btn, word }]
+    options.forEach(word => {
+      const btn = document.createElement("button");
+      btn.className = "option-btn";
+      btn.innerHTML =
+        '<span class="option-pinyin">' + word.pinyin + '</span>' +
+        (word.hanzi ? '<span class="option-hanzi">' + word.hanzi + '</span>' : "");
+      btn.addEventListener("click", () => selectOption(btn, word, optionButtons));
+      optionsEl.appendChild(btn);
+      optionButtons.push({ btn, word });
+    });
+  }
+
+  function selectOption(btn, word, optionButtons) {
+    if (answered || timeLeft <= 0) return;
+    answered = true;
+    answeredCount++;
+
+    const isCorrect = word.pinyin === currentWord.pinyin && word.english === currentWord.english;
+    MandarinProgress.record(currentWord.pinyin, isCorrect);
+
+    optionButtons.forEach(({ btn: el }) => {
+      el.classList.add("locked");
+      if (el !== btn) el.classList.add("dimmed");
+    });
+
+    if (isCorrect) {
+      score++;
+      $("clock-score").textContent = score;
+      btn.classList.add("correct");
+    } else {
+      btn.classList.add("wrong");
+      // Reveal the right answer too, so a miss still teaches something —
+      // brief enough not to eat into the clock.
+      optionButtons.forEach(({ btn: el, word: w }) => {
+        if (w.pinyin === currentWord.pinyin && w.english === currentWord.english) {
+          el.classList.remove("dimmed");
+          el.classList.add("correct");
+        }
+      });
+    }
+
+    // Fast auto-advance keeps the sprint feeling continuous — no button to press.
+    setTimeout(() => { if (timeLeft > 0) nextQuestion(); }, isCorrect ? 350 : 700);
+  }
+
+  function finishSprint() {
+    $("result-count").textContent = score;
+    $("result-label").textContent = score === 1 ? "word correct" : "words correct";
+    $("result-detail").textContent = resultMessage(score, answeredCount);
+
+    const key = bestKey(currentMode.id, duration);
+    const prevBest = bestScores[key];
+    if (prevBest === undefined || score > prevBest) {
+      bestScores[key] = score;
+      saveBest();
+      $("result-best").textContent = prevBest === undefined ? "🏆 First sprint at this length!" : "🏆 New best for " + duration + "s!";
+    } else {
+      $("result-best").textContent = "Best at " + duration + "s: " + prevBest;
+    }
+
+    show("screen-results");
+  }
+
+  function resultMessage(correct, total) {
+    if (total === 0) return "Time's up — give it another go!";
+    const accuracy = correct / total;
+    if (accuracy === 1) return "Perfect run — every single one landed!";
+    if (accuracy >= 0.85) return "Fast and accurate — jiāyóu!";
+    if (accuracy >= 0.6) return "Good pace — a little more accuracy next time.";
+    return "Good warm-up — try slowing down just slightly.";
+  }
+
+  // ---------- Wire up ----------
+  $("btn-back-menu-1").addEventListener("click", () => { clearInterval(timerId); renderMenu(); show("screen-menu"); });
+  $("btn-back-menu-2").addEventListener("click", () => { renderMenu(); show("screen-menu"); });
+  $("btn-again").addEventListener("click", () => startSprint(duration));
+
+  renderMenu();
+</script>
+<script src="site-nav.js"></script>
+</body>
+</html>

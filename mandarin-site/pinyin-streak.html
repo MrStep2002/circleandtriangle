@@ -263,7 +263,37 @@
     margin-bottom: 4px;
   }
   .done-phon { font-style: italic; font-size: 0.95rem; color: #7A8A7C; margin-bottom: 6px; }
-  .done-literal { font-size: 0.9rem; color: #5C6B5E; font-style: italic; }
+  .done-literal { font-size: 0.9rem; color: #5C6B5E; font-style: italic; margin-bottom: 10px; }
+
+  /* ---------- Speaker button ---------- */
+  .btn-speak {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 auto;
+    background: var(--celadon);
+    color: var(--jade-deep);
+    border: 2px solid var(--jade);
+    border-radius: 999px;
+    padding: 8px 18px;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.12s ease, transform 0.12s ease;
+  }
+  .btn-speak:hover, .btn-speak:focus-visible { background: #DCE9D6; }
+  .btn-speak:active { transform: scale(0.97); }
+  .btn-speak[disabled] { opacity: 0.55; cursor: default; }
+  .btn-speak .spin {
+    display: inline-block;
+    width: 12px; height: 12px;
+    border: 2px solid var(--jade-deep);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
   /* ---------- Buttons ---------- */
   .btn {
@@ -339,6 +369,7 @@
       <div class="done-pinyin" id="done-pinyin"></div>
       <div class="done-phon" id="done-phon"></div>
       <div class="done-literal" id="done-literal"></div>
+      <button class="btn-speak" id="btn-speak" type="button">🔊 Hear it said</button>
     </div>
 
     <button class="btn btn-primary" id="btn-next" hidden>Next sentence</button>
@@ -348,50 +379,97 @@
   <footer>Made for learning — pinyin only, no characters required.</footer>
 </div>
 
+<script src="rotation.js"></script>
 <script>
   // ---------- Vocabulary pools ----------
+  // Each entry's `aid` is its audio-clip id suffix — see the modular audio section below.
   const PRONOUNS = [
-    { pin: "wǒ",    phon: "waw",     en: "I",    third: false },
-    { pin: "nǐ",    phon: "nee",     en: "You",  third: false },
-    { pin: "tā",    phon: "tah",     en: "He",   third: true },
-    { pin: "tā",    phon: "tah",     en: "She",  third: true },
-    { pin: "wǒmen", phon: "waw-mun", en: "We",   third: false },
-    { pin: "tāmen", phon: "tah-mun", en: "They", third: false }
+    { pin: "wǒ",    phon: "waw",     en: "I",    third: false, aid: "wo" },
+    { pin: "nǐ",    phon: "nee",     en: "You",  third: false, aid: "ni" },
+    { pin: "tā",    phon: "tah",     en: "He",   third: true,  aid: "ta" },
+    { pin: "tā",    phon: "tah",     en: "She",  third: true,  aid: "ta" },
+    { pin: "wǒmen", phon: "waw-mun", en: "We",   third: false, aid: "women" },
+    { pin: "tāmen", phon: "tah-mun", en: "They", third: false, aid: "tamen" }
   ];
 
   const FOODS = [
-    { pin: "jīròu",    phon: "jee-roh",   en: "chicken" },
-    { pin: "yú",       phon: "yoo",       en: "fish" },
-    { pin: "mǐfàn",    phon: "mee-fahn",  en: "rice" },
-    { pin: "miàntiáo", phon: "myen-tyow", en: "noodles" },
-    { pin: "chá",      phon: "chah",      en: "tea" },
-    { pin: "kāfēi",    phon: "kah-fay",   en: "coffee" },
-    { pin: "shuǐ",     phon: "shway",     en: "water" },
-    { pin: "píjiǔ",    phon: "pee-jyoh",  en: "beer" },
-    { pin: "niúnǎi",   phon: "nyoh-nye",  en: "milk" }
+    { pin: "jīròu",    phon: "jee-roh",   en: "chicken", aid: "jirou" },
+    { pin: "yú",       phon: "yoo",       en: "fish",    aid: "yu" },
+    { pin: "mǐfàn",    phon: "mee-fahn",  en: "rice",    aid: "mifan" },
+    { pin: "miàntiáo", phon: "myen-tyow", en: "noodles", aid: "miantiao" },
+    { pin: "chá",      phon: "chah",      en: "tea",     aid: "cha" },
+    { pin: "kāfēi",    phon: "kah-fay",   en: "coffee",  aid: "kafei" },
+    { pin: "shuǐ",     phon: "shway",     en: "water",   aid: "shui" },
+    { pin: "píjiǔ",    phon: "pee-jyoh",  en: "beer",    aid: "pijiu" },
+    { pin: "niúnǎi",   phon: "nyoh-nye",  en: "milk",    aid: "niunai" }
   ];
 
   const PLACES = [
-    { pin: "huǒchēzhàn", phon: "hwaw-chuh-jahn", en: "the train station" },
-    { pin: "jīchǎng",    phon: "jee-chahng",     en: "the airport" },
-    { pin: "shāngdiàn",  phon: "shahng-dyen",    en: "the shop" },
-    { pin: "fànguǎn",    phon: "fahn-gwahn",     en: "the restaurant" },
-    { pin: "yīyuàn",     phon: "ee-ywen",        en: "the hospital" },
-    { pin: "Běijīng",    phon: "bay-jing",       en: "Beijing" }
+    { pin: "huǒchēzhàn", phon: "hwaw-chuh-jahn", en: "the train station", aid: "huochezhan" },
+    { pin: "jīchǎng",    phon: "jee-chahng",     en: "the airport",       aid: "jichang" },
+    { pin: "shāngdiàn",  phon: "shahng-dyen",    en: "the shop",          aid: "shangdian" },
+    { pin: "fànguǎn",    phon: "fahn-gwahn",     en: "the restaurant",    aid: "fanguan" },
+    { pin: "yīyuàn",     phon: "ee-ywen",        en: "the hospital",      aid: "yiyuan" },
+    { pin: "Běijīng",    phon: "bay-jing",       en: "Beijing",           aid: "beijing" }
   ];
 
   const NUMBERS = [
-    { pin: "yī",    phon: "ee",     en: "one",   n: 1 },
-    { pin: "liǎng", phon: "lyahng", en: "two",   n: 2 },
-    { pin: "sān",   phon: "sahn",   en: "three", n: 3 }
+    { pin: "yī",    phon: "ee",     en: "one",   n: 1, aid: "yi" },
+    { pin: "liǎng", phon: "lyahng", en: "two",   n: 2, aid: "liang" },
+    { pin: "sān",   phon: "sahn",   en: "three", n: 3, aid: "san" }
   ];
   const ER_TRAP = { pin: "èr", phon: "arr" }; // "two" for counting — the classic wrong answer!
 
   const MEASURES = [
-    { pin: "bēi",  phon: "bay",  en: "cup",    items: ["chá", "kāfēi", "shuǐ", "niúnǎi"] },
-    { pin: "wǎn",  phon: "wahn", en: "bowl",   items: ["mǐfàn", "miàntiáo"] },
-    { pin: "píng", phon: "ping", en: "bottle", items: ["píjiǔ", "shuǐ", "niúnǎi"] }
+    { pin: "bēi",  phon: "bay",  en: "cup",    items: ["chá", "kāfēi", "shuǐ", "niúnǎi"], aid: "bei" },
+    { pin: "wǎn",  phon: "wahn", en: "bowl",   items: ["mǐfàn", "miàntiáo"],               aid: "wan" },
+    { pin: "píng", phon: "ping", en: "bottle", items: ["píjiǔ", "shuǐ", "niúnǎi"],         aid: "ping" }
   ];
+
+  // ---------- Modular pre-recorded audio ----------
+  // Each generated sentence is spoken by chaining a small number of real recorded
+  // clips: a pronoun+verb "frame" (recorded as one piece, so its internal tone
+  // sandhi is already correct) followed by the content word(s). This covers every
+  // sentence the generators can produce using only 44 total recordings instead of
+  // one per sentence. The frame phrases were chosen because they all end on a
+  // tone (4th or 2nd) that never triggers third-tone sandhi with whatever follows,
+  // so the frame-to-content join is always safe. The one known rough edge: "wǎn"
+  // (bowl) is itself 3rd tone, so "liǎng wǎn" + a 3rd-tone-initial food (mǐfàn)
+  // can sound slightly off at that join — a minor, isolated case, not fixable
+  // without recording that exact triple combination too.
+  function clipUrl(id) { return "audio/streak-" + id + ".mp3"; }
+
+  const AUDIO_CACHE = new Map(); // clip id -> reusable Audio element
+  function getClipAudio(id) {
+    let audio = AUDIO_CACHE.get(id);
+    if (!audio) {
+      audio = new Audio(clipUrl(id));
+      AUDIO_CACHE.set(id, audio);
+    } else {
+      audio.currentTime = 0;
+    }
+    return audio;
+  }
+
+  function playSequence(clipIds, onDone) {
+    let i = 0;
+    function playNext() {
+      if (i >= clipIds.length) { if (onDone) onDone(); return; }
+      const audio = getClipAudio(clipIds[i]);
+      i++;
+      const advance = () => playNext();
+      audio.addEventListener("ended", advance, { once: true });
+      audio.addEventListener("error", advance, { once: true }); // skip a clip that fails, don't stall
+      audio.play().catch(advance);
+    }
+    playNext();
+  }
+
+  function speakClips(clipIds, btn) {
+    if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Playing…'; }
+    const reset = () => { if (btn) { btn.disabled = false; btn.innerHTML = "🔊 Hear it said"; } };
+    playSequence(clipIds, reset);
+  }
 
   // ---------- Helpers ----------
   const $ = (id) => document.getElementById(id);
@@ -429,7 +507,8 @@
         distract: [
           rolify(pickOther(PRONOUNS, p.pin), "person"),
           rolify(pickOther(FOODS, food.pin), "thing")
-        ]
+        ],
+        audioClips: ["frame-wouldlike-" + p.aid, "food-" + food.aid]
       };
     },
 
@@ -453,7 +532,12 @@
       // In positive sentences, bù lurks as a trap.
       if (!negative) distract.push({ pin: "bù", phon: "boo", role: "frame" });
 
-      return { en: p.en + " " + verb + " " + thing.en + ".", tokens, distract };
+      const frameAid = negative ? "frame-notlikes-" : "frame-likes-";
+      return {
+        en: p.en + " " + verb + " " + thing.en + ".",
+        tokens, distract,
+        audioClips: [frameAid + p.aid, "food-" + thing.aid]
+      };
     },
 
     going() {
@@ -471,7 +555,8 @@
         distract: [
           rolify(pickOther(PRONOUNS, p.pin), "person"),
           rolify(pickOther(PLACES, place.pin), "thing")
-        ]
+        ],
+        audioClips: ["frame-going-" + p.aid, "place-" + place.aid]
       };
     },
 
@@ -502,7 +587,8 @@
           { pin: measure.pin, phon: measure.phon, role: "amount", gloss: measure.en },
           { pin: item.pin, phon: item.phon, role: "thing", gloss: item.en }
         ],
-        distract
+        distract,
+        audioClips: ["frame-wouldlike-" + p.aid, "amt-" + num.aid + "-" + measure.aid, "food-" + item.aid]
       };
     }
   };
@@ -531,6 +617,7 @@
   let streak = 0;
   let dirty = false; // a mistake was made in the current sentence
   let lastEn = "";
+  let genPicker = null; // recency-weighted generator picker — see rotation.js
 
   // Best streaks persist between visits where the browser allows it.
   let bestStreaks = {};
@@ -567,6 +654,12 @@
   function startMode(mode) {
     currentMode = mode;
     streak = 0;
+    // A recency-weighted picker makes a generator much less likely to repeat
+    // right after it's used, so "Mix it up" doesn't run the same sentence
+    // pattern several times in a row just because Math.random() favored it.
+    genPicker = window.MandarinRotation
+      ? window.MandarinRotation.createRecencyPicker(mode.gens)
+      : { next: () => pick(mode.gens) }; // fallback if rotation.js isn't loaded
     updateStreakBar();
     nextSentence();
     show("screen-play");
@@ -576,7 +669,7 @@
     // Generate a sentence, avoiding an exact repeat of the previous one.
     let attempt = 0;
     do {
-      phrase = GENERATORS[pick(currentMode.gens)]();
+      phrase = GENERATORS[genPicker.next()]();
       attempt++;
     } while (phrase.en === lastEn && attempt < 10);
     lastEn = phrase.en;
@@ -667,6 +760,13 @@
     $("done-literal").textContent =
       "Word by word: " + phrase.tokens.map(t => t.gloss).join(" / ");
     $("done-panel").classList.add("visible");
+
+    // Auto-play the real pronunciation of the completed sentence as the "winner" sound,
+    // by chaining the pre-recorded clips for this exact combination.
+    speakClips(phrase.audioClips, null);
+
+    const speakBtn = $("btn-speak");
+    speakBtn.onclick = () => speakClips(phrase.audioClips, speakBtn);
 
     const nextBtn = $("btn-next");
     nextBtn.hidden = false;

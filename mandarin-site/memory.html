@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Memory — Mandarin Pairs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --celadon: #EAF0E6;
+    --ink: #26312A;
+    --jade: #3E7C59;
+    --jade-deep: #2C5C42;
+    --cinnabar: #C0392B;
+    --gold: #C9A227;
+    --card: #FFFFFF;
+    --line: #CBD8C6;
+    --radius: 14px;
+    --shadow: 0 2px 6px rgba(38, 49, 42, 0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: 'Nunito', system-ui, sans-serif;
+    background: var(--celadon);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overscroll-behavior-y: contain;
+  }
+
+  .app { width: 100%; max-width: 480px; padding: 16px 14px 32px; }
+
+  /* ---------- Header ---------- */
+  header { text-align: center; padding: 8px 0 14px; }
+  .logo {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 1.7rem;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .logo .tone { color: var(--jade); }
+  .tagline { font-size: 0.88rem; color: #5C6B5E; margin-top: 2px; }
+
+  /* ---------- Screens ---------- */
+  .screen { display: none; }
+  .screen.active { display: block; animation: rise 0.3s ease both; }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  h2 {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin-bottom: 4px;
+  }
+  .hint { color: #5C6B5E; font-size: 0.9rem; margin-bottom: 16px; }
+
+  /* ---------- Mode menu ---------- */
+  .topics { display: grid; gap: 10px; }
+  .topic-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    background: var(--card);
+    border: 2px solid transparent;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 14px;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--ink);
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.1s ease, border-color 0.1s ease;
+  }
+  .topic-btn:active { transform: scale(0.98); }
+  .topic-emoji {
+    font-size: 1.4rem;
+    width: 42px; height: 42px;
+    flex-shrink: 0;
+    display: grid; place-items: center;
+    background: var(--celadon);
+    border-radius: 11px;
+  }
+  .topic-name { font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 1.02rem; }
+  .topic-sub { font-size: 0.8rem; color: #5C6B5E; }
+  .topic-best {
+    margin-left: auto;
+    font-weight: 700;
+    color: var(--gold);
+    font-size: 0.78rem;
+    white-space: nowrap;
+    text-align: right;
+  }
+
+  /* ---------- Size picker ---------- */
+  .length-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 6px; }
+  .length-btn {
+    background: var(--card);
+    border: 2px solid transparent;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 14px 6px;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.02rem;
+    color: var(--jade-deep);
+    text-align: center;
+    cursor: pointer;
+  }
+  .length-btn:active { transform: scale(0.97); }
+  .length-btn .length-sub { display: block; font-family: 'Nunito', sans-serif; font-weight: 600; font-size: 0.68rem; color: #7A8A7C; margin-top: 2px; }
+
+  /* ---------- Play screen ---------- */
+  .stats-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #5C6B5E;
+  }
+  .stats-row strong { color: var(--jade-deep); font-size: 1rem; }
+
+  .board {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .tile-wrap {
+    aspect-ratio: 1 / 1;
+    perspective: 600px;
+  }
+  .tile {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: transform 0.35s ease;
+  }
+  .tile.flipped { transform: rotateY(180deg); }
+  .tile.matched { cursor: default; }
+  .tile-face {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 10px;
+    backface-visibility: hidden;
+    padding: 4px;
+    overflow: hidden;
+  }
+  .tile-back {
+    background: var(--jade);
+    color: #fff;
+    font-size: 1.3rem;
+  }
+  .tile-front {
+    background: var(--card);
+    border: 2px solid var(--line);
+    transform: rotateY(180deg);
+    flex-direction: column;
+    gap: 1px;
+  }
+  .tile.matched .tile-front {
+    border-color: var(--jade);
+    background: #E3EFE7;
+    opacity: 0.75;
+  }
+  .tile.wrong-flash .tile-front {
+    border-color: var(--cinnabar);
+    background: #FBEAE7;
+  }
+  .front-pinyin {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    line-height: 1.15;
+    color: var(--jade-deep);
+    word-break: break-word;
+  }
+  .front-english {
+    font-size: 0.72rem;
+    line-height: 1.1;
+    color: var(--ink);
+    word-break: break-word;
+  }
+
+  @keyframes shakeTile {
+    0%, 100% { transform: rotateY(180deg) translateX(0); }
+    25% { transform: rotateY(180deg) translateX(-4px); }
+    50% { transform: rotateY(180deg) translateX(4px); }
+    75% { transform: rotateY(180deg) translateX(-3px); }
+  }
+  .tile.wrong-flash { animation: shakeTile 0.3s ease; }
+
+  /* ---------- Results screen ---------- */
+  .result-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px 20px;
+    text-align: center;
+    margin-bottom: 18px;
+  }
+  .result-emoji { font-size: 2.4rem; margin-bottom: 6px; }
+  .result-time {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 2.6rem;
+    color: var(--jade-deep);
+    line-height: 1;
+  }
+  .result-label { font-size: 0.95rem; color: #5C6B5E; margin: 6px 0 14px; }
+  .result-detail {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.02rem;
+  }
+  .result-best { margin-top: 10px; font-size: 0.85rem; color: var(--gold); font-weight: 700; }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: block;
+    width: 100%;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    padding: 14px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--jade); color: #fff; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--jade-deep);
+    border: 2px solid var(--jade);
+    margin-top: 10px;
+  }
+  .btn:focus-visible, .topic-btn:focus-visible, .tile:focus-visible, .length-btn:focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 2px;
+  }
+
+  footer { margin-top: 20px; text-align: center; font-size: 0.75rem; color: #7A8A7C; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; }
+    .tile { transition: none; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">Me<span class="tone">m</span>ory</div>
+    <div class="tagline">Flip tiles, find the pinyin ↔ English pairs</div>
+  </header>
+
+  <!-- ===== Menu screen: pick a pool ===== -->
+  <section id="screen-menu" class="screen active" aria-label="Choose a pool">
+    <h2>Pick your pool</h2>
+    <p class="hint">Flip two tiles at a time. Match pinyin to its English meaning to keep the pair face-up. Score is your time and how few flips it took.</p>
+    <div class="topics" id="mode-list"></div>
+  </section>
+
+  <!-- ===== Size screen ===== -->
+  <section id="screen-length" class="screen" aria-label="Choose grid size">
+    <h2 id="length-title">How many pairs?</h2>
+    <p class="hint" id="length-sub"></p>
+    <div class="length-grid" id="length-grid"></div>
+    <button class="btn btn-ghost" id="btn-back-menu-1">Choose a different pool</button>
+  </section>
+
+  <!-- ===== Play screen ===== -->
+  <section id="screen-play" class="screen" aria-label="Memory board">
+    <div class="stats-row">
+      <span>Time: <strong id="stat-time">0:00</strong></span>
+      <span>Flips: <strong id="stat-flips">0</strong></span>
+      <span>Pairs: <strong id="stat-pairs">0/0</strong></span>
+    </div>
+    <div class="board" id="board"></div>
+  </section>
+
+  <!-- ===== Results screen ===== -->
+  <section id="screen-results" class="screen" aria-label="Results">
+    <div class="result-card">
+      <div class="result-emoji" id="result-emoji">🎉</div>
+      <div class="result-time" id="result-time">0:00</div>
+      <div class="result-label" id="result-label">to clear the board</div>
+      <div class="result-detail" id="result-detail"></div>
+      <div class="result-best" id="result-best"></div>
+    </div>
+    <button class="btn btn-primary" id="btn-again">Play again</button>
+    <button class="btn btn-ghost" id="btn-back-menu-2">Choose a different pool</button>
+  </section>
+
+  <footer>Fewer flips and a faster time both count as a better run.</footer>
+</div>
+
+<script src="vocab-data.js"></script>
+<script src="blocks-data.js"></script>
+<script src="progress.js"></script>
+<script src="unlocks.js"></script>
+<script src="rotation.js"></script>
+<script>
+  const $ = (id) => document.getElementById(id);
+
+  // ---------- Pools ----------
+  const EVERYTHING_WORDS = window.MandarinUnlocks.buildPracticePool(window.MANDARIN_WORDS);
+  const BLOCKS = window.MANDARIN_BLOCKS || [];
+
+  const MODES = [
+    { id: "mix", name: "Everything", emoji: "🎲", sub: EVERYTHING_WORDS.length + " words, your unlocked vocabulary" },
+    { id: "weak", name: "Words to revisit", emoji: "🌱", sub: "Words you've missed in the shared games" },
+    ...BLOCKS.map(b => ({ id: b.id, name: b.name, emoji: b.emoji, sub: b.words.length + " words, mixed from everywhere" })),
+    ...window.MANDARIN_TOPICS.map(t => ({ id: t.id, name: t.name, emoji: t.emoji, sub: t.sub }))
+  ];
+
+  function poolForMode(mode) {
+    if (mode.id === "mix") return EVERYTHING_WORDS;
+    if (mode.id === "weak") return MandarinProgress.weakWords(window.MANDARIN_WORDS, 40);
+    const block = BLOCKS.find(b => b.id === mode.id);
+    if (block) return block.words;
+    const topic = window.MANDARIN_TOPICS.find(t => t.id === mode.id);
+    return topic ? topic.words : EVERYTHING_WORDS;
+  }
+
+  // Grid sizes: number of PAIRS. Kept small — a memory board of 20+ pairs
+  // stops being a memory game and starts being a scavenger hunt.
+  const SIZES = [6, 8, 12];
+
+  // ---------- State ----------
+  let currentMode = null;
+  let pool = [];
+  let pairCount = 8;
+  let tiles = [];          // [{ word, side: 'pinyin'|'english', el, matched }]
+  let flippedTiles = [];   // currently face-up, unmatched tiles (max 2)
+  let matchedPairs = 0;
+  let flips = 0;
+  let seconds = 0;
+  let timerId = null;
+  let boardLocked = false; // true briefly while a mismatched pair flips back
+
+  let bestRuns = {};
+  try { bestRuns = JSON.parse(localStorage.getItem("memoryBestByModeAndSize") || "{}"); }
+  catch (e) { bestRuns = {}; }
+
+  function bestKey(modeId, size) { return modeId + ":" + size; }
+
+  function saveBest() {
+    try { localStorage.setItem("memoryBestByModeAndSize", JSON.stringify(bestRuns)); }
+    catch (e) { /* best lasts this visit only */ }
+  }
+
+  function show(screenId) {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    $(screenId).classList.add("active");
+    window.scrollTo({ top: 0 });
+  }
+
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function formatTime(s) {
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return m + ":" + String(sec).padStart(2, "0");
+  }
+
+  // ---------- Menu ----------
+  function renderMenu() {
+    const list = $("mode-list");
+    list.innerHTML = "";
+    MODES.forEach(mode => {
+      const btn = document.createElement("button");
+      btn.className = "topic-btn";
+      const bestAny = SIZES
+        .map(s => bestRuns[bestKey(mode.id, s)])
+        .filter(r => r)
+        .sort((a, b) => a.seconds - b.seconds)[0];
+      btn.innerHTML =
+        '<span class="topic-emoji">' + mode.emoji + '</span>' +
+        '<span><span class="topic-name">' + mode.name + '</span><br>' +
+        '<span class="topic-sub">' + mode.sub + '</span></span>' +
+        (bestAny ? '<span class="topic-best">⏱ ' + formatTime(bestAny.seconds) + '</span>' : '');
+      btn.addEventListener("click", () => chooseMode(mode));
+      list.appendChild(btn);
+    });
+  }
+
+  function chooseMode(mode) {
+    const modePool = poolForMode(mode);
+    if (modePool.length < 4) {
+      // Too few words for even the smallest board (6 pairs would need repeats
+      // that break the "find the unique match" premise) — fall back safely.
+      chooseMode(MODES[0]);
+      return;
+    }
+    currentMode = mode;
+    pool = modePool;
+    renderSizeScreen();
+    show("screen-length");
+  }
+
+  function renderSizeScreen() {
+    $("length-title").textContent = currentMode.name;
+    $("length-sub").textContent = pool.length + " words available — how many pairs on the board?";
+    const grid = $("length-grid");
+    grid.innerHTML = "";
+    SIZES.forEach(n => {
+      if (n > pool.length) return; // don't offer a board bigger than the pool can fill uniquely
+      const best = bestRuns[bestKey(currentMode.id, n)];
+      const btn = document.createElement("button");
+      btn.className = "length-btn";
+      btn.innerHTML = n + '<span class="length-sub">' + (best ? "best " + formatTime(best.seconds) : "pairs") + '</span>';
+      btn.addEventListener("click", () => startGame(n));
+      grid.appendChild(btn);
+    });
+  }
+
+  // ---------- Play ----------
+  function startGame(size) {
+    pairCount = size;
+    flippedTiles = [];
+    matchedPairs = 0;
+    flips = 0;
+    seconds = 0;
+    boardLocked = false;
+
+    const chosenWords = shuffle(pool).slice(0, pairCount);
+    const rawTiles = [];
+    chosenWords.forEach(word => {
+      rawTiles.push({ word, side: "pinyin", matched: false });
+      rawTiles.push({ word, side: "english", matched: false });
+    });
+    tiles = shuffle(rawTiles);
+
+    renderBoard();
+    updateStats();
+    show("screen-play");
+
+    clearInterval(timerId);
+    timerId = setInterval(() => {
+      seconds++;
+      $("stat-time").textContent = formatTime(seconds);
+    }, 1000);
+  }
+
+  function renderBoard() {
+    const board = $("board");
+    board.innerHTML = "";
+    // 6 pairs -> 12 tiles -> 3x4, 8 pairs -> 16 tiles -> 4x4, 12 pairs -> 24 tiles -> 4x6
+    const cols = tiles.length <= 12 ? 3 : 4;
+    board.style.gridTemplateColumns = "repeat(" + cols + ", 1fr)";
+
+    tiles.forEach((tile, index) => {
+      const wrap = document.createElement("div");
+      wrap.className = "tile-wrap";
+
+      const el = document.createElement("button");
+      el.className = "tile";
+      el.setAttribute("aria-label", "Face-down card");
+      const frontText = tile.side === "pinyin" ? tile.word.pinyin : tile.word.english.split("/")[0].trim();
+      const frontClass = tile.side === "pinyin" ? "front-pinyin" : "front-english";
+      el.innerHTML =
+        '<span class="tile-face tile-back">🀄</span>' +
+        '<span class="tile-face tile-front"><span class="' + frontClass + '">' + frontText + '</span></span>';
+      el.addEventListener("click", () => flipTile(index));
+
+      tile.el = el;
+      wrap.appendChild(el);
+      board.appendChild(wrap);
+    });
+  }
+
+  function flipTile(index) {
+    if (boardLocked) return;
+    const tile = tiles[index];
+    if (tile.matched || tile.el.classList.contains("flipped")) return;
+    if (flippedTiles.length === 2) return;
+
+    tile.el.classList.add("flipped");
+    flippedTiles.push({ tile, index });
+
+    if (flippedTiles.length === 2) {
+      flips++;
+      updateStats();
+      checkMatch();
+    }
+  }
+
+  function checkMatch() {
+    const [a, b] = flippedTiles;
+    const isPair = a.tile.word === b.tile.word && a.tile.side !== b.tile.side;
+
+    if (isPair) {
+      a.tile.matched = true;
+      b.tile.matched = true;
+      a.tile.el.classList.add("matched");
+      b.tile.el.classList.add("matched");
+      MandarinProgress.record(a.tile.word.pinyin, true);
+      flippedTiles = [];
+      matchedPairs++;
+      updateStats();
+      if (matchedPairs === pairCount) finishGame();
+    } else {
+      boardLocked = true;
+      a.tile.el.classList.add("wrong-flash");
+      b.tile.el.classList.add("wrong-flash");
+      if (a.tile.word !== b.tile.word) {
+        MandarinProgress.record(a.tile.word.pinyin, false);
+      }
+      setTimeout(() => {
+        a.tile.el.classList.remove("flipped", "wrong-flash");
+        b.tile.el.classList.remove("flipped", "wrong-flash");
+        flippedTiles = [];
+        boardLocked = false;
+      }, 750);
+    }
+  }
+
+  function updateStats() {
+    $("stat-flips").textContent = flips;
+    $("stat-pairs").textContent = matchedPairs + "/" + pairCount;
+  }
+
+  function finishGame() {
+    clearInterval(timerId);
+    $("result-time").textContent = formatTime(seconds);
+    $("result-detail").textContent = flips + " flips for " + pairCount + " pairs — " + efficiencyMessage();
+
+    const key = bestKey(currentMode.id, pairCount);
+    const prevBest = bestRuns[key];
+    const thisRun = { seconds, flips };
+    const isBetter = !prevBest || seconds < prevBest.seconds;
+    if (isBetter) {
+      bestRuns[key] = thisRun;
+      saveBest();
+      $("result-emoji").textContent = "🏆";
+      $("result-best").textContent = prevBest ? "New best time for " + pairCount + " pairs!" : "First clear at this size!";
+    } else {
+      $("result-emoji").textContent = "🎉";
+      $("result-best").textContent = "Best for " + pairCount + " pairs: " + formatTime(prevBest.seconds) + " (" + prevBest.flips + " flips)";
+    }
+
+    show("screen-results");
+  }
+
+  function efficiencyMessage() {
+    const perfect = pairCount; // best possible is one flip-pair per match, i.e. pairCount flips
+    if (flips <= perfect + 2) return "razor sharp memory!";
+    if (flips <= perfect * 1.5) return "solid recall.";
+    return "cleared it — the words will stick faster next round.";
+  }
+
+  // ---------- Wire up ----------
+  $("btn-back-menu-1").addEventListener("click", () => { renderMenu(); show("screen-menu"); });
+  $("btn-back-menu-2").addEventListener("click", () => { clearInterval(timerId); renderMenu(); show("screen-menu"); });
+  $("btn-again").addEventListener("click", () => startGame(pairCount));
+
+  renderMenu();
+</script>
+<script src="site-nav.js"></script>
+</body>
+</html>
