@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Confusables — Mandarin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --celadon: #EAF0E6;
+    --ink: #26312A;
+    --jade: #3E7C59;
+    --jade-deep: #2C5C42;
+    --cinnabar: #C0392B;
+    --gold: #C9A227;
+    --card: #FFFFFF;
+    --line: #CBD8C6;
+    --radius: 14px;
+    --shadow: 0 2px 6px rgba(38, 49, 42, 0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: 'Nunito', system-ui, sans-serif;
+    background: var(--celadon);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overscroll-behavior-y: contain;
+  }
+
+  .app { width: 100%; max-width: 480px; padding: 16px 14px 32px; }
+
+  header { text-align: center; padding: 8px 0 14px; }
+  .logo {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 1.7rem;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .logo .tone { color: var(--jade); }
+  .tagline { font-size: 0.88rem; color: #5C6B5E; margin-top: 2px; }
+
+  .screen { display: none; }
+  .screen.active { display: block; animation: rise 0.3s ease both; }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  h2 {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin: 18px 2px 8px;
+  }
+  h2:first-child { margin-top: 0; }
+  .hint { color: #5C6B5E; font-size: 0.9rem; margin-bottom: 16px; }
+
+  /* ---------- Menu ---------- */
+  .topics { display: grid; gap: 10px; margin-bottom: 4px; }
+  .topic-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    background: var(--card);
+    border: 2px solid transparent;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 14px;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--ink);
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.1s ease, border-color 0.1s ease;
+  }
+  .topic-btn:active { transform: scale(0.98); }
+  .topic-emoji {
+    font-size: 1.3rem;
+    width: 40px; height: 40px;
+    flex-shrink: 0;
+    display: grid; place-items: center;
+    background: var(--celadon);
+    border-radius: 11px;
+  }
+  .topic-name { font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 0.98rem; }
+  .topic-sub { font-size: 0.78rem; color: #5C6B5E; }
+  .topic-pct {
+    margin-left: auto;
+    font-weight: 700;
+    color: var(--gold);
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+
+  /* ---------- Play screen ---------- */
+  .progress-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #5C6B5E;
+  }
+  .progress-pct { color: var(--jade-deep); font-size: 1rem; }
+
+  .progress-track {
+    height: 6px;
+    background: var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--jade);
+    border-radius: 999px;
+    transition: width 0.25s ease;
+  }
+
+  .prompt-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 26px 16px;
+    text-align: center;
+    margin-bottom: 10px;
+    min-height: 96px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .prompt-text {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    line-height: 1.25;
+  }
+  .set-label {
+    text-align: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #7A8A7C;
+    margin-bottom: 14px;
+  }
+
+  .options { display: grid; gap: 10px; }
+  .option-btn {
+    display: block;
+    width: 100%;
+    background: var(--card);
+    border: 2.5px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px 14px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.08s ease, background 0.08s ease, transform 0.08s ease;
+  }
+  .option-btn:active { transform: scale(0.98); }
+  .option-pinyin {
+    display: block;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--jade-deep);
+  }
+  .option-hanzi {
+    display: block;
+    font-size: 1rem;
+    color: #5C6B5E;
+    margin-top: 2px;
+  }
+
+  .option-btn.correct { border-color: var(--jade); background: #E3EFE7; }
+  .option-btn.correct .option-pinyin::after { content: " ✓"; color: var(--jade); }
+  .option-btn.wrong { border-color: var(--cinnabar); background: #FBEAE7; animation: shake 0.35s ease; }
+  .option-btn.wrong .option-pinyin::after { content: " ✗"; color: var(--cinnabar); }
+  .option-btn.dimmed { opacity: 0.45; }
+  .option-btn.locked { pointer-events: none; }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-3px); }
+  }
+
+  /* ---------- Results ---------- */
+  .result-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px 20px;
+    text-align: center;
+    margin-bottom: 18px;
+  }
+  .result-pct {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 3rem;
+    color: var(--jade-deep);
+    line-height: 1;
+  }
+  .result-pct.low { color: var(--cinnabar); }
+  .result-pct.mid { color: var(--gold); }
+  .result-label { font-size: 0.95rem; color: #5C6B5E; margin: 6px 0 14px; }
+  .result-detail { font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 1.05rem; }
+  .result-best { margin-top: 10px; font-size: 0.85rem; color: var(--gold); font-weight: 700; }
+  .result-missed { margin-top: 14px; text-align: left; font-size: 0.85rem; color: #5C6B5E; }
+  .result-missed b { color: var(--jade-deep); font-family: 'Baloo 2', sans-serif; }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: block;
+    width: 100%;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    padding: 14px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--jade); color: #fff; }
+  .btn-ghost { background: transparent; color: var(--jade-deep); border: 2px solid var(--jade); margin-top: 10px; }
+  .btn:focus-visible, .topic-btn:focus-visible, .option-btn:focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 2px;
+  }
+
+  footer { margin-top: 20px; text-align: center; font-size: 0.75rem; color: #7A8A7C; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">Confus<span class="tone">ables</span></div>
+    <div class="tagline">Words that look or sound alike — pinned against each other</div>
+  </header>
+
+  <!-- ===== Menu screen ===== -->
+  <section id="screen-menu" class="screen active" aria-label="Choose a confusable set">
+    <p class="hint">Every option here comes from the same small cluster of similar words, so the choices are always the tricky ones — not random vocab.</p>
+    <div id="menu-groups"></div>
+  </section>
+
+  <!-- ===== Play screen ===== -->
+  <section id="screen-play" class="screen" aria-label="Confusables round">
+    <div class="progress-row">
+      <span id="progress-count">Q 1/10</span>
+      <span class="progress-pct" id="progress-pct">100%</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+    <div class="prompt-card">
+      <div class="prompt-text" id="prompt-text">word</div>
+    </div>
+    <div class="set-label" id="set-label"></div>
+
+    <div class="options" id="options"></div>
+  </section>
+
+  <!-- ===== Results screen ===== -->
+  <section id="screen-results" class="screen" aria-label="Results">
+    <div class="result-card">
+      <div class="result-pct" id="result-pct">0%</div>
+      <div class="result-label" id="result-count"></div>
+      <div class="result-detail" id="result-detail"></div>
+      <div class="result-best" id="result-best"></div>
+      <div class="result-missed" id="result-missed"></div>
+    </div>
+    <button class="btn btn-primary" id="btn-again">Play again</button>
+    <button class="btn btn-ghost" id="btn-back-menu">Choose a different set</button>
+  </section>
+
+  <footer>Same word bank both directions — pinyin→English and English→pinyin.</footer>
+</div>
+
+<script src="vocab-data.js"></script>
+<script src="progress.js"></script>
+<script src="rotation.js"></script>
+<script>
+  const $ = (id) => document.getElementById(id);
+  const byId = new Map(window.MANDARIN_WORDS.map(w => [w.id, w]));
+  const w = (topic, key) => byId.get(topic + ":" + key);
+
+  // ---------- Confusable sets ----------
+  // Each set is a small cluster of words the user actually mixes up — the
+  // distractors in a round are ALWAYS drawn from the same set, never the
+  // wider vocab, so practice targets the exact contrast that's hard.
+  const GROUPS = [
+    {
+      title: "Time & days",
+      sets: [
+        { id: "weekdays", name: "Days of the week", emoji: "📅",
+          words: ["xīngqīyī","xīngqī'èr","xīngqīsān","xīngqīsì","xīngqīwǔ","xīngqīliù","xīngqītiān"].map(k => w("time", k)) },
+        { id: "relativedays", name: "Today / tomorrow / yesterday", emoji: "🔄",
+          words: ["jīntiān","míngtiān","zuótiān"].map(k => w("time", k)) },
+        { id: "dayparts", name: "Morning / evening", emoji: "🌅",
+          words: ["zǎoshang","wǎnshang"].map(k => w("time", k)) },
+        { id: "timeunits", name: "Day / week / month / year / now", emoji: "🗓️",
+          words: ["tiān","xīngqī","yuè","nián","xiànzài"].map(k => w("time", k)) },
+      ]
+    },
+    {
+      title: "Essential basics",
+      sets: [
+        { id: "yesno", name: "Yes / no / correct", emoji: "✅",
+          words: ["shì","bù shì","duì"].map(k => w("basics", k)) },
+        { id: "thisthat", name: "This / that", emoji: "👉",
+          words: ["zhè","nà"].map(k => w("basics", k)) },
+        { id: "questionwords", name: "What / who / where", emoji: "❓",
+          words: ["shénme","shéi","nǎr"].map(k => w("basics", k)) },
+        { id: "connectors", name: "Not / very / also / and / maybe / can", emoji: "🔗",
+          words: ["bù","hěn","yě","hé","kěnéng","kěyǐ"].map(k => w("basics", k)) },
+      ]
+    },
+    {
+      title: "Position & direction",
+      sets: [
+        { id: "updown", name: "Up / down", emoji: "↕️",
+          words: ["shàng","xià"].map(k => w("directions", k)) },
+        { id: "leftrightnoun", name: "Left side / right side", emoji: "📍",
+          words: ["zuǒbian","yòubian"].map(k => w("directions", k)) },
+        { id: "leftrightturn", name: "Turn left / turn right", emoji: "🔀",
+          words: ["zuǒ","yòu"].map(k => w("directions", k)) },
+        { id: "frontback", name: "In front / behind", emoji: "↔️",
+          words: ["qiánmiàn","hòumiàn"].map(k => w("directions", k)) },
+        { id: "inout", name: "Inside / outside", emoji: "🚪",
+          words: ["lǐmiàn","wàimiàn"].map(k => w("directions", k)) },
+        { id: "nearfar", name: "Near / far", emoji: "📏",
+          words: ["jìn","yuǎn"].map(k => w("directions", k)) },
+        { id: "movement", name: "Turn / towards / stop / wrong", emoji: "🧭",
+          words: ["zhuǎn","wǎng","tíng","cuò"].map(k => w("directions", k)) },
+      ]
+    }
+  ];
+
+  // Flatten to a lookup and drop any set that failed to resolve (e.g. vocab-data.js edited later).
+  const ALL_SETS = [];
+  GROUPS.forEach(g => g.sets.forEach(s => {
+    s.words = s.words.filter(Boolean);
+    if (s.words.length >= 2) ALL_SETS.push(s);
+  }));
+
+  // ---------- State ----------
+  let currentSet = null;
+  let pool = [];
+  let roundLength = 0;
+  let questionBag = null;
+  let qIndex = 0;
+  let correctCount = 0;
+  let answered = false;
+  let currentWord = null;
+  let direction = "toEnglish"; // alternates each question
+  let missedThisRound = [];
+
+  let bestPct = {};
+  try { bestPct = JSON.parse(localStorage.getItem("confusablesBestPct") || "{}"); }
+  catch (e) { bestPct = {}; }
+
+  function saveBest() {
+    try { localStorage.setItem("confusablesBestPct", JSON.stringify(bestPct)); }
+    catch (e) { /* best lasts this visit only */ }
+  }
+
+  function show(screenId) {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    $(screenId).classList.add("active");
+    window.scrollTo({ top: 0 });
+  }
+
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  // ---------- Menu ----------
+  function renderMenu() {
+    const container = $("menu-groups");
+    container.innerHTML = "";
+    GROUPS.forEach(group => {
+      const h = document.createElement("h2");
+      h.textContent = group.title;
+      container.appendChild(h);
+      const list = document.createElement("div");
+      list.className = "topics";
+      group.sets.forEach(set => {
+        if (!set.words.length) return;
+        const btn = document.createElement("button");
+        btn.className = "topic-btn";
+        const pct = bestPct[set.id];
+        btn.innerHTML =
+          '<span class="topic-emoji">' + set.emoji + '</span>' +
+          '<span><span class="topic-name">' + set.name + '</span><br>' +
+          '<span class="topic-sub">' + set.words.length + ' words</span></span>' +
+          (typeof pct === "number" ? '<span class="topic-pct">' + pct + '%</span>' : '');
+        btn.addEventListener("click", () => chooseSet(set));
+        list.appendChild(btn);
+      });
+      container.appendChild(list);
+    });
+  }
+
+  function chooseSet(set) {
+    currentSet = set;
+    pool = set.words;
+    startRound();
+  }
+
+  // ---------- Play ----------
+  function startRound() {
+    // Enough reps to actually drill a small set — at least 10, more for bigger sets.
+    roundLength = Math.max(10, pool.length * 2);
+    qIndex = 0;
+    correctCount = 0;
+    answered = false;
+    missedThisRound = [];
+    questionBag = window.MandarinRotation ? window.MandarinRotation.createBag(pool) : { next: (() => { let i = 0; const s = shuffle(pool); return () => s[i++ % s.length]; })() };
+    show("screen-play");
+    nextQuestion();
+  }
+
+  function nextQuestion() {
+    if (qIndex >= roundLength) { finishRound(); return; }
+    answered = false;
+    currentWord = questionBag.next();
+    direction = qIndex % 2 === 0 ? "toEnglish" : "toPinyin";
+
+    // Distractors always come from the same confusable set — that's the whole point.
+    const others = pool.filter(x => x.pinyin !== currentWord.pinyin);
+    const distractorCount = Math.min(3, others.length);
+    const distractors = shuffle(others).slice(0, distractorCount);
+    const options = shuffle([currentWord, ...distractors]);
+
+    $("set-label").textContent = currentSet.name;
+
+    if (direction === "toEnglish") {
+      $("prompt-text").textContent = currentWord.pinyin;
+    } else {
+      $("prompt-text").textContent = currentWord.english.split("/")[0].trim();
+    }
+
+    const optionsEl = $("options");
+    optionsEl.innerHTML = "";
+    const optionButtons = [];
+    options.forEach(word => {
+      const btn = document.createElement("button");
+      btn.className = "option-btn";
+      if (direction === "toEnglish") {
+        btn.innerHTML = '<span class="option-pinyin">' + word.english.split("/")[0].trim() + '</span>';
+      } else {
+        btn.innerHTML =
+          '<span class="option-pinyin">' + word.pinyin + '</span>' +
+          (word.hanzi ? '<span class="option-hanzi">' + word.hanzi + '</span>' : "");
+      }
+      btn.addEventListener("click", () => selectOption(btn, word, optionButtons));
+      optionsEl.appendChild(btn);
+      optionButtons.push({ btn, word });
+    });
+
+    updateProgress();
+  }
+
+  function selectOption(btn, word, optionButtons) {
+    if (answered) return;
+    answered = true;
+
+    const isCorrect = word.pinyin === currentWord.pinyin;
+    if (window.MandarinProgress) MandarinProgress.record(currentWord.pinyin, isCorrect);
+
+    optionButtons.forEach(({ btn: el }) => {
+      el.classList.add("locked");
+      if (el !== btn) el.classList.add("dimmed");
+    });
+
+    if (isCorrect) {
+      correctCount++;
+      btn.classList.add("correct");
+    } else {
+      btn.classList.add("wrong");
+      missedThisRound.push(currentWord);
+      optionButtons.forEach(({ btn: el, word: w2 }) => {
+        if (w2.pinyin === currentWord.pinyin) {
+          el.classList.remove("dimmed");
+          el.classList.add("correct");
+        }
+      });
+    }
+
+    qIndex++;
+    updateProgress();
+    setTimeout(nextQuestion, isCorrect ? 500 : 1000);
+  }
+
+  function updateProgress() {
+    $("progress-count").textContent = "Q " + Math.min(qIndex + 1, roundLength) + "/" + roundLength;
+    const pct = qIndex === 0 ? 100 : Math.round((correctCount / qIndex) * 100);
+    $("progress-pct").textContent = pct + "%";
+    $("progress-fill").style.width = (qIndex / roundLength * 100) + "%";
+  }
+
+  function finishRound() {
+    const pct = roundLength === 0 ? 0 : Math.round((correctCount / roundLength) * 100);
+    $("result-pct").textContent = pct + "%";
+    $("result-pct").className = "result-pct" + (pct < 60 ? " low" : pct < 85 ? " mid" : "");
+    $("result-count").textContent = correctCount + " correct out of " + roundLength;
+    $("result-detail").textContent = resultMessage(pct);
+
+    const prevBest = bestPct[currentSet.id];
+    if (prevBest === undefined || pct > prevBest) {
+      bestPct[currentSet.id] = pct;
+      saveBest();
+      $("result-best").textContent = prevBest === undefined ? "🔥 First run on this set!" : "🔥 New best for this set!";
+    } else {
+      $("result-best").textContent = "Best for this set: " + prevBest + "%";
+    }
+
+    const missedUnique = [...new Map(missedThisRound.map(w => [w.pinyin, w])).values()];
+    if (missedUnique.length) {
+      $("result-missed").innerHTML = "Missed: " + missedUnique.map(w => "<b>" + w.pinyin + "</b> (" + w.english.split("/")[0].trim() + ")").join(", ");
+    } else {
+      $("result-missed").textContent = "";
+    }
+
+    show("screen-results");
+  }
+
+  function resultMessage(pct) {
+    if (pct === 100) return "Perfect — that set's cracked! 🎉";
+    if (pct >= 85) return "Really strong — jiāyóu!";
+    if (pct >= 60) return "Getting there — the mix-ups are shrinking.";
+    return "Good warm-up — same set again will help it stick.";
+  }
+
+  // ---------- Wire up ----------
+  $("btn-back-menu").addEventListener("click", () => { renderMenu(); show("screen-menu"); });
+  $("btn-again").addEventListener("click", () => startRound());
+
+  renderMenu();
+</script>
+<script src="site-nav.js"></script>
+</body>
+</html>
