@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>At the Restaurant — Mandarin Sentence Runs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --celadon: #EAF0E6;
+    --ink: #26312A;
+    --jade: #3E7C59;
+    --jade-deep: #2C5C42;
+    --cinnabar: #C0392B;
+    --gold: #C9A227;
+    --card: #FFFFFF;
+    --line: #CBD8C6;
+    --radius: 14px;
+    --shadow: 0 2px 6px rgba(38, 49, 42, 0.10);
+
+    --role-person: #A07E17;      --role-person-bg: #F6EEDA;
+    --role-frame: #2C5C42;       --role-frame-bg: #E3EFE7;
+    --role-adj: #7B5AA6;         --role-adj-bg: #EEE8F5;
+    --role-thing: #3D6395;       --role-thing-bg: #E4EBF4;
+    --role-time: #3A8E8C;        --role-time-bg: #E2F0EF;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: 'Nunito', system-ui, sans-serif;
+    background: var(--celadon);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .app { width: 100%; max-width: 560px; padding: 20px 16px 48px; }
+
+  /* ---------- Header ---------- */
+  header { text-align: center; padding: 12px 0 20px; }
+  .logo {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 2rem;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .logo .tone { color: var(--jade); }
+  .tagline { font-size: 0.95rem; color: #5C6B5E; margin-top: 2px; }
+
+  /* ---------- Screens ---------- */
+  .screen { display: none; }
+  .screen.active { display: block; animation: rise 0.35s ease both; }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  h2 {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.35rem;
+    margin-bottom: 4px;
+  }
+  .hint { color: #5C6B5E; font-size: 0.95rem; margin-bottom: 18px; }
+
+  /* ---------- Mode menu ---------- */
+  .topics { display: grid; gap: 12px; }
+  .topic-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    background: var(--card);
+    border: 2px solid transparent;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--ink);
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.12s ease, border-color 0.12s ease;
+  }
+  .topic-btn:hover, .topic-btn:focus-visible { border-color: var(--jade); transform: translateY(-2px); }
+  .topic-btn:active { transform: translateY(0); }
+  .topic-emoji {
+    font-size: 1.6rem;
+    width: 48px; height: 48px;
+    flex-shrink: 0;
+    display: grid; place-items: center;
+    background: var(--celadon);
+    border-radius: 12px;
+  }
+  .topic-name { font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 1.1rem; }
+  .topic-sub { font-size: 0.85rem; color: #5C6B5E; }
+  .topic-best {
+    margin-left: auto;
+    font-size: 0.85rem;
+    color: var(--gold);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  /* ---------- Streak bar ---------- */
+  .streak-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 10px 16px;
+    margin-bottom: 14px;
+  }
+  .streak-now {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 1.4rem;
+    color: var(--jade-deep);
+    transition: transform 0.15s ease, color 0.15s ease;
+  }
+  .streak-now.bump { transform: scale(1.25); }
+  .streak-now.broken { color: var(--cinnabar); animation: shake 0.4s ease; }
+  .streak-best { font-weight: 700; color: var(--gold); font-size: 0.95rem; }
+
+  /* ---------- Play screen ---------- */
+  .english-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 18px 16px;
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .english-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #7A8A7C;
+    margin-bottom: 4px;
+  }
+  .english-phrase {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    line-height: 1.35;
+  }
+
+  .sentence-area {
+    min-height: 74px;
+    background: rgba(255, 255, 255, 0.55);
+    border: 2px dashed var(--line);
+    border-radius: var(--radius);
+    padding: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 16px;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+  .sentence-area.complete { border-style: solid; border-color: var(--jade); background: #E3EFE7; }
+  .slot-hint { color: #96A698; font-style: italic; font-size: 0.9rem; }
+
+  .placed {
+    color: #fff;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    animation: pop 0.25s ease both;
+  }
+  .placed.person { background: var(--role-person); }
+  .placed.frame  { background: var(--jade); }
+  .placed.adj    { background: var(--role-adj); }
+  .placed.thing  { background: var(--role-thing); }
+  .placed.time   { background: var(--role-time); }
+  @keyframes pop {
+    from { transform: scale(0.6); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+
+  .bank-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #7A8A7C;
+    margin-bottom: 8px;
+  }
+  .bank { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+
+  .tile {
+    min-height: 52px;
+    padding: 8px 14px;
+    border-radius: 12px;
+    border: 2px solid var(--line);
+    background: var(--card);
+    box-shadow: var(--shadow);
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.12s ease, opacity 0.25s ease, transform 0.12s ease;
+  }
+  .tile.person { color: var(--role-person); background: var(--role-person-bg); }
+  .tile.frame  { color: var(--role-frame);  background: var(--role-frame-bg); }
+  .tile.adj    { color: var(--role-adj);    background: var(--role-adj-bg); }
+  .tile.thing  { color: var(--role-thing);  background: var(--role-thing-bg); }
+  .tile.time   { color: var(--role-time);   background: var(--role-time-bg); }
+  .tile:hover, .tile:focus-visible { border-color: var(--jade); }
+  .tile:active { transform: scale(0.96); }
+  .tile.used { opacity: 0; pointer-events: none; transform: scale(0.8); }
+  .tile.wrong { animation: shake 0.4s ease; border-color: var(--cinnabar); }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+  }
+  .tile-phon {
+    display: block;
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: 0.75rem;
+    color: #7A8A7C;
+    margin-top: 1px;
+  }
+
+  .done-panel {
+    display: none;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px;
+    text-align: center;
+    margin-bottom: 16px;
+    animation: rise 0.3s ease both;
+  }
+  .done-panel.visible { display: block; }
+  .done-streak {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 1.05rem;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  .done-pinyin {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--jade-deep);
+    margin-bottom: 4px;
+  }
+  .done-phon { font-style: italic; font-size: 0.95rem; color: #7A8A7C; margin-bottom: 6px; }
+  .done-literal { font-size: 0.9rem; color: #5C6B5E; font-style: italic; }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: block;
+    width: 100%;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 15px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    transition: transform 0.12s ease, background 0.12s ease;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--jade); color: #fff; }
+  .btn-primary:hover, .btn-primary:focus-visible { background: var(--jade-deep); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--jade-deep);
+    border: 2px solid var(--jade);
+    margin-top: 10px;
+  }
+  .btn-ghost:hover, .btn-ghost:focus-visible { background: rgba(62, 124, 89, 0.08); }
+  .btn:focus-visible, .topic-btn:focus-visible, .tile:focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 2px;
+  }
+  .btn[hidden] { display: none; }
+
+
+  /* ---------- Quick vocabulary warm-up ---------- */
+  .match-status { display:flex; justify-content:space-between; align-items:center; margin:12px 0; font-weight:700; color:var(--jade-deep); }
+  .match-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:12px 0 18px; }
+  .match-column { display:grid; align-content:start; gap:9px; }
+  .match-heading { font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:#718073; font-weight:800; text-align:center; }
+  .match-tile { min-height:52px; width:100%; padding:8px 9px; border:2px solid var(--line); border-radius:11px; background:var(--card); color:var(--ink); box-shadow:var(--shadow); font-family:inherit; font-size:.94rem; font-weight:700; cursor:pointer; transition:.15s ease; }
+  .match-tile small { display:block; margin-top:2px; color:#718073; font-weight:600; }
+  .match-tile:hover,.match-tile:focus-visible { border-color:var(--jade); }
+  .match-tile.selected { border-color:var(--gold); background:#FFF8D9; transform:translateY(-1px); }
+  .match-tile.matched { border-color:var(--jade); background:#E3EFE7; color:var(--jade-deep); opacity:.58; cursor:default; }
+  .match-tile.wrong { border-color:var(--cinnabar); background:#FBE9E7; animation:shake .35s ease; }
+  .match-complete { display:none; margin:0 0 14px; padding:12px; border-radius:11px; background:#E3EFE7; color:var(--jade-deep); font-weight:800; text-align:center; }
+  .match-complete.visible { display:block; }
+
+  footer { margin-top: 28px; text-align: center; font-size: 0.8rem; color: #7A8A7C; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">At the Restaurant</div>
+    <div class="tagline">Useful Mandarin for eating out</div>
+  </header>
+
+  <!-- ===== Menu screen ===== -->
+  <section id="screen-menu" class="screen active" aria-label="Choose a run">
+    <h2>Pick your run</h2>
+    <p class="hint">Choose a situation or mix them together. Build each sentence by tapping the colour-coded pinyin tiles in order.</p>
+    <div class="topics" id="topic-list"></div>
+  </section>
+
+
+  <!-- ===== Vocabulary warm-up ===== -->
+  <section id="screen-match" class="screen" aria-label="Match the words">
+    <h2>Quick word warm-up</h2>
+    <p class="hint">Match the pinyin to its meaning. These words will appear in the sentences that follow.</p>
+    <div class="match-status"><span id="match-mode"></span><span id="match-progress">0 / 8</span></div>
+    <div class="match-grid">
+      <div class="match-column"><div class="match-heading">Pinyin</div><div class="match-column" id="match-pinyin"></div></div>
+      <div class="match-column"><div class="match-heading">Meaning</div><div class="match-column" id="match-english"></div></div>
+    </div>
+    <div class="match-complete" id="match-complete">All matched — the words are fresh in your mind!</div>
+    <button class="btn btn-primary" id="btn-match-continue" hidden>Start the sentences</button>
+    <button class="btn btn-ghost" id="btn-match-back">Back to modes</button>
+  </section>
+
+  <!-- ===== Play screen ===== -->
+  <section id="screen-play" class="screen" aria-label="Build the phrase">
+    <div class="streak-bar">
+      <span class="streak-now" id="streak-now">🔥 0</span>
+      <span class="streak-best" id="streak-best">Best: 0</span>
+    </div>
+
+    <div class="english-card">
+      <div class="english-label">Say this in Mandarin</div>
+      <div class="english-phrase" id="english-phrase"></div>
+    </div>
+
+    <div class="sentence-area" id="sentence-area" aria-live="polite">
+      <span class="slot-hint" id="slot-hint">Tap the words below, in order…</span>
+    </div>
+
+    <div class="bank-label">Word bank <span style="text-transform:none; letter-spacing:0; font-weight:600;">(extra words are hiding in here!)</span></div>
+    <div class="bank" id="bank"></div>
+
+    <div class="done-panel" id="done-panel">
+      <div class="done-streak" id="done-streak"></div>
+      <div class="done-pinyin" id="done-pinyin"></div>
+      <div class="done-phon" id="done-phon"></div>
+      <div class="done-literal" id="done-literal"></div>
+    </div>
+
+    <button class="btn btn-primary" id="btn-next" hidden>Next sentence</button>
+    <button class="btn btn-ghost" id="btn-play-quit">End run &amp; back to menu</button>
+  </section>
+
+  <footer>Short practical sentences — colour coded by their job in the sentence.</footer>
+</div>
+
+<script>
+  const SENTENCES = [{"mode":"arrive","en":"There are two of us.","punct":".","tokens":[{"pin":"wǒmen","phon":"waw-mun","role":"person","gloss":"we"},{"pin":"liǎng","phon":"lyahng","role":"adj","gloss":"two"},{"pin":"wèi","phon":"way","role":"adj","gloss":"[polite counter for people]"}]},{"mode":"arrive","en":"Do you have any seats?","punct":"?","tokens":[{"pin":"yǒu","phon":"yoh","role":"frame","gloss":"have"},{"pin":"wèizi","phon":"way-dzuh","role":"thing","gloss":"seats"},{"pin":"ma","phon":"mah","role":"frame","gloss":"[question]"}]},{"mode":"arrive","en":"Can we sit here?","punct":"?","tokens":[{"pin":"wǒmen","phon":"waw-mun","role":"person","gloss":"we"},{"pin":"kěyǐ","phon":"kuh-yee","role":"frame","gloss":"can"},{"pin":"zuò","phon":"dzwaw","role":"frame","gloss":"sit"},{"pin":"zhèlǐ","phon":"juh-lee","role":"thing","gloss":"here"},{"pin":"ma","phon":"mah","role":"frame","gloss":"[question]"}]},{"mode":"arrive","en":"The menu, please.","punct":".","tokens":[{"pin":"qǐng","phon":"ching","role":"frame","gloss":"please"},{"pin":"gěi","phon":"gay","role":"frame","gloss":"give"},{"pin":"wǒ","phon":"waw","role":"person","gloss":"me"},{"pin":"càidān","phon":"tsye-dahn","role":"thing","gloss":"menu"}]},{"mode":"order","en":"I would like this one.","punct":".","tokens":[{"pin":"wǒ","phon":"waw","role":"person","gloss":"I"},{"pin":"xiǎng","phon":"shyahng","role":"frame","gloss":"would like"},{"pin":"yào","phon":"yow","role":"frame","gloss":"want"},{"pin":"zhège","phon":"juh-guh","role":"thing","gloss":"this one"}]},{"mode":"order","en":"I would like some dumplings.","punct":".","tokens":[{"pin":"wǒ","phon":"waw","role":"person","gloss":"I"},{"pin":"xiǎng","phon":"shyahng","role":"frame","gloss":"would like"},{"pin":"yào","phon":"yow","role":"frame","gloss":"want"},{"pin":"jiǎozi","phon":"jyow-dzuh","role":"thing","gloss":"dumplings"}]},{"mode":"order","en":"Please give me a cup of tea.","punct":".","tokens":[{"pin":"qǐng","phon":"ching","role":"frame","gloss":"please"},{"pin":"gěi","phon":"gay","role":"frame","gloss":"give"},{"pin":"wǒ","phon":"waw","role":"person","gloss":"me"},{"pin":"yī","phon":"ee","role":"adj","gloss":"one"},{"pin":"bēi","phon":"bay","role":"adj","gloss":"cup"},{"pin":"chá","phon":"chah","role":"thing","gloss":"tea"}]},{"mode":"order","en":"I also want some rice.","punct":".","tokens":[{"pin":"wǒ","phon":"waw","role":"person","gloss":"I"},{"pin":"yě","phon":"yeh","role":"frame","gloss":"also"},{"pin":"yào","phon":"yow","role":"frame","gloss":"want"},{"pin":"mǐfàn","phon":"mee-fahn","role":"thing","gloss":"rice"}]},{"mode":"request","en":"Not spicy, please.","punct":".","tokens":[{"pin":"qǐng","phon":"ching","role":"frame","gloss":"please"},{"pin":"bú","phon":"boo","role":"frame","gloss":"not"},{"pin":"yào","phon":"yow","role":"frame","gloss":"want"},{"pin":"là","phon":"lah","role":"adj","gloss":"spicy"}]},{"mode":"request","en":"I don't eat meat.","punct":".","tokens":[{"pin":"wǒ","phon":"waw","role":"person","gloss":"I"},{"pin":"bù","phon":"boo","role":"frame","gloss":"not"},{"pin":"chī","phon":"chrr","role":"frame","gloss":"eat"},{"pin":"ròu","phon":"roh","role":"thing","gloss":"meat"}]},{"mode":"request","en":"Do you have vegetarian food?","punct":"?","tokens":[{"pin":"yǒu","phon":"yoh","role":"frame","gloss":"have"},{"pin":"sùshí","phon":"soo-shrr","role":"thing","gloss":"vegetarian food"},{"pin":"ma","phon":"mah","role":"frame","gloss":"[question]"}]},{"mode":"request","en":"Please give me a napkin.","punct":".","tokens":[{"pin":"qǐng","phon":"ching","role":"frame","gloss":"please"},{"pin":"gěi","phon":"gay","role":"frame","gloss":"give"},{"pin":"wǒ","phon":"waw","role":"person","gloss":"me"},{"pin":"yī","phon":"ee","role":"adj","gloss":"one"},{"pin":"zhāng","phon":"jahng","role":"adj","gloss":"[flat counter]"},{"pin":"zhǐjīn","phon":"jrr-jin","role":"thing","gloss":"napkin"}]},{"mode":"finish","en":"This is delicious!","punct":"!","tokens":[{"pin":"zhège","phon":"juh-guh","role":"thing","gloss":"this"},{"pin":"hěn","phon":"hun","role":"frame","gloss":"very"},{"pin":"hǎochī","phon":"how-chrr","role":"adj","gloss":"delicious"}]},{"mode":"finish","en":"I'm full.","punct":".","tokens":[{"pin":"wǒ","phon":"waw","role":"person","gloss":"I"},{"pin":"chī","phon":"chrr","role":"frame","gloss":"eat"},{"pin":"bǎo","phon":"baow","role":"adj","gloss":"full"},{"pin":"le","phon":"luh","role":"frame","gloss":"[change]"}]},{"mode":"finish","en":"Please pack this to take away.","punct":".","tokens":[{"pin":"zhège","phon":"juh-guh","role":"thing","gloss":"this"},{"pin":"qǐng","phon":"ching","role":"frame","gloss":"please"},{"pin":"dǎbāo","phon":"dah-baow","role":"frame","gloss":"pack to go"}]},{"mode":"finish","en":"The bill, please.","punct":".","tokens":[{"pin":"mǎidān","phon":"my-dahn","role":"frame","gloss":"pay the bill"},{"pin":"xièxie","phon":"shyeh-shyeh","role":"frame","gloss":"thank you"}]},{"mode":"finish","en":"Can I pay with WeChat?","punct":"?","tokens":[{"pin":"kěyǐ","phon":"kuh-yee","role":"frame","gloss":"can"},{"pin":"yòng","phon":"yohng","role":"frame","gloss":"use"},{"pin":"Wēixìn","phon":"way-sheen","role":"thing","gloss":"WeChat"},{"pin":"zhīfù","phon":"jrr-foo","role":"frame","gloss":"pay"},{"pin":"ma","phon":"mah","role":"frame","gloss":"[question]"}]}];
+  const MODES = [
+    { id: "mix", name: "Mix it up", emoji: "🎲", sub: "All situations in one endless run" },
+    { id:"arrive", name:"Arriving & sitting down", emoji:"🪑", sub:"Seats, tables and menus" },
+    { id:"order", name:"Ordering food & drink", emoji:"🍜", sub:"Choose dishes and drinks" },
+    { id:"request", name:"Requests & dietary needs", emoji:"🥢", sub:"Ask for help and make changes" },
+    { id:"finish", name:"Finishing & paying", emoji:"💳", sub:"Compliments, takeaway and the bill" }
+  ];
+  const STORAGE_KEY = "restaurantSentenceBest";
+  const $ = id => document.getElementById(id);
+  const shuffle = arr => { const a=arr.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+  const allTokens = [];
+  const seenTokens = new Set();
+  SENTENCES.forEach(s => s.tokens.forEach(t => { const key=t.pin+"|"+t.role; if(!seenTokens.has(key)){seenTokens.add(key);allTokens.push(t);} }));
+  let currentMode=null, phrase=null, tokenPos=0, streak=0, dirty=false, lastEn="";
+
+  let matchSet=[], selectedPin=null, selectedEnglish=null, matchedCount=0;
+  function friendlyGloss(gloss){return gloss.replace(/^\[|\]$/g,"").replace("'s","linking word");}
+  function wordsForMode(mode){
+    const source=mode.id==="mix"?SENTENCES:SENTENCES.filter(s=>s.mode===mode.id);
+    const raw=source.flatMap(s=>s.tokens);
+    const picked=[], seenPin=new Set(), seenGloss=new Set();
+    const add=t=>{const gloss=friendlyGloss(t.gloss);if(seenPin.has(t.pin)||seenGloss.has(gloss))return;seenPin.add(t.pin);seenGloss.add(gloss);picked.push({...t,matchGloss:gloss,matchId:t.pin+"|"+gloss});};
+    shuffle(raw.filter(t=>!/^\[/.test(t.gloss))).forEach(add);
+    if(picked.length<8)shuffle(raw.filter(t=>/^\[/.test(t.gloss))).forEach(add);
+    return shuffle(picked).slice(0,Math.min(8,picked.length));
+  }
+  function beginMatch(mode){currentMode=mode;matchSet=wordsForMode(mode);selectedPin=null;selectedEnglish=null;matchedCount=0;$("match-mode").textContent=mode.emoji+" "+mode.name;$("match-progress").textContent="0 / "+matchSet.length;$("match-complete").classList.remove("visible");$("btn-match-continue").hidden=true;renderMatchColumn("match-pinyin",shuffle(matchSet),"pin");renderMatchColumn("match-english",shuffle(matchSet),"english");show("screen-match");}
+  function renderMatchColumn(id,items,kind){const box=$(id);box.innerHTML="";items.forEach(item=>{const b=document.createElement("button");b.className="match-tile";b.dataset.matchId=item.matchId;b.dataset.kind=kind;b.innerHTML=kind==="pin"?item.pin+'<small>'+item.phon+'</small>':item.matchGloss;b.onclick=()=>selectMatch(b);box.appendChild(b);});}
+  function selectMatch(tile){if(tile.classList.contains("matched"))return;const kind=tile.dataset.kind;const old=kind==="pin"?selectedPin:selectedEnglish;if(old)old.classList.remove("selected");tile.classList.add("selected");if(kind==="pin")selectedPin=tile;else selectedEnglish=tile;if(selectedPin&&selectedEnglish)checkMatch();}
+  function checkMatch(){if(selectedPin.dataset.matchId===selectedEnglish.dataset.matchId){selectedPin.classList.remove("selected");selectedEnglish.classList.remove("selected");selectedPin.classList.add("matched");selectedEnglish.classList.add("matched");selectedPin.disabled=true;selectedEnglish.disabled=true;selectedPin=null;selectedEnglish=null;matchedCount++;$("match-progress").textContent=matchedCount+" / "+matchSet.length;if(matchedCount===matchSet.length){$("match-complete").classList.add("visible");$("btn-match-continue").hidden=false;$("btn-match-continue").focus();}}else{const a=selectedPin,b=selectedEnglish;a.classList.add("wrong");b.classList.add("wrong");setTimeout(()=>{a.classList.remove("wrong","selected");b.classList.remove("wrong","selected");},420);selectedPin=null;selectedEnglish=null;}}
+  function beginSentenceRun(){streak=0;updateStreakBar();nextSentence();show("screen-play");}
+
+  let bestStreaks={}; try{bestStreaks=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");}catch(e){}
+  function saveBest(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(bestStreaks));}catch(e){}}
+  function show(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));$(id).classList.add("active");window.scrollTo({top:0});}
+  function renderMenu(){const list=$("topic-list");list.innerHTML="";MODES.forEach(mode=>{const b=document.createElement("button");b.className="topic-btn";b.innerHTML='<span class="topic-emoji">'+mode.emoji+'</span><span><span class="topic-name">'+mode.name+'</span><br><span class="topic-sub">'+mode.sub+'</span></span>'+(bestStreaks[mode.id]?'<span class="topic-best">🔥 best: '+bestStreaks[mode.id]+'</span>':'');b.onclick=()=>startMode(mode);list.appendChild(b);});}
+  function startMode(mode){beginMatch(mode);}
+  function pool(){return currentMode.id==="mix"?SENTENCES:SENTENCES.filter(s=>s.mode===currentMode.id);}
+  function nextSentence(){let tries=0,p;do{const choices=pool();p=choices[Math.floor(Math.random()*choices.length)];tries++;}while(p.en===lastEn&&tries<12);phrase=p;lastEn=p.en;tokenPos=0;dirty=false;$("english-phrase").textContent=phrase.en;const area=$("sentence-area");area.classList.remove("complete");area.innerHTML='<span class="slot-hint" id="slot-hint">Tap the words below, in order…</span>';renderBank();$("done-panel").classList.remove("visible");$("btn-next").hidden=true;}
+  function renderBank(){const used=new Set(phrase.tokens.map(t=>t.pin));const roles=[...new Set(phrase.tokens.map(t=>t.role))];const candidates=shuffle(allTokens.filter(t=>roles.includes(t.role)&&!used.has(t.pin)));const extras=[];for(const t of candidates){if(!used.has(t.pin)){extras.push(t);used.add(t.pin);}if(extras.length===3)break;}const bank=$("bank");bank.innerHTML="";shuffle(phrase.tokens.concat(extras)).forEach(item=>{const b=document.createElement("button");b.className="tile "+item.role;b.dataset.value=item.pin;b.innerHTML=item.pin+'<span class="tile-phon">'+item.phon+'</span>';b.onclick=()=>tapTile(b);bank.appendChild(b);});}
+  function tapTile(tile){if(tile.classList.contains("used")||!$("btn-next").hidden)return;const expected=phrase.tokens[tokenPos];if(tile.dataset.value===expected.pin){tile.classList.add("used");const hint=$("slot-hint");if(hint)hint.remove();const placed=document.createElement("span");placed.className="placed "+expected.role;placed.textContent=expected.pin;$("sentence-area").appendChild(placed);tokenPos++;if(tokenPos===phrase.tokens.length)complete();}else{dirty=true;if(streak){streak=0;updateStreakBar(true);}tile.classList.add("wrong");setTimeout(()=>tile.classList.remove("wrong"),450);}}
+  function complete(){const area=$("sentence-area");area.classList.add("complete");const words=area.querySelectorAll(".placed");if(words.length)words[words.length-1].textContent+=phrase.punct;if(!dirty){streak++;if(!bestStreaks[currentMode.id]||streak>bestStreaks[currentMode.id]){bestStreaks[currentMode.id]=streak;saveBest();}updateStreakBar();}$("done-streak").textContent=dirty?"Run reset — this one will stick next time!":streakMessage();$("done-pinyin").textContent="✓ "+phrase.tokens.map(t=>t.pin).join(" ")+phrase.punct;$("done-phon").textContent="Say it: "+phrase.tokens.map(t=>t.phon).join(" ");$("done-literal").textContent="Word by word: "+phrase.tokens.map(t=>t.gloss).join(" / ");$("done-panel").classList.add("visible");$("btn-next").hidden=false;$("btn-next").focus();}
+  function streakMessage(){if(streak>=10)return"🔥🔥 "+streak+" in a row — unstoppable!";if(streak>=5)return"🔥 "+streak+" in a row — excellent!";if(streak>=3)return"🔥 "+streak+" in a row — keep going!";if(streak===2)return"🔥 Two in a row!";return"🔥 Run started — keep it going!";}
+  function updateStreakBar(broken){const now=$("streak-now");now.textContent="🔥 "+streak;now.classList.remove("bump","broken");void now.offsetWidth;now.classList.add(broken?"broken":"bump");setTimeout(()=>now.classList.remove("bump","broken"),450);$("streak-best").textContent="Best: "+(bestStreaks[currentMode?currentMode.id:""]||0);}
+  $("btn-match-continue").onclick=beginSentenceRun;$("btn-match-back").onclick=()=>show("screen-menu");$("btn-next").onclick=nextSentence;$("btn-play-quit").onclick=()=>{renderMenu();show("screen-menu");};renderMenu();
+  
+</script>
+<script src="site-nav.js"></script>
+</body>
+</html>
