@@ -438,7 +438,7 @@
   }
 
   // Shared with Vocab's Fill the gap question.
-  window.SentenceView = { sentenceHtml, gapPy, saysLine };
+  window.SentenceView = { sentenceHtml, gapPy, saysLine, interlinear };
 
   // ---------------------------------------------------------------- wiring
 

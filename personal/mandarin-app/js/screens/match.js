@@ -1,4 +1,5 @@
-/* Quick Match: boards of 10 pinyin beside 10 shuffled meanings, round after round. */
+/* Quick Match: boards of 10 pinyin beside 10 shuffled meanings, round after round.
+   Mini-List (in Games) uses it too, with a fixed set of words: opts = { ids, back, buttons }. */
 (function () {
   const A = App;
   const { py, esc } = A;
@@ -6,8 +7,8 @@
   const BOARD = 10;
   let match = null;
 
-  function start(kind, groupIds, title) {
-    match = { kind, groupIds, title, round: 0, used: new Set(), startStage: {}, pairs: 0, firstTry: 0, words: [] };
+  function start(kind, groupIds, title, opts) {
+    match = { kind, groupIds, title, opts: opts || {}, round: 0, used: new Set(), startStage: {}, pairs: 0, firstTry: 0, words: [] };
     Store.requestPersist();
     if (!newBoard()) { match = null; return; }
     A.go("/match");
@@ -15,10 +16,11 @@
 
   // Deal the next board, preferring words not yet seen in this session.
   function newBoard() {
-    const pool = Session.matchPool(match.kind, match.groupIds);
-    const fresh = pool.filter(w => !match.used.has(w.id));
+    const fixed = match.opts.ids;
+    const pool = fixed ? fixed.map(id => BY_ID[id]) : Session.matchPool(match.kind, match.groupIds);
+    const fresh = fixed ? pool : pool.filter(w => !match.used.has(w.id));
     let words = Session.matchSet(fresh, BOARD);
-    if (words.length < BOARD) {
+    if (!fixed && words.length < BOARD) {
       // Run out of unseen words: top up from the rest of the pool.
       const ids = new Set(words.map(w => w.id));
       words = Session.matchSet(words.concat(pool.filter(w => !ids.has(w.id))), BOARD);
@@ -72,7 +74,7 @@
               <p class="muted">Overall <b>${Math.round(match.firstTry / match.pairs * 100)}%</b> right first time across ${A.plural(match.round, "round")}</p>
               <div class="row2 even">
                 <button class="btn" data-act="mfinish">Finish</button>
-                <button class="btn primary" data-act="mnext">Next ${BOARD}</button>
+                <button class="btn primary" data-act="mnext">${match.opts.ids ? "Match again" : "Next " + BOARD}</button>
               </div>
             </div>
           </div>` : ""}`
@@ -118,11 +120,11 @@
 
   function finish() {
     A.result = {
-      eyebrow: "Quick Match · " + match.title, back: `/${Banks.current}/vocab`,
+      eyebrow: (match.opts.ids ? "" : "Quick Match · ") + match.title, back: match.opts.back || `/${Banks.current}/vocab`,
       right: match.firstTry, total: match.pairs,
       label: "Words in this session",
       rows: Vocab.wordRows(match.words.map(id => ({ id, from: match.startStage[id], to: Memory.stage(id) }))),
-      buttons: Vocab.nextButtons()
+      buttons: match.opts.buttons || Vocab.nextButtons()
     };
     match = null;
     Store.saveNow();
@@ -135,7 +137,7 @@
   A.on("mfinish", finish);
   A.on("mquit", () => {
     if (match && match.pairs) finish();
-    else { match = null; A.back(`/${Banks.current}/vocab`); }
+    else { const back = match && match.opts.back; match = null; A.back(back || `/${Banks.current}/vocab`); }
   });
 
   window.Match = { start };

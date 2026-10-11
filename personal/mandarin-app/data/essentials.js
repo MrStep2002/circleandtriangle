@@ -67,7 +67,7 @@ window.ESSENTIALS = {
     { id: "food:cha",        py: "chá",         say: "chah",           en: "tea",                 group: "food" },
     // 6
     { id: "verb:chi",        py: "chī",         say: "chrr",           en: "eat",                 group: "verbs" },
-    { id: "food:mifan",      py: "mǐ|fàn",      say: "mee-fahn",       en: "cooked rice",         group: "food" },
+    { id: "food:mifan",      py: "mǐ|fàn",      say: "mee-fahn",       en: "rice (cooked)",        group: "food" },
     { id: "food:miantiao",   py: "miàn|tiáo",   say: "myen-tyaow",     en: "noodles",             group: "food" },
     { id: "food:jiaozi",     py: "jiǎo|zi",     say: "jyaow-dzuh",     en: "dumplings",           group: "food" },
     // 7

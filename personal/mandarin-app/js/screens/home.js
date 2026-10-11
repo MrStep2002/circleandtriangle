@@ -6,10 +6,10 @@
   const TOPICS = [
     { id: "eating-out",     name: "Eating out",     sub: "Ordering, tastes, paying the bill" },
     { id: "lists",          name: "Lists",          sub: "Colours, days, months, numbers, time, the zodiac, countries" },
+    { id: "work-study",     name: "Work & study",   sub: "Classroom commands, praise, homework, parents" },
     { id: "shopping",       name: "Shopping",       sub: "Prices, sizes, bargaining" },
     { id: "getting-around", name: "Getting around", sub: "Taxis, metro, directions" },
     { id: "home-family",    name: "Home & family",  sub: "People, rooms, daily routine" },
-    { id: "work-study",     name: "Work & study",   sub: "Classroom and office words" },
     { id: "weather",        name: "Weather",        sub: "Forecasts, hot and cold, what to wear" }
   ];
 
@@ -111,12 +111,8 @@
             <span class="tile-sub">${bank.topic ? "Mix these words with your Essentials" : "Build sentences from your Essentials words"} · ${sentSub}</span>
             ${A.ICON.chevron}
           </button>
-          <button class="tile off" disabled>
-            <span class="tile-name">Games</span>
-            <span class="tile-sub">Races and challenges against the clock</span>
-            <span class="soon">Coming next</span>
-          </button>
         </nav>
+        ${window.Games ? Games.gridHtml() : ""}
 
         <button class="rowlink" data-act="go" data-to="/${Banks.current}/words">
           <span><b>Word Bank</b><span class="muted">All ${W().length} words and how well you know each one</span></span>${A.ICON.chevron}

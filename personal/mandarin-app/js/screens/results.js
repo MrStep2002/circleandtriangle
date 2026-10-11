@@ -1,7 +1,8 @@
 /* The results screen shown at the end of any session.
 
    A session fills in App.result and then goes to #/done:
-     { eyebrow, right, total, label, rows, buttons, back } */
+     { eyebrow, right, total, label, rows, buttons, back }, plus optional big and line
+     to replace the percentage and the "x of y" line (the Speed round shows its score). */
 (function () {
   const A = App;
 
@@ -14,8 +15,8 @@
       body: `
         <section class="card result">
           <p class="eyebrow">${A.esc(r.eyebrow)}</p>
-          <div class="bigpct">${pct}%</div>
-          <p class="muted">${r.right} of ${r.total} right first time</p>
+          <div class="bigpct">${r.big != null ? A.esc(r.big) : pct + "%"}</div>
+          <p class="muted">${r.line != null ? A.esc(r.line) : `${r.right} of ${r.total} right first time`}</p>
           <div class="meter"><span style="width:${pct}%"></span></div>
         </section>
         ${r.rows ? `<h3 class="section-label small">${r.label}</h3><ul class="bank">${r.rows}</ul>` : ""}

@@ -11,6 +11,7 @@ A pinyin-first Mandarin app that remembers what you know. Installable on iPhone 
 | `data/essentials.js` | **The Essentials word bank.** Edit words here |
 | `data/sentences.js` | **Sentence patterns, replies, literal meanings and Explain rules** |
 | `data/topics/eating-out.js` | **The Eating out topic:** its words, sentences and extra rules |
+| `data/topics/work-study.js` | **The Work & study topic:** classroom commands, praise, homework, looking after students, parents |
 | `data/topics/lists.js` | **The Lists topic:** colours, days, months, bigger numbers, time, seasons, zodiac, countries |
 | **Engine** | |
 | `js/banks.js` | Knows the word banks (Essentials and each topic) and which one you're in |
@@ -27,6 +28,7 @@ A pinyin-first Mandarin app that remembers what you know. Installable on iPhone 
 | `js/screens/sentences.js` | Sentences page and activities |
 | `js/screens/settings.js` | Settings and Word Bank |
 | `js/screens/results.js` | The end-of-session screen |
+| `js/screens/games.js` | Games: Speed round, Type it, Numbers, Type the sentence |
 | `css/app.css` | All the styling |
 | `sw.js` | Offline support |
 | `manifest.json`, `icons/` | What the phone uses when you install the app |

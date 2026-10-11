@@ -16,6 +16,7 @@
       patterns: {},         // sentence pattern id -> { intro, b, due, r, w }
       days: {},             // "2026-10-10" -> number of answers that day
       settings: { toneColours: true },
+      games: {},            // "bank:game" -> { best, last, plays }
       lastBackup: null
     };
   }
