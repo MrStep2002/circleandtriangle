@@ -99,7 +99,7 @@
   const SECTIONS_BY_BANK = {
     essentials: [
       ...D.SECTIONS.map(sec => ({ id: sec.id, name: sec.name, sub: sec.sub })),
-      { id: "surreal", name: "Surreal Sentences", sub: "Every pattern, filled with random words. The grammar's right; the meaning is optional.", surreal: true }
+      { id: "surreal", name: "Surreal Sentences", sub: "Nonsense on purpose: drinking rice, tired tea, saying hello to a fish. The grammar's right; the meaning isn't.", surreal: true }
     ]
   };
   const ITEMS_BY_BANK = { essentials: itemsFor("essentials", D.SECTIONS, D.PATTERNS) };
@@ -121,13 +121,25 @@
   function canNeg(p) { return (p.flags || []).includes("neg") && known((p.needsNeg || [BU])[0]); }
   function canQ(p) { return (p.flags || []).includes("q") && known(MA); }
 
+  function canBeValid(p) {
+    for (let k = 0; k < 80; k++) {
+      const f = { g: 0 };
+      Object.entries(p.slots).forEach(([key, list]) => { f[key] = rand(list.filter(known)); });
+      if (p.valid(f)) return true;
+    }
+    return false;
+  }
+
   // Is this item unlocked? If not, which words are missing?
   function status(it) {
     if (it.kind === "pattern") {
       const p = it.def;
       const missing = p.core.filter(id => !known(id));
       const slotGaps = Object.values(p.slots).filter(list => !list.some(known));
-      return { open: !missing.length && !slotGaps.length, missing, slotGaps };
+      let open = !missing.length && !slotGaps.length;
+      // Surreal patterns only open once your words can make an absurd version.
+      if (open && it.section === "surreal" && p.valid && !canBeValid(p)) { open = false; slotGaps.push(Object.values(p.slots)[Object.keys(p.slots).length - 1]); }
+      return { open, missing, slotGaps };
     }
     if (it.kind === "fixed") {
       const missing = [...new Set(it.def.t.filter(t => t !== "," && !known(t)))];

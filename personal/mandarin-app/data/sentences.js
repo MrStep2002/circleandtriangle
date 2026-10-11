@@ -112,13 +112,38 @@ window.SENTENCES = (function () {
 
   const BU = "build:bu", MA = "build:ma", HEN = "build:hen";
 
+  // ---------------------------------------------------------------- what makes a sentence surreal
+  // Surreal Sentences only keeps combinations that make no sense: drinking rice, tired tea,
+  // the dumplings wanting a friend. Each pattern's valid() rejects the sensible ones.
+  const isThing = id => !!THINGS[id];
+  const isPerson = id => !!PEOPLE[id] || id === "money:pengyou";
+  const CAN = {
+    "verb:chi": id => L.eat.includes(id),
+    "verb:he": id => L.drink.includes(id),
+    "verb:mai": id => L.food.includes(id),
+    "verb:kan": () => true
+  };
+  const sensibleVO = (v, o) => CAN[v](o);
+  const ADJ_OK = {
+    person: ["adj:hao", "adj:lei", "adj:re", "adj:leng", "adj:da", "adj:xiao", "adj:kuai", "adj:man"],
+    money: ["adj:hao", "adj:da", "adj:xiao"],
+    food: ["adj:hao", "adj:re", "adj:leng", "adj:gui", "adj:da", "adj:xiao"]
+  };
+  const sensibleAdj = (x, d) => (isPerson(x) ? ADJ_OK.person : x === "money:qian" ? ADJ_OK.money : ADJ_OK.food).includes(d);
+  // A thing doing something people do: "the tea wants…", "the fish is coming tomorrow".
+  const thingDoes = f => isThing(f.S) && f.S !== "money:pengyou" && f.S !== f.O;
+  const strangeVO = f => thingDoes(f) || !sensibleVO(f.V, f.O);
+  const actors = [...Object.keys(PEOPLE), ...Object.keys(THINGS)];
+  const objects = Object.keys(THINGS).filter(k => k !== "money:pengyou");
+  const bare = id => THINGS[id] ? THINGS[id].en : PEOPLE[id].s;   // "rice", for "I'm rice."
+
   // ---------------------------------------------------------------- patterns
   const PATTERNS = [
     // ----- Wanting
     {
-      id: "want-thing", group: "Wanting", name: "I want…",
-      tip: "yào + thing: wǒ yào chá = I want tea.",
-      core: ["verb:yao"], slots: { S: L.person, O: L.thing }, flags: ["neg", "q"],
+      id: "want-thing", group: "Wanting", name: "The tea wants…",
+      tip: "yào + thing: wǒ yào chá = I want tea. Here the tea gets to want things too.",
+      core: ["verb:yao"], slots: { S: actors, O: L.thing }, flags: ["neg", "q"], valid: thingDoes,
       make(f, E) {
         return {
           t: [f.S, f.neg && BU, "verb:yao", f.O, f.q && MA],
@@ -132,7 +157,7 @@ window.SENTENCES = (function () {
     {
       id: "want-to", group: "Wanting", name: "I want to…",
       tip: "yào + action: wǒ yào hē chá = I want to drink tea.",
-      core: ["verb:yao"], slots: { S: L.person, V: L.verb, O: L.thing }, flags: ["neg", "q"],
+      core: ["verb:yao"], slots: { S: actors, V: L.verb, O: L.thing }, valid: strangeVO, flags: ["neg", "q"],
       alts: { "verb:yao": ["verb:xiang"] },
       make(f, E) {
         const v = E.verb(f.V).base;
@@ -148,7 +173,7 @@ window.SENTENCES = (function () {
     {
       id: "would-like", group: "Wanting", name: "I'd like to…",
       tip: "xiǎng is softer than yào and goes before an action: wǒ xiǎng qù = I'd like to go.",
-      core: ["verb:xiang"], slots: { S: L.person, V: L.verb, O: L.thing }, flags: ["neg", "q"],
+      core: ["verb:xiang"], slots: { S: actors, V: L.verb, O: L.thing }, valid: strangeVO, flags: ["neg", "q"],
       alts: { "verb:xiang": ["verb:yao"] },
       make(f, E) {
         const v = E.verb(f.V).base;
@@ -164,9 +189,9 @@ window.SENTENCES = (function () {
 
     // ----- Liking
     {
-      id: "like-thing", group: "Liking", name: "I like…",
+      id: "like-thing", group: "Liking", name: "The fish likes…",
       tip: "xǐhuan + thing: wǒ xǐhuan chá = I like tea.",
-      core: ["verb:xihuan"], slots: { S: L.person, O: L.thing }, flags: ["neg", "q"],
+      core: ["verb:xihuan"], slots: { S: actors, O: L.thing }, flags: ["neg", "q"], valid: thingDoes,
       make(f, E) {
         return {
           t: [f.S, f.neg && BU, "verb:xihuan", f.O, f.q && MA],
@@ -180,7 +205,7 @@ window.SENTENCES = (function () {
     {
       id: "like-doing", group: "Liking", name: "I like doing…",
       tip: "xǐhuan + action: wǒ xǐhuan hē chá = I like drinking tea.",
-      core: ["verb:xihuan"], slots: { S: L.person, V: L.verb, O: L.thing }, flags: ["neg", "q"],
+      core: ["verb:xihuan"], slots: { S: actors, V: L.verb, O: L.thing }, valid: strangeVO, flags: ["neg", "q"],
       make(f, E) {
         const v = E.verb(f.V).ing;
         return {
@@ -195,7 +220,7 @@ window.SENTENCES = (function () {
     {
       id: "also", group: "Liking", name: "…too",
       tip: "yě (also) goes before the verb: wǒ yě hē chá = I drink tea too.",
-      core: ["build:ye"], slots: { S: L.person, V: L.verb, O: L.thing }, flags: ["neg"],
+      core: ["build:ye"], slots: { S: actors, V: L.verb, O: L.thing }, valid: strangeVO, flags: ["neg"],
       make(f, E) {
         const vb = E.verb(f.V);
         return {
@@ -212,7 +237,7 @@ window.SENTENCES = (function () {
       id: "describe", group: "Describing", name: "It's very…",
       tip: "Use hěn before a describing word, with no word for 'is': chá hěn rè = the tea is hot.",
       core: ["build:hen"], slots: { X: [...L.person, ...L.thing], D: L.adj }, flags: ["neg", "q"],
-      noQ: ["build:wo"],
+      noQ: ["build:wo"], valid: f => !sensibleAdj(f.X, f.D),
       make(f, E) {
         if (f.q && f.X === "build:ni" && f.D === "adj:hao") return { t: [f.X, f.D, MA], end: "?", en: "How are you?" };
         if (f.q) return { t: [f.X, f.D, MA], end: "?", en: `${E.Be(f.X)} ${E.s(f.X)} ${E.adj(f.D)}?` };
@@ -223,7 +248,7 @@ window.SENTENCES = (function () {
     {
       id: "too", group: "Describing", name: "It's too…!",
       tip: "tài … le = too …: tài guì le! = too expensive!",
-      core: ["build:tai"], slots: { X: [...L.person, ...L.thing], D: L.adj },
+      core: ["build:tai"], slots: { X: [...L.person, ...L.thing], D: L.adj }, valid: f => !sensibleAdj(f.X, f.D),
       make(f, E) {
         return { t: [f.X, "build:tai", f.D, "x:le"], end: "!", en: `${E.beSubj(f.X)} too ${E.adj(f.D)}!` };
       }
@@ -233,7 +258,7 @@ window.SENTENCES = (function () {
     {
       id: "have", group: "Having", name: "I have…",
       tip: "Not having uses méi, never bù: wǒ méi yǒu = I don't have.",
-      core: ["verb:you"], slots: { S: L.person, O: L.thing }, flags: ["neg", "q"],
+      core: ["verb:you"], slots: { S: actors, O: L.thing }, flags: ["neg", "q"], valid: thingDoes,
       make(f, E) {
         return {
           t: [f.S, f.neg && "build:mei", "verb:you", f.O, f.q && MA],
@@ -250,23 +275,24 @@ window.SENTENCES = (function () {
     {
       id: "price-ask", group: "Prices & counting", name: "How much is…?",
       tip: "Put duōshao qián after the thing: chá duōshao qián? No ma: duōshao already makes it a question.",
-      core: ["build:duoshao", "money:qian"], slots: { O: L.thing.filter(k => k !== "money:qian") },
+      core: ["build:duoshao", "money:qian"], slots: { O: [...L.person, "money:pengyou", "money:qian"] },
       make(f, E) {
+        if (PEOPLE[f.O]) return { t: [f.O, "build:duoshao", "money:qian"], end: "?", en: `How much ${E.be(f.O)} ${E.s(f.O)}?` };
         return { t: [f.O, "build:duoshao", "money:qian"], end: "?", en: `How much ${E.pl(f.O) ? "are" : "is"} the ${E.thing(f.O)}?` };
       }
     },
     {
       id: "price", group: "Prices & counting", name: "… yuan",
       tip: "Number + kuài (+ qián): sān kuài qián = 3 yuan.",
-      core: ["money:kuai", "money:qian"], slots: { N: L.count },
+      core: ["money:kuai", "money:qian"], slots: { X: [...L.person, "money:pengyou"], N: L.count },
       make(f, E) {
-        return { t: [f.N, "money:kuai", "money:qian"], end: ".", en: `${E.digit(f.N)} yuan.` };
+        return { t: [f.X, f.N, "money:kuai", "money:qian"], end: ".", en: `${E.beSubj(f.X)} ${E.digit(f.N)} yuan.` };
       }
     },
     {
       id: "count", group: "Prices & counting", name: "I want three…",
       tip: "Number + gè + thing: sān gè jiǎozi = three dumplings.",
-      core: ["build:ge", "verb:yao"], slots: { S: L.person, N: L.count, O: L.countable },
+      core: ["build:ge", "verb:yao"], slots: { S: actors, N: L.count, O: L.countable }, valid: thingDoes,
       make(f, E) {
         return {
           t: [f.S, "verb:yao", f.N, "build:ge", f.O], end: ".",
@@ -277,23 +303,17 @@ window.SENTENCES = (function () {
 
     // ----- Where
     {
-      id: "where-is", group: "Where", name: "Where is…?",
-      tip: "Question words stay where the answer would go: nǐ zài nǎr? = you are where? No ma needed.",
-      core: ["verb:zai", "build:nar"], slots: { S: L.person },
-      make(f, E) { return { t: [f.S, "verb:zai", "build:nar"], end: "?", en: `Where ${E.be(f.S)} ${E.s(f.S)}?` }; }
-    },
-    {
-      id: "where-go", group: "Where", name: "Where are you going?",
+      id: "where-go", group: "Where", name: "Where's the tea going?",
       tip: "nǐ qù nǎr? = you go where? No ma: nǎr already makes it a question.",
-      core: ["verb:qu", "build:nar"], slots: { S: L.person },
+      core: ["verb:qu", "build:nar"], slots: { S: objects },
       make(f, E) { return { t: [f.S, "verb:qu", "build:nar"], end: "?", en: `Where ${E.be(f.S)} ${E.s(f.S)} going?` }; }
     },
 
     // ----- Plans
     {
-      id: "plans-go", group: "Plans", name: "Going tomorrow",
+      id: "plans-go", group: "Plans", name: "The beer's going tomorrow",
       tip: "Time words go before the verb: wǒ míngtiān qù = I tomorrow go.",
-      core: ["verb:qu"], slots: { S: L.person, T: L.time }, flags: ["neg", "q"],
+      core: ["verb:qu"], slots: { S: objects, T: L.time }, flags: ["neg", "q"],
       make(f, E) {
         return {
           t: [f.S, f.T, f.neg && BU, "verb:qu", f.q && MA],
@@ -307,9 +327,9 @@ window.SENTENCES = (function () {
       }
     },
     {
-      id: "plans-come", group: "Plans", name: "Coming today",
+      id: "plans-come", group: "Plans", name: "The fish is coming today",
       tip: "Time words go before the verb: tā jīntiān lái = he today comes.",
-      core: ["verb:lai"], slots: { S: L.person, T: L.time }, flags: ["neg", "q"],
+      core: ["verb:lai"], slots: { S: objects, T: L.time }, flags: ["neg", "q"],
       make(f, E) {
         return {
           t: [f.S, f.T, f.neg && BU, "verb:lai", f.q && MA],
@@ -324,33 +344,36 @@ window.SENTENCES = (function () {
 
     // ----- This and that
     {
-      id: "this-is", group: "This and that", name: "This is…",
-      tip: "zhè shì … = this is …; nà shì … = that is ….",
-      core: ["build:shi"], slots: { D: L.dem, O: L.thing }, flags: ["neg", "q"],
+      id: "is-a", group: "This and that", name: "I am rice",
+      tip: "shì links two things: wǒ shì lǎoshī = I am a teacher. Or, here, wǒ shì mǐfàn = I am rice.",
+      core: ["build:shi"], slots: { X: [...L.person, ...objects], Y: [...objects, "money:pengyou"] }, flags: ["neg", "q"],
+      noQ: ["build:wo"],
+      valid: f => f.X !== f.Y && !(PEOPLE[f.X] && f.Y === "money:pengyou"),
       make(f, E) {
-        const near = f.D === "build:zhe", pl = E.pl(f.O);
-        const dem = pl ? (near ? "these" : "those") : (near ? "this" : "that");
-        const be = pl ? "are" : "is";
+        const y = bare(f.Y);
         return {
-          t: [f.D, f.neg && BU, "build:shi", f.O, f.q && MA],
+          t: [f.X, f.neg && BU, "build:shi", f.Y, f.q && MA],
           end: f.q ? "?" : ".",
-          en: f.q ? `${E.cap(be)} ${dem} ${E.thing(f.O)}?`
-            : f.neg ? `${E.cap(dem)} ${be}n't ${E.thing(f.O)}.`
-            : `${E.cap(dem)} ${be} ${E.thing(f.O)}.`
+          en: f.q ? `${E.Be(f.X)} ${E.s(f.X)} ${y}?` : f.neg ? `${E.beNot(f.X)} ${y}.` : `${E.beSubj(f.X)} ${y}.`
         };
       }
     },
     {
-      id: "what-is", group: "This and that", name: "What is this?",
-      tip: "zhè shì shénme? = this is what? No ma: shénme already makes it a question.",
-      core: ["build:shi", "build:shenme"], slots: { D: L.dem },
-      make(f, E) { return { t: [f.D, "build:shi", "build:shenme"], end: "?", en: `What is ${f.D === "build:zhe" ? "this" : "that"}?` }; }
+      id: "greet-thing", group: "This and that", name: "Hello, tea!",
+      tip: "Say hello (or sorry, or thank you) to anything you like: chá, nǐ hǎo! = tea, hello!",
+      core: ["greet:nihao"], slots: { G: ["greet:nihao", "greet:xiexie", "greet:duibuqi", "greet:zaijian", "greet:zao"], O: objects },
+      make(f, E) {
+        const g = { "greet:nihao": "Hello", "greet:xiexie": "Thank you", "greet:duibuqi": "Sorry", "greet:zaijian": "Goodbye", "greet:zao": "Morning" }[f.G];
+        return { t: [f.O, ",", f.G], also: [[f.G, ",", f.O]], end: "!", en: `${g}, ${bare(f.O)}!` };
+      }
     },
     {
-      id: "mine", group: "This and that", name: "This is my…",
+      id: "mine", group: "This and that", name: "This is the tea's…",
       tip: "de shows whose it is: wǒ de chá = my tea.",
-      core: ["build:shi", "build:de"], slots: { D: L.dem, S: L.person, O: L.thing }, flags: ["neg", "q"],
+      core: ["build:shi", "build:de"], slots: { D: L.dem, S: objects, O: L.thing }, flags: ["neg", "q"],
+      valid: f => f.S !== f.O,
       make(f, E) {
+        E = Object.assign({}, E, { poss: id => "the " + THINGS[id].en + (THINGS[id].pl ? "'" : "'s") });
         const near = f.D === "build:zhe", pl = E.pl(f.O);
         const dem = pl ? (near ? "these" : "those") : (near ? "this" : "that");
         const be = pl ? "are" : "is";
@@ -366,9 +389,9 @@ window.SENTENCES = (function () {
 
     // ----- Knowing and asking
     {
-      id: "know", group: "Knowing & asking", name: "I don't know",
+      id: "know", group: "Knowing & asking", name: "The rice doesn't know",
       tip: "bù zhīdào = don't know. Add ma to ask: nǐ zhīdào ma?",
-      core: ["verb:zhidao"], slots: { S: L.person }, flags: ["neg", "q"],
+      core: ["verb:zhidao"], slots: { S: objects }, flags: ["neg", "q"],
       make(f, E) {
         return {
           t: [f.S, f.neg && BU, "verb:zhidao", f.q && MA],
@@ -382,7 +405,7 @@ window.SENTENCES = (function () {
     {
       id: "can", group: "Knowing & asking", name: "Can I…?",
       tip: "kěyǐ = can / may. wǒ kěyǐ … ma? asks permission.",
-      core: ["build:keyi"], slots: { S: L.person, V: L.verb, O: L.thing }, flags: ["neg", "q"],
+      core: ["build:keyi"], slots: { S: actors, V: L.verb, O: L.thing }, valid: strangeVO, flags: ["neg", "q"],
       make(f, E) {
         const v = E.verb(f.V).base;
         return {
@@ -397,7 +420,7 @@ window.SENTENCES = (function () {
     {
       id: "and-you", group: "Knowing & asking", name: "…and you?",
       tip: "ne turns it back to the other person: wǒ hěn hǎo, nǐ ne? = I'm well, and you?",
-      core: ["build:ne", "build:hen"], slots: { S: ["build:wo", "build:ta", "build:women"], D: L.feel },
+      core: ["build:ne", "build:hen"], slots: { S: objects, D: L.feel }, valid: f => !sensibleAdj(f.S, f.D),
       make(f, E) {
         const d = f.D === "adj:hao" ? "well" : E.adj(f.D);
         return { t: [f.S, HEN, f.D, ",", "build:ni", "build:ne"], end: "?", en: `${E.isVery(f.S)} ${d}. What about you?` };
