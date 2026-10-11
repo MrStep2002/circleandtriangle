@@ -61,6 +61,16 @@
         </section>
 
         <section class="card setting">
+          <span><b>Text size</b><span class="muted"> · for the whole app</span></span>
+          <div class="textsize" role="radiogroup" aria-label="Text size">
+            ${[["0.9", "Small"], ["1", "Standard"], ["1.15", "Large"], ["1.3", "Largest"]].map(([v, name]) => {
+              const on = String(s.settings.textScale || 1) === v;
+              return `<button class="chip ${on ? "on" : ""}" role="radio" aria-checked="${on}" aria-label="${name}" data-act="textsize" data-scale="${v}">A</button>`;
+            }).join("")}
+          </div>
+        </section>
+
+        <section class="card setting">
           <h2>Your progress</h2>
           <p class="muted">Progress is saved on this device. Save a backup file now and then: it's how you keep progress safe if the app is deleted, and how you move it to another phone.</p>
           <p class="small-print">Last backup: <b>${s.lastBackup ? new Date(s.lastBackup).toLocaleDateString() : "never"}</b> · <span id="persist-status">Checking storage…</span></p>
@@ -140,6 +150,13 @@
   }
 
   A.route("/:bank/words", wordBank);
+  // Text size: applies at once and is remembered.
+  A.on("textsize", el => {
+    Store.state.settings.textScale = +el.dataset.scale;
+    Store.save();
+    A.applySettings();
+    A.render();
+  });
   A.route("/settings", settings);
   A.on("bank-filter", el => { bankFilter = el.dataset.f; A.render(); });
   A.on("backup", doBackup);

@@ -10,7 +10,7 @@
    A view function returns { title, back, body, cls, bar, after }. */
 (function () {
   const { html: py, esc } = Pinyin;
-  const VERSION = "0.12.1";
+  const VERSION = "0.13.0";
 
   const ICON = {
     back: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -166,6 +166,7 @@
 
   function applySettings() {
     document.documentElement.classList.toggle("no-tones", !Store.state.settings.toneColours);
+    document.documentElement.style.setProperty("--scale", Store.state.settings.textScale || 1);
   }
 
   window.addEventListener("beforeinstallprompt", e => {

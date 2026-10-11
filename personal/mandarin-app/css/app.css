@@ -70,10 +70,12 @@
 
 * { box-sizing: border-box; }
 html, body { margin: 0; }
+/* Text size (Settings): everything sized in rem grows with --scale. */
+html { font-size: calc(100% * var(--scale, 1)); }
 body {
   background: var(--bg);
   color: var(--ink);
-  font: 16px/1.45 var(--f-body);
+  font: 1rem/1.45 var(--f-body);
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
 }
@@ -281,8 +283,8 @@ h2 { font: 800 1.35rem/1.2 var(--f-display); margin: 0; text-wrap: balance; }
   background: var(--surface); border-radius: 22px; box-shadow: var(--shadow);
   padding: 30px 18px 26px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px;
 }
-.big-py { font: 800 clamp(2.6rem, 13vw, 3.6rem)/1.1 var(--f-display); letter-spacing: -.01em; overflow-wrap: anywhere; }
-.big-en { font: 800 clamp(1.7rem, 8vw, 2.3rem)/1.2 var(--f-display); text-wrap: balance; }
+.big-py { font: 800 clamp(2.6rem, calc(13vw * var(--scale, 1)), 3.6rem)/1.1 var(--f-display); letter-spacing: -.01em; overflow-wrap: anywhere; }
+.big-en { font: 800 clamp(1.7rem, calc(8vw * var(--scale, 1)), 2.3rem)/1.2 var(--f-display); text-wrap: balance; }
 .wordcard .say { color: var(--muted); font-size: 1rem; }
 .wordcard .en { font: 700 1.35rem/1.3 var(--f-display); margin-top: 6px; padding-top: 12px; border-top: 2px solid var(--sunk); min-width: 60%; }
 .wordcard .grp { font-size: .75rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--gold); }
@@ -349,7 +351,7 @@ h2 { font: 800 1.35rem/1.2 var(--f-display); margin: 0; text-wrap: balance; }
 .board { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .board .col { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .mcell {
-  min-height: 54px; padding: 6px 8px; border-radius: 12px;
+  min-height: calc(2.2rem + 18px); padding: 6px 8px; border-radius: 12px;
   border: 2px solid var(--line); background: var(--surface);
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0;
   text-align: center; min-width: 0; transition: background .15s, border-color .15s, opacity .2s, transform .08s;
@@ -403,7 +405,7 @@ h2 { font: 800 1.35rem/1.2 var(--f-display); margin: 0; text-wrap: balance; }
   background: var(--surface); border-radius: 22px; box-shadow: var(--shadow);
   padding: 22px 18px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px;
 }
-.sline { font: 800 clamp(1.5rem, 7vw, 2rem)/1.3 var(--f-display); text-wrap: balance; overflow-wrap: anywhere; }
+.sline { font: 800 clamp(1.5rem, calc(7vw * var(--scale, 1)), 2rem)/1.3 var(--f-display); text-wrap: balance; overflow-wrap: anywhere; }
 .sline [class^="r-"], .fb-sent [class^="r-"], .srow-py [class^="r-"] { color: var(--r); }
 .sline .end, .fb-sent .end, .srow-py .end, .pat-eg .end { color: var(--muted); }
 .ssay { color: var(--muted); font-size: .95rem; }
@@ -516,7 +518,7 @@ h2 { font: 800 1.35rem/1.2 var(--f-display); margin: 0; text-wrap: balance; }
 .game-sub { font-size: .84rem; line-height: 1.3; color: var(--muted); }
 .game-best { margin-top: auto; padding-top: 6px; font-size: .72rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--g); }
 .scoremeter.timer span { background: var(--gold); transition: width .2s linear; }
-.num-py { font: 800 clamp(1.7rem, 8.5vw, 2.5rem)/1.25 var(--f-display); text-align: center; overflow-wrap: anywhere; }
+.num-py { font: 800 clamp(1.7rem, calc(8.5vw * var(--scale, 1)), 2.5rem)/1.25 var(--f-display); text-align: center; overflow-wrap: anywhere; }
 .typeform { display: flex; gap: 8px; }
 .typein {
   flex: 1; min-width: 0; font: 600 1.2rem/1.2 var(--f-body, inherit); padding: 14px 16px; border-radius: 14px;
@@ -566,3 +568,10 @@ h2 { font: 800 1.35rem/1.2 var(--f-display); margin: 0; text-wrap: balance; }
 .minilist .bank-py .py { font-size: 1.35rem; }
 .minilist .bank-en { font-weight: 700; font-size: 1rem; display: flex; flex-direction: column; gap: 3px; }
 .minilist .bank-en small { font-weight: 500; font-size: .8rem; color: var(--muted); }
+
+.textsize { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 10px; }
+.textsize .chip { padding: 8px 0; display: flex; align-items: center; justify-content: center; min-height: 44px; }
+.textsize .chip[data-scale="0.9"] { font-size: 13px; }
+.textsize .chip[data-scale="1"] { font-size: 15px; }
+.textsize .chip[data-scale="1.15"] { font-size: 18px; }
+.textsize .chip[data-scale="1.3"] { font-size: 21px; }
