@@ -76,6 +76,10 @@
             <span class="mode-name">Choose groups</span>
             <span class="mode-sub">Tick the groups you want to practise together</span>
           </button>
+          <button class="mode" data-act="go" data-to="/${Banks.current}/game/recallword">
+            <span class="mode-name">Say it</span>
+            <span class="mode-sub">See the English, say the Chinese, then check the pinyin</span>
+          </button>
           <button class="mode" data-act="go" data-to="/${Banks.current}/vocab/category">
             <span class="mode-name">By category</span>
             <span class="mode-sub">Drill one group: numbers, verbs, food…</span>

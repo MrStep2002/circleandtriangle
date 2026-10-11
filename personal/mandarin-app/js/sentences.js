@@ -173,7 +173,8 @@
 
   // Counts for the whole of Sentences, or for one section.
   function summary(sectionId) {
-    const list = sectionId ? sectionItems(sectionId) : items();
+    // The overall count (and "All sentences") leaves out Surreal Sentences, which are just for fun.
+    const list = sectionId ? sectionItems(sectionId) : items().filter(it => it.section !== "surreal");
     const open = list.filter(it => status(it).open);
     const stages = { new: 0, learning: 0, familiar: 0, known: 0 };
     list.forEach(it => stages[stage(it.id)]++);

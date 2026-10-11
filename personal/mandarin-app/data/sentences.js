@@ -311,7 +311,7 @@ window.SENTENCES = (function () {
 
     // ----- Plans
     {
-      id: "plans-go", group: "Plans", name: "The beer's going tomorrow",
+      id: "sur-go", group: "Plans", name: "The beer's going tomorrow",
       tip: "Time words go before the verb: wǒ míngtiān qù = I tomorrow go.",
       core: ["verb:qu"], slots: { S: objects, T: L.time }, flags: ["neg", "q"],
       make(f, E) {
@@ -327,7 +327,7 @@ window.SENTENCES = (function () {
       }
     },
     {
-      id: "plans-come", group: "Plans", name: "The fish is coming today",
+      id: "sur-come", group: "Plans", name: "The fish is coming today",
       tip: "Time words go before the verb: tā jīntiān lái = he today comes.",
       core: ["verb:lai"], slots: { S: objects, T: L.time }, flags: ["neg", "q"],
       make(f, E) {

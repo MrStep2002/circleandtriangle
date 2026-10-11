@@ -77,7 +77,7 @@
           return `<section class="card allcard">
             <div class="ess-head"><div>
               <h2>All sentences</h2>
-              <p class="muted">A random mix from every section below${S.SECTIONS.some(x => x.surreal) ? ", Surreal included" : ""}</p>
+              <p class="muted">A random mix from every section below${S.SECTIONS.some(x => x.surreal) ? " (Surreal Sentences stay separate)" : ""}</p>
             </div></div>
             ${A.stageBar(all.stages)}
             <span class="sec-meta">${all.unlocked} of ${all.total} unlocked${all.due ? ` · <b>${all.due} due</b>` : ""}</span>
@@ -86,6 +86,10 @@
               : `<button class="btn primary wide" data-act="start" data-kind="new">Learn new words to unlock</button>`}
           </section>`;
         })()}
+        <button class="mode recall-entry" data-act="go" data-to="/${Banks.current}/game/recallsent">
+          <span class="mode-name">Say it</span>
+          <span class="mode-sub">See an English sentence, say it in Chinese, then check the pinyin</span>
+        </button>
         <nav class="sections">
           ${S.SECTIONS.map(sec => {
             const sum = S.summary(sec.id);
@@ -162,7 +166,7 @@
     // sectionId "all" mixes every section.
     const all = sectionId === "all";
     const sec = all ? { name: "All sentences" } : S.SECTIONS.find(x => x.id === sectionId);
-    const onlyIds = patternId ? [patternId] : all ? S.ITEMS.map(it => it.id) : S.sectionItems(sectionId).map(it => it.id);
+    const onlyIds = patternId ? [patternId] : all ? S.ITEMS.filter(it => it.section !== "surreal").map(it => it.id) : S.sectionItems(sectionId).map(it => it.id);
     const batch = patternId ? [6, 6] : [all ? 10 : 8, 3];
     const ids = S.buildSession(onlyIds, batch[0], batch[1]);
     if (!ids) return;
@@ -346,7 +350,10 @@
     const cols = [];
     tokens.forEach((t, i) => {
       if (t === ",") { if (cols.length) cols[cols.length - 1].py += ","; return; }
-      cols.push({ py: py[i], lit: S.lit(t), role: S.role(t) });
+      // de after a describing word (rè de, dà de, hóngsè de) links the description: not "'s".
+      const prev = tokens[i - 1];
+      const linking = t === "build:de" && prev && (S.role(prev) === "describe" || prev === "build:keyi");
+      cols.push({ py: py[i], lit: linking ? "(links)" : S.lit(t), role: S.role(t) });
     });
     return `<div class="interlinear">${cols.map(c =>
       `<span class="il"><span class="il-py r-${c.role}">${esc(c.py)}</span><span class="il-en">${esc(c.lit)}</span></span>`).join("")}</div>`;

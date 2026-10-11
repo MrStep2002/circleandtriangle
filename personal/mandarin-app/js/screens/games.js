@@ -20,8 +20,13 @@
     { id: "odd",      name: "Odd one out",       sub: "Spot the word that doesn't belong", pick: "groups" },
     { id: "type",     name: "Type it",           sub: "See the pinyin, type the English",  pick: "groups" },
     { id: "typesent", name: "Type the sentence", sub: "Translate a whole sentence",        pick: "sections" },
-    { id: "numbers",  name: "Numbers",           sub: "Read the pinyin, key in the number", pick: "ranges" }
+    { id: "numbers",  name: "Numbers",           sub: "Read the pinyin, key in the number", pick: "ranges" },
+    // "Say it": shown on the Vocab and Sentences pages rather than in the games grid.
+    { id: "recallword", name: "Say it: words",     sub: "See the English, say it, then check", pick: "groups", hidden: true, home: "vocab" },
+    { id: "recallsent", name: "Say it: sentences", sub: "See the English, say it, then check", pick: "sections", hidden: true, home: "sentences" }
   ];
+  const RECALL = ["recallword", "recallsent"];
+  const homeOf = (g, bank) => GAME[g] && GAME[g].home ? `/${bank}/${GAME[g].home}` : `/${bank}`;
   const GAME = Object.fromEntries(GAMES.map(g => [g.id, g]));
   const SPEED_SECONDS = 60;
   const LIVES = ["blitz", "survival"];                 // three lives, a clock on every question
@@ -221,7 +226,8 @@
     const g = GAME[game];
     if (g.pick === "ranges") return ids.filter(id => RANGE[id]);
     if (g.pick === "sections") return ids.flatMap(sentenceItems).filter(it => Sentences.status(it).open);
-    if (game === "minilist") return W().filter(w => ids.includes(w.group));   // new words welcome: you study them first
+    if (game === "minilist") return W().filter(w => ids.includes(w.group));
+    if (game === "recallsent") return ids.flatMap(sentenceItems).filter(it => Sentences.status(it).open);   // new words welcome: you study them first
     return W().filter(w => ids.includes(w.group) && Memory.isIntro(w.id) && (game !== "type" || typeable(w)));
   }
 
@@ -254,11 +260,15 @@
     }
     if (game === "speed") return pool.length >= 4 ? [true, `Start · ${pool.length} words, ${SPEED_SECONDS} seconds`] : [false, "Meet at least 4 words in these groups"];
     if (game === "type") return pool.length ? [true, `Start · ${A.plural(pool.length, "word")}`] : [false, "No words met in these groups yet"];
+    if (game === "recallword") return pool.length ? [true, `Start · ${A.plural(pool.length, "word")}`] : [false, "No words met in these groups yet"];
+    if (game === "recallsent") return pool.length ? [true, `Start · ${A.plural(pool.length, "sentence pattern")}`] : [false, "No sentences unlocked here yet"];
     if (game === "typesent") return pool.length ? [true, `Start · ${A.plural(pool.length, "sentence pattern")}`] : [false, "No sentences unlocked here yet"];
     return [true, "Start"];
   }
 
   const INTRO = {
+    recallword: "You see the English. Say the Chinese in your head (or out loud), then tap to check the pinyin and mark yourself. Counts towards your progress.",
+    recallsent: "You see an English sentence. Say it in Chinese, then tap to check the pinyin and mark yourself. Counts towards your progress.",
     minilist: "Pick where the words come from and how many. Study them, then match them up. New words are fine: you see them first.",
     speed: "As many as you can in 60 seconds. Uses words you've met.",
     blitz: "A word and a meaning flash up: is it right? Swipe right for yes, left for no. Three wrong (or too slow) and it's over.",
@@ -274,7 +284,8 @@
     if (!game) return null;
     const opts = options(game.id);
     let saved = savedPicks(game.id);
-    if (!saved) saved = game.pick === "ranges" ? ["r10", "r99"] : opts.filter(o => o.n).map(o => o.id);
+    // Surreal Sentences start unticked: they're an extra, not part of the standard mix.
+    if (!saved) saved = game.pick === "ranges" ? ["r10", "r99"] : opts.filter(o => o.n && o.id !== "surreal").map(o => o.id);
     const row = o => `<label class="check">
         <input type="checkbox" name="g" value="${o.id}" ${saved.includes(o.id) ? "checked" : ""}>
         <span class="check-name">${esc(o.name)}</span>
@@ -285,7 +296,7 @@
       rows += `<h3 class="section-label small">${esc(p)}</h3>` + opts.filter(o => o.parent === p).map(row).join("");
     });
     return {
-      title: game.name, back: `/${Banks.current}`, cls: "has-dock",
+      title: game.name, back: homeOf(game.id, Banks.current), cls: "has-dock",
       body: `
         <p class="muted intro-line">${INTRO[game.id]}</p>
         <div class="quickpick"><button class="chip" data-act="gpick-all">Select all</button><button class="chip" data-act="gpick-none">Clear</button></div>
@@ -535,7 +546,7 @@
       run.cur = { w, truth: truth || !wrong, shown: truth || !wrong ? w : wrong };
     } else if (run.game === "odd") {
       run.cur = oddRound(run.ids, run.cur && run.cur.main && run.cur.main.id);
-    } else if (run.game === "type") {
+    } else if (run.game === "type" || run.game === "recallword") {
       run.cur = { w: deal() };
     } else if (run.game === "numbers") {
       let n;
@@ -543,7 +554,7 @@
       run.cur = { n, py: numberPy(n) };
     } else {
       let it;
-      do { it = rand(run.pool); } while (run.pool.length > 1 && run.cur && it === run.cur.it);
+      do { it = rand(run.pool); } while (run.pool.length > 1 && run.cur && run.cur.it && it === run.cur.it);
       run.cur = { it, inst: Sentences.instance(it) };
     }
   }
@@ -613,6 +624,25 @@
           <button class="btn byes" data-act="gblitz" data-v="1" aria-label="Yes">✓<span>Yes</span></button>
         </div>
         <p class="swipe-hint">Swipe right for yes, left for no</p>`;
+    } else if (RECALL.includes(run.game)) {
+      const V = window.SentenceView;
+      const isWord = run.game === "recallword";
+      const en = isWord ? c.w.en : c.inst.en;
+      const answer = isWord
+        ? `<div class="big-py">${py(c.w.py)}</div><div class="say">sounds like “${esc(c.w.say)}”</div>${A.noteHtml(c.w)}`
+        : `<div class="sline">${V.sentenceHtml(c.inst.tokens, c.inst.py, c.inst.end)}</div><div class="ssay">${esc(V.saysLine(c.inst.tokens))}</div>${V.interlinear(c.inst.tokens, c.inst.py)}`;
+      body = `
+        ${A.scoreBar("gquit", run.right, run.total)}
+        <p class="ask">Say it in Chinese</p>
+        <div class="wordcard recallcard">
+          <div class="${isWord ? "big-en" : "recall-en"}">${esc(en)}</div>
+          <div class="reveal" id="reveal" hidden>${answer}</div>
+        </div>
+        <div class="actions" id="show-row"><button class="btn primary wide" data-act="greveal">Show the pinyin</button></div>
+        <div class="row2 even" id="mark-row" hidden>
+          <button class="btn" data-act="gmark" data-ok="0">Not quite</button>
+          <button class="btn primary" data-act="gmark" data-ok="1">Got it</button>
+        </div>`;
     } else if (run.game === "odd") {
       body = `
         ${A.scoreBar("gquit", run.right, run.total)}
@@ -658,7 +688,7 @@
           if (run.game === "blitz") swipe();
           if (run.game === "speed" || run.game === "blitz" || run.game === "odd") return;
         } else if (run.game === "speed" || LIVES.includes(run.game)) { startTimer(); if (run.game === "blitz") swipe(); return; }
-        if (run.game === "odd") return;
+        if (run.game === "odd" || RECALL.includes(run.game)) return;
         const input = document.getElementById("type-in");
         document.getElementById("type-form").addEventListener("submit", e => {
           e.preventDefault();
@@ -772,6 +802,28 @@
     };
     card.addEventListener("pointerup", end);
     card.addEventListener("pointercancel", end);
+  }
+
+  // ---------------------------------------------------------------- say it (recall)
+
+  function reveal() {
+    if (!run || run.revealed || !RECALL.includes(run.game)) return;
+    run.revealed = true;
+    document.getElementById("reveal").hidden = false;
+    document.getElementById("show-row").hidden = true;
+    document.getElementById("mark-row").hidden = false;
+  }
+  function markRecall(ok) {
+    if (!run || !run.revealed || run.answered) return;
+    run.answered = true;
+    // Your own verdict counts as a real answer: recall for words, the pattern for sentences.
+    if (!run.cur.retry) {
+      if (run.game === "recallword") Memory.answer(run.cur.w.id, "c", ok);
+      else Sentences.answer(run.cur.it.id, ok);
+    }
+    record(ok);
+    run.revealed = false;
+    advance();
   }
 
   // ---------------------------------------------------------------- odd one out
@@ -951,9 +1003,9 @@
         ? `${run.lives <= 0 ? "Out of lives" : "Stopped"} · ${A.plural(run.right, "right answer")}${newBest && run.right ? " · New best!" : ` · Best ${rec.best}`}`
         : null,
       label: "To look at again", rows,
-      back: `/${run.bank}`,
+      back: homeOf(run.game, run.bank),
       buttons: `<button class="btn primary wide" data-act="gagain">Play again</button>
-        <button class="btn wide" data-act="go-replace" data-to="/${run.bank}">Back to ${esc(Banks.bank().name)}</button>`
+        <button class="btn wide" data-act="go-replace" data-to="${homeOf(run.game, run.bank)}">Back to ${GAME[run.game].home ? (GAME[run.game].home === "vocab" ? "Vocab" : "Sentences") : esc(Banks.bank().name)}</button>`
     };
     const again = { game: run.game, ids: run.ids, bank: run.bank };
     run = null;
@@ -973,7 +1025,7 @@
 
   function gridHtml() {
     return `<h3 class="section-label small games-label">Games</h3>
-      <nav class="gamegrid">${GAMES.map(g => {
+      <nav class="gamegrid">${GAMES.filter(g => !g.hidden).map(g => {
         const b = bestLine(g.id);
         return `<button class="game game-${g.id}" data-act="go" data-to="/${Banks.current}/game/${g.id}">
           <span class="game-name">${g.name}</span>
@@ -1004,11 +1056,13 @@
   A.on("gspeed", speedPick);
   A.on("gblitz", el => blitzAnswer(el.dataset.v === "1"));
   A.on("godd", oddPick);
+  A.on("greveal", reveal);
+  A.on("gmark", el => markRecall(el.dataset.ok === "1"));
   A.on("gnext", () => next());
   A.on("gmine", overrule);
   A.on("gquit", () => {
     if (run && run.total) finish();
-    else { clearInterval(timer); clearInterval(dailyTimer); const b = run && !run.daily ? "/" + run.bank : "/"; run = null; A.replace(b); }
+    else { clearInterval(timer); clearInterval(dailyTimer); const b = run && !run.daily ? homeOf(run.game, run.bank) : "/"; run = null; A.replace(b); }
   });
   A.on("gagain", again);
   A.onKey((e, route) => {
@@ -1016,6 +1070,12 @@
     if (run.game === "blitz") {
       if (e.key === "ArrowRight" || e.key === "y") blitzAnswer(true);
       if (e.key === "ArrowLeft" || e.key === "n") blitzAnswer(false);
+      return;
+    }
+    if (RECALL.includes(run.game)) {
+      if (!run.revealed && (e.key === " " || e.key === "Enter")) { e.preventDefault(); reveal(); }
+      else if (run.revealed && (e.key === "ArrowRight" || e.key === "2")) markRecall(true);
+      else if (run.revealed && (e.key === "ArrowLeft" || e.key === "1")) markRecall(false);
       return;
     }
     const n = parseInt(e.key, 10);
