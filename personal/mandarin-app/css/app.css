@@ -462,3 +462,38 @@ h2 { font: 800 1.35rem/1.2 var(--f-display); margin: 0; text-wrap: balance; }
 .secard.surreal .sec-name { color: var(--r-describe); font-style: italic; letter-spacing: -.01em; }
 .srow.locked .srow-py { opacity: .45; }
 .srow.locked .srow-en { font-style: italic; }
+.allcard { gap: 10px; }
+.allcard .stagebar { height: 8px; }
+
+/* ---------- live score (endless sessions) ---------- */
+.scoremeter { flex: 1; height: 10px; border-radius: 999px; background: var(--sunk); overflow: hidden; }
+.scoremeter span { display: block; height: 100%; background: var(--jade); border-radius: 999px; transition: width .35s ease; }
+.score { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.05; min-width: 3.6em; font-variant-numeric: tabular-nums; }
+.score b { font: 800 1.1rem var(--f-display); color: var(--ink); }
+.score small { font-size: .7rem; color: var(--muted); font-weight: 700; }
+.bigpct { font: 800 3rem/1 var(--f-display); color: var(--jade); font-variant-numeric: tabular-nums; }
+
+/* ---------- sentence feedback: literal line and Explain ---------- */
+.feedback.sfb { display: flex; flex-direction: column; align-items: stretch; gap: 10px; }
+.sfb .fb-head { display: flex; flex-direction: column; gap: 2px; }
+.sfb .fb-head b { font-size: 1rem; }
+.sfb.ok .fb-head b { color: var(--good); }
+.sfb.bad .fb-head b { color: var(--bad); }
+.sfb .fb-en { color: var(--ink); font-weight: 600; font-size: .95rem; margin: 0; }
+.interlinear { display: flex; flex-wrap: wrap; gap: 6px 14px; background: var(--surface); border-radius: 12px; padding: 10px 12px; }
+.il { display: flex; flex-direction: column; align-items: flex-start; }
+.il-py { font: 800 1.15rem/1.15 var(--f-display); color: var(--r); }
+.il-en { font-size: .78rem; color: var(--muted); font-weight: 600; white-space: nowrap; }
+.fb-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.fb-actions .btn { min-height: 44px; }
+.explain { display: flex; flex-direction: column; gap: 8px; }
+.rule { background: var(--surface); border-radius: 12px; padding: 10px 12px; }
+.rule b { display: block; font-family: var(--f-display); color: var(--ink); margin-bottom: 2px; }
+.rule p { margin: 0; font-size: .9rem; line-height: 1.45; color: var(--ink); }
+.feedback.sfb .rule b { color: var(--ink); }
+
+/* ---------- live topic cards ---------- */
+.topic.live { border-style: solid; background: var(--surface); box-shadow: var(--shadow); border-color: transparent; }
+.topic.live .stagebar { height: 6px; margin-top: 8px; width: 100%; }
+.topic-meta { font-size: .75rem; color: var(--muted); font-variant-numeric: tabular-nums; margin-top: 4px; }
+.topic.live.locked { background: transparent; box-shadow: none; border: 2px dashed var(--line); }

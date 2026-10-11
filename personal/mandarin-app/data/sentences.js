@@ -856,5 +856,69 @@ window.SENTENCES = (function () {
     }
   ];
 
-  return { ROLES, ROLE_BY_GROUP, ROLE_OVERRIDES, EXTRA, PEOPLE, THINGS, VERBS, ADJ, NUMBERS, TIMES, LISTS: L, PATTERNS, SECTIONS };
+  // ---------------------------------------------------------------- literal meanings
+  // Shown word by word under each sentence after you answer, so you can see how it's built.
+  // Words not listed here use the first part of their English from the word bank.
+  const LITERAL = {
+    "build:wo": "I", "build:ni": "you", "build:ta": "he/she", "build:women": "we",
+    "build:shi": "is", "build:bu": "not", "build:hen": "very", "build:ma": "(question)",
+    "build:ne": "and…?", "build:de": "'s", "build:zhe": "this", "build:na": "that",
+    "build:ge": "(measure)", "build:shenme": "what", "build:nar": "where", "build:duoshao": "how much",
+    "build:keyi": "can", "build:mei": "not", "build:ye": "also", "build:tai": "too",
+    "verb:yao": "want", "verb:xiang": "would like", "verb:xihuan": "like", "verb:zai": "be at",
+    "verb:kan": "look", "verb:shuo": "say", "verb:zhidao": "know",
+    "money:kuai": "yuan", "money:qian": "money", "money:pengyou": "friend",
+    "greet:xiexie": "thanks", "greet:duibuqi": "sorry", "greet:qing": "please", "greet:nihao": "hello",
+    "greet:bukeqi": "you're welcome", "greet:meiguanxi": "it's okay", "greet:haode": "okay",
+    "food:mifan": "rice", "x:le": "(emphasis)"
+  };
+
+  // ---------------------------------------------------------------- grammar rules for "Explain"
+  // Each rule applies when the sentence contains one of its words (and passes "when", if given).
+  // Rules about a word you got wrong are shown first.
+  const QW = ["build:shenme", "build:nar", "build:duoshao"];
+  const RULES = [
+    { id: "bu", title: "Saying “not” with bù", words: [BU],
+      text: "bù goes straight before the verb or describing word: wǒ bù hē = I not drink. Before a 4th tone it's said bú: bú yào, bú qù." },
+    { id: "mei", title: "méi yǒu, never bù yǒu", words: ["build:mei"],
+      text: "yǒu (have) is the one verb that takes méi instead of bù: wǒ méi yǒu qián = I not have money." },
+    { id: "ma", title: "Yes/no questions with ma", words: [MA], when: t => !t.some(x => QW.includes(x)),
+      text: "Add ma to the end of a statement to make a yes/no question. Nothing else moves: nǐ hē chá → nǐ hē chá ma?" },
+    { id: "qword", title: "Question words: no ma", words: QW,
+      text: "shénme (what), nǎr (where) and duōshao (how much) sit where the answer would go, and they already make it a question, so there's no ma: nǐ qù nǎr? = you go where?" },
+    { id: "hen", title: "No “is” before describing words", words: [HEN],
+      text: "Chinese doesn't use shì (is) before a describing word. hěn goes there instead: chá hěn rè = tea very hot. hěn often just means “is”." },
+    { id: "adjq", title: "Describing words work like verbs", words: L.adj, when: t => !t.includes(HEN) && !t.includes("build:tai") && !t.includes("build:shi"),
+      text: "A describing word needs no “is”: nǐ lèi ma? = you tired? · chá bú rè = tea not hot." },
+    { id: "tai", title: "tài … le = too …", words: ["build:tai"],
+      text: "tài goes before the describing word and le at the end: tài guì le! = too expensive!" },
+    { id: "time", title: "Time words come early", words: L.time,
+      text: "jīntiān (today) and míngtiān (tomorrow) go before the verb: straight after who, or at the very start. wǒ míngtiān qù / míngtiān wǒ qù = I tomorrow go." },
+    { id: "de", title: "de = 's", words: ["build:de"],
+      text: "de after a person shows whose it is: wǒ de chá = my tea · tā de péngyou = his friend." },
+    { id: "ge", title: "Numbers need gè", words: ["build:ge"],
+      text: "Between a number (or zhè / nà) and a thing goes a measure word. gè is the all-purpose one: sān gè jiǎozi = three dumplings · zhè gè = this one. Before gè, 2 is liǎng, not èr." },
+    { id: "price", title: "Saying prices", words: ["money:kuai"],
+      text: "Number + kuài (+ qián): wǔ kuài qián = 5 yuan. kuài is the everyday word for yuan." },
+    { id: "ye", title: "yě = also, before the verb", words: ["build:ye"],
+      text: "yě goes after who and before the verb, never at the end like “too”: wǒ yě hē chá = I also drink tea." },
+    { id: "want", title: "yào / xiǎng + another verb", words: ["verb:yao", "verb:xiang"],
+      text: "yào (want) and xiǎng (would like) go before another verb: wǒ xiǎng chī jiǎozi = I would-like eat dumplings. xiǎng sounds softer." },
+    { id: "ne", title: "ne = and you?", words: ["build:ne"],
+      text: "ne after a person turns the question back to them: wǒ hěn hǎo, nǐ ne? = I'm well, you ne?" },
+    { id: "keyi", title: "kěyǐ = can / may", words: ["build:keyi"],
+      text: "kěyǐ goes before the verb. Add ma to ask permission: wǒ kěyǐ lái ma? = I can come ma?" },
+    { id: "shi", title: "shì links two things", words: ["build:shi"],
+      text: "shì (is) joins two nouns: zhè shì chá = this is tea. It's not used before describing words." },
+    { id: "zai", title: "zài = to be somewhere", words: ["verb:zai"],
+      text: "zài means “to be (at)”: nǐ zài nǎr? = you be-at where?" },
+    { id: "qing", title: "qǐng = please", words: ["greet:qing"],
+      text: "qǐng comes first, before the verb: qǐng hē chá = please drink tea." },
+    { id: "order", title: "The basic order", words: [],
+      text: "who → when → not / also → verb → what. Much like English, except that time words come early and question words stay where the answer would go." }
+  ];
+
+  return { QUESTION_WORDS: QW, ROLES, ROLE_BY_GROUP, ROLE_OVERRIDES, EXTRA, PEOPLE, THINGS, VERBS, ADJ, NUMBERS, TIMES, LISTS: L, PATTERNS, SECTIONS, LITERAL, RULES,
+    // Counting words: yī changes tone before these (yí gè, yì bēi). Topics add their own.
+    MEASURES: ["build:ge", "money:kuai"] };
 }());

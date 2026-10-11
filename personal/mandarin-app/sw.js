@@ -2,7 +2,7 @@
 
    IMPORTANT: change VERSION every time you edit any file (words, code or styles).
    That's what tells installed copies to fetch the new files. */
-const VERSION = "my-mandarin-v0.5.0";
+const VERSION = "my-mandarin-v0.8.1";
 
 const FILES = [
   "./",
@@ -11,6 +11,9 @@ const FILES = [
   "css/app.css",
   "data/essentials.js",
   "data/sentences.js",
+  "data/topics/eating-out.js",
+  "data/topics/lists.js",
+  "js/banks.js",
   "js/pinyin.js",
   "js/store.js",
   "js/memory.js",

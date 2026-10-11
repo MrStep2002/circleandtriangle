@@ -2,22 +2,24 @@
 (function () {
   const A = App;
   const { py, esc } = A;
-  const GROUPS = window.ESSENTIALS.GROUPS;
-  const GROUP_BY_ID = Object.fromEntries(GROUPS.map(g => [g.id, g]));
-  const WORDS = Memory.WORDS;
+  const G = () => Banks.groups();
+  const groupById = id => G().find(g => g.id === id);
+  const W = () => Memory.WORDS;
   const BY_ID = Memory.BY_ID;
+  // The current bank's copy first: a borrowed word carries this topic's group and note.
+  const wordOf = id => W().find(w => w.id === id) || BY_ID[id];
 
   let session = null; // the session being played
 
   // "steps" = one question at a time, "match" = Quick Match boards of 10 pairs.
   function style() { return Store.state.settings.style === "match" ? "match" : "steps"; }
 
-  function groupWords(id) { return WORDS.filter(w => w.group === id); }
+  function groupWords(id) { return W().filter(w => w.group === id); }
 
   // Rows for the results screen: each word with its stage before and after.
   function wordRows(list) {
     return list.map(x => {
-      const w = BY_ID[x.id];
+      const w = wordOf(x.id);
       return `<li>
         <span class="bank-py">${A.wordLine(w)}<span class="say">${esc(w.say)}</span></span>
         <span class="bank-en">${esc(w.en)}</span>
@@ -33,7 +35,7 @@
     return `
       ${moreNew ? `<button class="btn primary wide" data-act="start" data-kind="new">Learn ${Math.min(Session.BATCH, moreNew)} more words</button>` : ""}
       ${due ? `<button class="btn wide" data-act="start" data-kind="review">Review ${A.plural(due, "due word")}</button>` : ""}
-      <button class="btn wide" data-act="go-replace" data-to="/essentials/vocab">Back to Vocab</button>`;
+      <button class="btn wide" data-act="go-replace" data-to="/${Banks.current}/vocab">Back to Vocab</button>`;
   }
 
   // ------------------------------------------------------------------ menus
@@ -46,12 +48,12 @@
       : (soon < Infinity ? "Nothing due · next " + A.timeUntil(soon) : "Learn some words first");
     const s = style();
     return {
-      title: "Vocab", back: "/essentials",
+      title: "Vocab", back: `/${Banks.current}`,
       body: `
         <nav class="modes">
           <button class="mode feature" data-act="start" data-kind="new" ${nextBatch.length ? "" : "disabled"}>
             <span class="mode-name">New Words</span>
-            <span class="mode-sub">${nextBatch.length ? "Learn and test the next " + nextBatch.length + ":" : "You've met every Essentials word"}</span>
+            <span class="mode-sub">${nextBatch.length ? "Learn and test the next " + nextBatch.length + ":" : `You've met every ${Banks.bank().name} word`}</span>
             ${nextBatch.length ? `<span class="preview">${nextBatch.map(w => `<span class="pw">${py(w.py)}</span>`).join("<i>·</i>")}</span>` : ""}
           </button>
           <div class="style-switch" role="radiogroup" aria-label="How to practise">
@@ -68,13 +70,13 @@
           </button>
           <button class="mode" data-act="start" data-kind="random">
             <span class="mode-name">Random</span>
-            <span class="mode-sub">${s === "match" ? "Rounds of 10 pairs from anywhere in Essentials" : "10 words from anywhere in Essentials"}</span>
+            <span class="mode-sub">${s === "match" ? `Rounds of 10 pairs from anywhere in ${Banks.bank().name}` : `10 words from anywhere in ${Banks.bank().name}`}</span>
           </button>
-          <button class="mode" data-act="go" data-to="/essentials/vocab/groups">
+          <button class="mode" data-act="go" data-to="/${Banks.current}/vocab/groups">
             <span class="mode-name">Choose groups</span>
             <span class="mode-sub">Tick the groups you want to practise together</span>
           </button>
-          <button class="mode" data-act="go" data-to="/essentials/vocab/category">
+          <button class="mode" data-act="go" data-to="/${Banks.current}/vocab/category">
             <span class="mode-name">By category</span>
             <span class="mode-sub">Drill one group: numbers, verbs, food…</span>
           </button>
@@ -84,11 +86,11 @@
 
   // Plain groups first, then the sentence-building sub-groups under their own heading.
   function groupRows(render) {
-    let html = GROUPS.filter(g => !g.parent).map(render).join("");
-    const parents = [...new Set(GROUPS.filter(g => g.parent).map(g => g.parent))];
+    let html = G().filter(g => !g.parent).map(render).join("");
+    const parents = [...new Set(G().filter(g => g.parent).map(g => g.parent))];
     parents.forEach(p => {
       html += `<h3 class="section-label small">${p}</h3>`;
-      html += GROUPS.filter(g => g.parent === p).map(render).join("");
+      html += G().filter(g => g.parent === p).map(render).join("");
     });
     return html;
   }
@@ -102,7 +104,7 @@
   function chooseGroups() {
     const saved = Store.state.settings.lastGroups || [];
     return {
-      title: "Choose groups", back: "/essentials/vocab", cls: "has-dock",
+      title: "Choose groups", back: `/${Banks.current}/vocab`, cls: "has-dock",
       body: `
         <p class="muted intro-line">Tick any groups. You'll get up to 12 words from them.</p>
         <div class="quickpick"><button class="chip" data-act="pick-all">Select all</button><button class="chip" data-act="pick-none">Clear</button></div>
@@ -122,7 +124,7 @@
         const goBtn = document.getElementById("groups-go");
         const update = () => {
           const ids = [...form.querySelectorAll("input:checked")].map(i => i.value);
-          const n = WORDS.filter(w => ids.includes(w.group)).length;
+          const n = W().filter(w => ids.includes(w.group)).length;
           goBtn.disabled = !ids.length;
           goBtn.textContent = !ids.length ? "Pick at least one group"
             : style() === "match" ? `Quick Match: ${n} words from ${A.plural(ids.length, "group")}`
@@ -136,7 +138,7 @@
 
   function category() {
     return {
-      title: "By category", back: "/essentials/vocab",
+      title: "By category", back: `/${Banks.current}/vocab`,
       body: `
         <p class="muted intro-line">Tap a group to drill it.</p>
         <nav class="cats">
@@ -156,7 +158,8 @@
 
   function startSession(def) {
     if (!def) return;
-    session = { def, i: 0, firstTry: {}, retried: new Set(), startStage: {}, answered: false };
+    // Endless: when the steps run out, another batch of the same kind is added (see next()).
+    session = { def, i: 0, right: 0, total: 0, startStage: {}, answered: false, touched: [] };
     def.steps.forEach(s => { if (!(s.id in session.startStage)) session.startStage[s.id] = Memory.stage(s.id); });
     Store.requestPersist();
     A.go("/play");
@@ -165,10 +168,8 @@
   function playView() {
     if (!session) return null;
     const step = session.def.steps[session.i];
-    const w = BY_ID[step.id];
-    const total = session.def.steps.length;
-    const pct = Math.round((session.i / total) * 100);
-    const g = GROUP_BY_ID[w.group];
+    const w = wordOf(step.id);
+    const g = groupById(w.group);
     session.answered = false;
 
     let body = "";
@@ -238,11 +239,7 @@
     return {
       bar: "session", cls: "play",
       body: `
-        <header class="sessionbar">
-          <button class="iconbtn" data-act="quit" aria-label="End session">${A.ICON.close}</button>
-          <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="${total}" aria-valuenow="${session.i}"><span style="width:${pct}%"></span></div>
-          <span class="count">${session.i + 1}/${total}</span>
-        </header>
+        ${A.scoreBar("quit", session.right, session.total)}
         ${body}`
     };
   }
@@ -250,12 +247,16 @@
   function recordAnswer(step, correct) {
     const skill = step.type === "recall" || step.type === "gap" ? "c" : "m";
     Memory.answer(step.id, skill, correct);
-    const key = step.id + ":" + step.type;
-    if (!(key in session.firstTry)) session.firstTry[key] = correct;
-    // Wrong answers come back once at the end of the session.
-    if (!correct && !session.retried.has(key)) {
-      session.retried.add(key);
-      session.def.steps.push({ type: step.type === "flash" ? "meaning" : step.type, id: step.id });
+    if (!(step.id in session.startStage)) session.startStage[step.id] = "new";
+    if (!session.touched.includes(step.id)) session.touched.push(step.id);
+    // Second goes at a missed word don't count towards the score.
+    if (!step.retry) {
+      session.total++;
+      if (correct) session.right++;
+      A.updateScore(session.right, session.total);
+      // A missed word comes back a few questions later.
+      if (!correct) session.def.steps.splice(Math.min(session.i + 4, session.def.steps.length), 0,
+        { type: step.type === "flash" ? "meaning" : step.type, id: step.id, retry: true });
     }
   }
 
@@ -263,7 +264,7 @@
     if (session.answered) return;
     session.answered = true;
     const step = session.def.steps[session.i];
-    const w = BY_ID[step.id];
+    const w = wordOf(step.id);
     const correct = btn.dataset.id === w.id;
     document.querySelectorAll(".opt, .opt-gap").forEach(b => {
       b.disabled = true;
@@ -296,17 +297,22 @@
     const step = session.def.steps[session.i];
     if (step.type === "intro") Memory.introduce(step.id);
     session.i++;
-    if (session.i >= session.def.steps.length) return finish();
+    // Out of questions: add another batch of the same kind, so play continues until you stop.
+    if (session.i >= session.def.steps.length) {
+      const more = Session.more(session.def);
+      if (!more.length) return finish();
+      more.forEach(st => { if (!(st.id in session.startStage)) session.startStage[st.id] = Memory.stage(st.id); });
+      session.def.steps.push(...more);
+    }
     A.render();
   }
 
   function finish() {
-    const ids = [...new Set(session.def.steps.filter(s => s.type !== "intro").map(s => s.id))];
-    const tries = Object.values(session.firstTry);
+    const ids = session.touched.slice(-40);
     A.result = {
-      eyebrow: session.def.title, back: "/essentials/vocab",
-      right: tries.filter(Boolean).length, total: tries.length,
-      label: "Words in this session",
+      eyebrow: session.def.title, back: `/${Banks.current}/vocab`,
+      right: session.right, total: session.total,
+      label: session.touched.length > 40 ? "Your last 40 words" : "Words in this session",
       rows: wordRows(ids.map(id => ({ id, from: session.startStage[id], to: Memory.stage(id) }))),
       buttons: nextButtons()
     };
@@ -330,22 +336,23 @@
 
   // ------------------------------------------------------------------ wiring
 
-  A.route("/essentials/vocab", vocab);
-  A.route("/essentials/vocab/groups", chooseGroups);
-  A.route("/essentials/vocab/category", category);
+  A.route("/:bank/vocab", vocab);
+  A.route("/:bank/vocab/groups", chooseGroups);
+  A.route("/:bank/vocab/category", category);
   A.route("/play", playView);
 
-  A.on("smart", () => {
+  A.on("smart", el => {
+    if (el.dataset.bank) Banks.set(el.dataset.bank);
     const def = Session.smart();
-    if (def) startSession(def); else A.go("/essentials/vocab");
+    if (def) startSession(def); else A.go(`/${Banks.current}/vocab`);
   });
   A.on("start", el => launch(el.dataset.kind));
-  A.on("start-cat", el => { const g = GROUP_BY_ID[el.dataset.group]; launch("groups", [g.id], g.name); });
+  A.on("start-cat", el => { const g = groupById(el.dataset.group); launch("groups", [g.id], g.name); });
   A.on("start-groups", () => {
     const ids = [...document.querySelectorAll("#groups-form input:checked")].map(i => i.value);
     Store.state.settings.lastGroups = ids;
     Store.save();
-    launch("groups", ids, ids.length === 1 ? GROUP_BY_ID[ids[0]].name : "Chosen groups");
+    launch("groups", ids, ids.length === 1 ? groupById(ids[0]).name : "Chosen groups");
   });
   A.on("style", el => { Store.state.settings.style = el.dataset.style; Store.save(); A.render(); });
   const pick = all => {
@@ -368,8 +375,8 @@
     next();
   });
   A.on("quit", () => {
-    if (session && Object.keys(session.firstTry).length) finish();
-    else { session = null; A.back("/essentials/vocab"); }
+    if (session && session.total) finish();
+    else { session = null; A.back(`/${Banks.current}/vocab`); }
   });
 
   // Number keys 1-4 pick an answer; Enter continues. Handy on a laptop.
@@ -380,5 +387,5 @@
     else if (e.key === "Enter" && session.answered) { e.preventDefault(); next(); }
   });
 
-  window.Vocab = { launch, wordRows, nextButtons, style, GROUP_BY_ID };
+  window.Vocab = { launch, wordRows, nextButtons, style };
 }());

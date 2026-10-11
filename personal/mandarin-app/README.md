@@ -9,8 +9,11 @@ A pinyin-first Mandarin app that remembers what you know. Installable on iPhone 
 | `index.html` | The page that loads everything |
 | **Content** | |
 | `data/essentials.js` | **The Essentials word bank.** Edit words here |
-| `data/sentences.js` | **Sentence patterns and replies** |
+| `data/sentences.js` | **Sentence patterns, replies, literal meanings and Explain rules** |
+| `data/topics/eating-out.js` | **The Eating out topic:** its words, sentences and extra rules |
+| `data/topics/lists.js` | **The Lists topic:** colours, days, months, bigger numbers, time, seasons, zodiac, countries |
 | **Engine** | |
+| `js/banks.js` | Knows the word banks (Essentials and each topic) and which one you're in |
 | `js/store.js` | Saves progress on the device, plus backup/restore |
 | `js/memory.js` | Decides how well you know each word and when it's due |
 | `js/session.js` | Builds vocab sessions and answer choices |
@@ -46,6 +49,12 @@ Open `data/sentences.js`. The comment at the top explains how a pattern works.
 - `PATTERNS` make the Surreal Sentences section (any word in any slot).
 - `SECTIONS` (further down) are the four sensible sections. Their slots only take words that fit, such as `drink` or `temp`.
 - The easiest changes: add a word to a slot list (with its English in `THINGS`), or add a reply to a section, copying an existing one.
+
+## Adding a topic
+
+Copy `data/topics/eating-out.js` to a new file (for example `shopping.js`), change the `id`, words and sections, and add a `<script>` line for it in `index.html` and an entry in `sw.js`. Add the topic's `id` to the `TOPICS` list in `js/screens/home.js` if it isn't there. Everything else (vocab, Quick Match, sentences, Word Bank, progress) works automatically.
+
+To reuse a word from another topic, add `{ borrow: "eo:ji", group: "li-ask" }` to the word list (an optional `note` replaces its tip). It's taught in both topics and progress is shared.
 
 ## After any change
 

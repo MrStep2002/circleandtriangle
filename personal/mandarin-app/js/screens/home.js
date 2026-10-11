@@ -1,24 +1,26 @@
 /* Home screen, the Essentials hub and the (coming soon) topic pages. */
 (function () {
   const A = App;
-  const WORDS = Memory.WORDS;
+  const W = () => Memory.WORDS;
 
   const TOPICS = [
     { id: "eating-out",     name: "Eating out",     sub: "Ordering, tastes, paying the bill" },
+    { id: "lists",          name: "Lists",          sub: "Colours, days, months, numbers, time, the zodiac, countries" },
     { id: "shopping",       name: "Shopping",       sub: "Prices, sizes, bargaining" },
     { id: "getting-around", name: "Getting around", sub: "Taxis, metro, directions" },
     { id: "home-family",    name: "Home & family",  sub: "People, rooms, daily routine" },
     { id: "work-study",     name: "Work & study",   sub: "Classroom and office words" },
-    { id: "weather-time",   name: "Weather & time", sub: "Days, seasons, telling the time" }
+    { id: "weather",        name: "Weather",        sub: "Forecasts, hot and cold, what to wear" }
   ];
 
   function home() {
+    Banks.set("essentials"); // the home card shows Essentials
     const c = Memory.counts();
     const due = Memory.dueWords().length;
     const fresh = Memory.newWords().length;
     const streak = Memory.streak();
     const todayCount = Store.state.days[Memory.today()] || 0;
-    const met = WORDS.length - c.new;
+    const met = W().length - c.new;
     const next = due ? A.plural(due, "word") + " to review" : (fresh ? "Next: " + Session.BATCH + " new words" : "All words met. Keep reviewing.");
     return {
       body: `
@@ -30,14 +32,14 @@
           <div class="ess-head">
             <div>
               <h2>Essentials</h2>
-              <p class="muted">${WORDS.length} words · the base for every topic</p>
+              <p class="muted">${W().length} words · the base for every topic</p>
             </div>
             <div class="bignum"><b>${c.known}</b><span>known</span></div>
           </div>
           ${A.stageBar(c)}
           ${A.stageLegend(c)}
           <div class="row2">
-            <button class="btn primary" data-act="smart">Continue<small>${next}</small></button>
+            <button class="btn primary" data-act="smart" data-bank="essentials">Continue<small>${next}</small></button>
             <button class="btn" data-act="go" data-to="/essentials">Open</button>
           </div>
           ${met === 0 ? `<p class="hint">New here? Tap Continue to learn your first ${Session.BATCH} words.</p>` : ""}
@@ -45,12 +47,24 @@
 
         <h3 class="section-label">Topics <span>build on Essentials</span></h3>
         <section class="topics">
-          ${TOPICS.map(t => `
+          ${TOPICS.map(t => {
+            const bank = Banks.get(t.id);
+            if (!bank) return `
             <button class="topic" data-act="go" data-to="/topic/${t.id}">
               <span class="topic-name">${t.name}</span>
               <span class="topic-sub">${t.sub}</span>
               <span class="soon">Coming soon</span>
-            </button>`).join("")}
+            </button>`;
+            const open = Banks.unlocked(t.id);
+            const tc = Memory.counts(bank.words);
+            return `
+            <button class="topic live ${open ? "" : "locked"}" data-act="go" data-to="/${t.id}">
+              <span class="topic-name">${t.name}</span>
+              <span class="topic-sub">${t.sub}</span>
+              ${open ? A.stageBar(tc) + `<span class="topic-meta">${tc.known} of ${bank.words.length} known · ${bank.words.length - tc.new} met</span>`
+                     : `<span class="soon">Unlocks after Essentials</span>`}
+            </button>`;
+          }).join("")}
         </section>
 
         <p class="tones-legend" aria-label="Tone colours">
@@ -60,7 +74,10 @@
     };
   }
 
-  function essentials() {
+  // The hub for Essentials or a topic: Continue, Vocab, Sentences, Games, Word Bank.
+  function hub(rest, bankId) {
+    const bank = Banks.bank();
+    if (!Banks.unlocked(bank.id)) return locked(bank);
     const c = Memory.counts();
     const due = Memory.dueWords().length;
     const fresh = Memory.newWords().length;
@@ -72,26 +89,26 @@
       ? `${s.unlocked} of ${s.total} unlocked${s.due ? " · " + s.due + " due" : ""}`
       : "Unlocks as you learn words";
     return {
-      title: "Essentials", back: "/",
+      title: bank.name, back: "/",
       body: `
         <section class="card">
           <div class="ess-head">
-            <div><h2>${c.known} of ${WORDS.length} known</h2><p class="muted">${WORDS.length - c.new} met so far</p></div>
+            <div><h2>${c.known} of ${W().length} known</h2><p class="muted">${W().length - c.new} met so far</p></div>
           </div>
           ${A.stageBar(c)}
           ${A.stageLegend(c)}
-          <button class="btn primary wide" data-act="smart">Continue<small>${parts.length ? parts.join(" · ") : "Nothing due right now"}</small></button>
+          <button class="btn primary wide" data-act="smart" data-bank="${bank.id}">Continue<small>${parts.length ? parts.join(" · ") : "Nothing due right now"}</small></button>
         </section>
 
         <nav class="tiles">
-          <button class="tile" data-act="go" data-to="/essentials/vocab">
+          <button class="tile" data-act="go" data-to="/${Banks.current}/vocab">
             <span class="tile-name">Vocab</span>
             <span class="tile-sub">Learn new words and test the ones you know</span>
             ${A.ICON.chevron}
           </button>
-          <button class="tile" data-act="go" data-to="/essentials/sentences">
+          <button class="tile" data-act="go" data-to="/${Banks.current}/sentences">
             <span class="tile-name">Sentences</span>
-            <span class="tile-sub">Build sentences from your Essentials words · ${sentSub}</span>
+            <span class="tile-sub">${bank.topic ? "Mix these words with your Essentials" : "Build sentences from your Essentials words"} · ${sentSub}</span>
             ${A.ICON.chevron}
           </button>
           <button class="tile off" disabled>
@@ -101,9 +118,23 @@
           </button>
         </nav>
 
-        <button class="rowlink" data-act="go" data-to="/essentials/words">
-          <span><b>Word Bank</b><span class="muted">All ${WORDS.length} words and how well you know each one</span></span>${A.ICON.chevron}
+        <button class="rowlink" data-act="go" data-to="/${Banks.current}/words">
+          <span><b>Word Bank</b><span class="muted">All ${W().length} words and how well you know each one</span></span>${A.ICON.chevron}
         </button>`
+    };
+  }
+
+  function locked(bank) {
+    const left = window.ESSENTIALS.WORDS.filter(w => !Memory.isIntro(w.id)).length;
+    return {
+      title: bank.name, back: "/",
+      body: `
+        <section class="card soon-card">
+          <h2>${bank.name}</h2>
+          <p class="muted">${bank.sub}</p>
+          <p>Topics build on Essentials. This one opens once you've met every Essentials word. ${A.plural(left, "word")} to go.</p>
+          <button class="btn primary wide" data-act="smart" data-bank="essentials">Continue Essentials</button>
+        </section>`
     };
   }
 
@@ -123,6 +154,6 @@
   }
 
   A.route("/", home);
-  A.route("/essentials", essentials);
+  A.route("/:bank", hub);
   A.route("/topic/*", topic);
 }());

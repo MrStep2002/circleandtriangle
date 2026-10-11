@@ -10,7 +10,7 @@
    A view function returns { title, back, body, cls, bar, after }. */
 (function () {
   const { html: py, esc } = Pinyin;
-  const VERSION = "0.5.1";
+  const VERSION = "0.8.1";
 
   const ICON = {
     back: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -60,6 +60,25 @@
 
   function vibrate(ms) { if (navigator.vibrate) try { navigator.vibrate(ms); } catch (e) {} }
 
+  // The bar at the top of an endless session: stop button and a live score.
+  function scoreBar(quitAct, right, total) {
+    return `<header class="sessionbar">
+      <button class="iconbtn" data-act="${quitAct}" aria-label="Stop and see results">${ICON.close}</button>
+      <div class="scoremeter" aria-hidden="true"><span id="score-fill" style="width:${total ? Math.round(right / total * 100) : 0}%"></span></div>
+      <span class="score" id="score-text">${scoreText(right, total)}</span>
+    </header>`;
+  }
+  function scoreText(right, total) {
+    return total ? `<b>${Math.round(right / total * 100)}%</b><small>${right}/${total}</small>` : `<b>–</b><small>0/0</small>`;
+  }
+  // Update the score without redrawing the screen.
+  function updateScore(right, total) {
+    const fill = document.getElementById("score-fill");
+    const text = document.getElementById("score-text");
+    if (fill) fill.style.width = (total ? Math.round(right / total * 100) : 0) + "%";
+    if (text) text.innerHTML = scoreText(right, total);
+  }
+
   // ------------------------------------------------------------------ navigation
 
   const navStack = [];
@@ -93,17 +112,33 @@
     window.scrollTo(0, 0);
   }
 
-  // A route is either an exact path ("/settings") or a prefix ending in * ("/topic/*").
-  function route(path, view) { routes.push({ path, view }); }
+  // A route is a path pattern. ":bank" matches a word bank (essentials, eating-out…) and
+  // switches the app to it; a trailing "*" matches the rest of the address.
+  //   App.route("/:bank/vocab", view)   →  view() runs with that bank selected
+  //   App.route("/topic/*", view)       →  view(rest)
+  function route(path, view) {
+    const names = [];
+    const rx = new RegExp("^" + path
+      .replace(/[.+?^${}()|[\]\\]/g, "\\$&")
+      .replace(/:bank/g, () => { names.push("bank"); return "([a-z0-9-]+)"; })
+      .replace(/\*$/, () => { names.push("rest"); return "(.*)"; }) + "$");
+    routes.push({ rx, names, view });
+  }
 
   function render() {
     const r = currentRoute();
     let view = null;
     for (const rt of routes) {
-      if (rt.path.endsWith("*") ? r.startsWith(rt.path.slice(0, -1)) : r === rt.path) {
-        view = rt.view(rt.path.endsWith("*") ? r.slice(rt.path.length - 1) : undefined);
-        break;
+      const m = r.match(rt.rx);
+      if (!m) continue;
+      const args = {};
+      rt.names.forEach((n, i) => { args[n] = m[i + 1]; });
+      if (args.bank) {
+        if (!Banks.get(args.bank)) continue;
+        Banks.set(args.bank);
       }
+      view = rt.view(args.rest, args.bank);
+      if (view) break;
     }
     if (!view) { replace("/"); return; }
     shell(view);
@@ -149,7 +184,7 @@
 
   window.App = {
     VERSION, ICON, STAGE_LABEL,
-    py, esc, plural, wordLine, stageBar, stageLegend, pill, timeUntil, noteHtml, vibrate,
+    py, esc, plural, wordLine, stageBar, stageLegend, pill, timeUntil, noteHtml, vibrate, scoreBar, updateScore,
     route, on, onKey, go, back, replace, render, currentRoute, applySettings, start,
     get installEvent() { return installEvent; },
     set installEvent(v) { installEvent = v; },

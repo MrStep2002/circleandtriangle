@@ -69,6 +69,7 @@
           <div class="dock round-done">
             <div class="round-card">
               <p><b>Round ${match.round} done</b> · ${A.plural(n - b.missed.size, "pair")} first time · ${A.plural(b.mistakes, "slip")} · ${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, "0")}</p>
+              <p class="muted">Overall <b>${Math.round(match.firstTry / match.pairs * 100)}%</b> right first time across ${A.plural(match.round, "round")}</p>
               <div class="row2 even">
                 <button class="btn" data-act="mfinish">Finish</button>
                 <button class="btn primary" data-act="mnext">Next ${BOARD}</button>
@@ -117,7 +118,7 @@
 
   function finish() {
     A.result = {
-      eyebrow: "Quick Match · " + match.title, back: "/essentials/vocab",
+      eyebrow: "Quick Match · " + match.title, back: `/${Banks.current}/vocab`,
       right: match.firstTry, total: match.pairs,
       label: "Words in this session",
       rows: Vocab.wordRows(match.words.map(id => ({ id, from: match.startStage[id], to: Memory.stage(id) }))),
@@ -134,7 +135,7 @@
   A.on("mfinish", finish);
   A.on("mquit", () => {
     if (match && match.pairs) finish();
-    else { match = null; A.back("/essentials/vocab"); }
+    else { match = null; A.back(`/${Banks.current}/vocab`); }
   });
 
   window.Match = { start };

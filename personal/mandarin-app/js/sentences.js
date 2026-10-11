@@ -3,12 +3,12 @@
    The patterns themselves are in data/sentences.js. */
 (function () {
   const D = window.SENTENCES;
-  const BY_ID = Object.assign({}, Memory.BY_ID);
+  const BY_ID = Object.assign({}, Banks.BY_ID);
   D.EXTRA.forEach(x => { BY_ID[x.id] = x; });
   const BU = "build:bu", MEI = "build:mei", MA = "build:ma";
 
   const ALIKE = {};
-  (window.ESSENTIALS.ALIKE || []).forEach(set => set.forEach(a => set.forEach(b => {
+  Banks.alikeSets.forEach(set => set.forEach(a => set.forEach(b => {
     if (a !== b) (ALIKE[a] = ALIKE[a] || new Set()).add(b);
   })));
 
@@ -65,7 +65,7 @@
 
   function firstTone(py) { return Pinyin.toneOf(py.split(/[ |]/)[0]); }
 
-  // bù becomes bú before a 4th tone; yī before gè/kuài becomes yí (4th) or yì.
+  // bù becomes bú before a 4th tone; yī before gè/kuài (or bǎi, qiān, wàn) becomes yí (before a 4th tone) or yì.
   function spoken(tokens) {
     const words = tokens.map((t, i) => ({ t, i })).filter(x => x.t !== ",");
     const out = tokens.map(t => t === "," ? "," : Pinyin.plain(BY_ID[t].py));
@@ -74,29 +74,47 @@
       if (!nxt) return;
       const nt = firstTone(BY_ID[nxt.t].py);
       if (x.t === BU && nt === 4) out[x.i] = "bú";
-      if (x.t === "num:yi" && (nxt.t === "build:ge" || nxt.t === "money:kuai")) out[x.i] = nt === 4 ? "yí" : "yì";
+      // ...but not as the last digit of a longer number: shíyī kuài and sìbǎi líng yī kuài keep yī
+      // (after bǎi/qiān it still changes: sānqiān yìbǎi).
+      const prev = words[k - 1];
+      const inNumber = prev && role(prev.t) === "number" && ![...(D.MEASURES || []), ...(D.YI_BEFORE || [])].includes(prev.t);
+      if (x.t === "num:yi" && !inNumber && [...(D.MEASURES || []), ...(D.YI_BEFORE || [])].includes(nxt.t)) out[x.i] = nt === 4 ? "yí" : "yì";
     });
     return out;
   }
 
   // ---------------------------------------------------------------- items: patterns and replies
 
-  // Sections: the four sensible ones from the data file, then Surreal Sentences (the patterns).
-  const SECTIONS = [
-    ...D.SECTIONS.map(sec => ({ id: sec.id, name: sec.name, sub: sec.sub })),
-    { id: "surreal", name: "Surreal Sentences", sub: "Every pattern, filled with random words. The grammar's right; the meaning is optional.", surreal: true }
-  ];
-  const ITEMS = [
-    ...D.SECTIONS.flatMap(sec => sec.items.map(x =>
-      x.q ? { id: x.id, kind: "reply", section: sec.id, name: x.qen, def: x }
-      : x.make ? { id: x.id, kind: "pattern", section: sec.id, group: x.group || sec.name, name: x.name, def: x }
-      : { id: x.id, kind: "fixed", section: sec.id, name: x.en, def: x })),
-    ...D.PATTERNS.map(p => ({ id: p.id, kind: "pattern", section: "surreal", group: p.group, name: p.name, def: p }))
-  ];
-  const ITEM_BY_ID = Object.fromEntries(ITEMS.map(it => [it.id, it]));
-  const sectionItems = id => ITEMS.filter(it => it.section === id);
+  // Each bank has its own sections. Essentials: the four sensible ones, then Surreal Sentences.
+  // Topics: their own sections from data/topics/*.js.
+  function itemsFor(bankId, sections, patterns) {
+    return [
+      ...sections.flatMap(sec => sec.items.map(x =>
+        x.q ? { id: x.id, kind: "reply", bank: bankId, section: sec.id, name: x.qen, def: x }
+        : x.make ? { id: x.id, kind: "pattern", bank: bankId, section: sec.id, group: x.group || sec.name, name: x.name, def: x }
+        : { id: x.id, kind: "fixed", bank: bankId, section: sec.id, name: x.en, def: x })),
+      ...(patterns || []).map(p => ({ id: p.id, kind: "pattern", bank: bankId, section: "surreal", group: p.group, name: p.name, def: p }))
+    ];
+  }
+  const SECTIONS_BY_BANK = {
+    essentials: [
+      ...D.SECTIONS.map(sec => ({ id: sec.id, name: sec.name, sub: sec.sub })),
+      { id: "surreal", name: "Surreal Sentences", sub: "Every pattern, filled with random words. The grammar's right; the meaning is optional.", surreal: true }
+    ]
+  };
+  const ITEMS_BY_BANK = { essentials: itemsFor("essentials", D.SECTIONS, D.PATTERNS) };
+  Object.values(window.TOPIC_DATA || {}).forEach(t => {
+    SECTIONS_BY_BANK[t.id] = t.SECTIONS.map(sec => ({ id: sec.id, name: sec.name, sub: sec.sub }));
+    ITEMS_BY_BANK[t.id] = itemsFor(t.id, t.SECTIONS, null);
+  });
+  const ALL_ITEMS = Object.values(ITEMS_BY_BANK).flat();
+  // The current bank's sentence items.
+  const items = () => ITEMS_BY_BANK[Banks.current] || [];
+  const sections = () => SECTIONS_BY_BANK[Banks.current] || [];
+  const ITEM_BY_ID = Object.fromEntries(ALL_ITEMS.map(it => [it.id, it]));
+  const sectionItems = id => items().filter(it => it.section === id);
   const endOf = en => /[?!]$/.test(en) ? en.slice(-1) : ".";
-  const QUESTION_WORDS = ["build:shenme", "build:nar", "build:duoshao"];
+  const QUESTION_WORDS = D.QUESTION_WORDS; // shénme, nǎr, duōshao, plus any a topic adds
 
   function listFor(name) { return D.LISTS[name] || []; }
 
@@ -143,11 +161,11 @@
 
   // Counts for the whole of Sentences, or for one section.
   function summary(sectionId) {
-    const items = sectionId ? sectionItems(sectionId) : ITEMS;
-    const open = items.filter(it => status(it).open);
+    const list = sectionId ? sectionItems(sectionId) : items();
+    const open = list.filter(it => status(it).open);
     const stages = { new: 0, learning: 0, familiar: 0, known: 0 };
-    items.forEach(it => stages[stage(it.id)]++);
-    return { total: items.length, unlocked: open.length, due: open.filter(it => isDue(it.id)).length, stages };
+    list.forEach(it => stages[stage(it.id)]++);
+    return { total: list.length, unlocked: open.length, due: open.filter(it => isDue(it.id)).length, stages };
   }
 
   // ---------------------------------------------------------------- making sentences
@@ -173,7 +191,7 @@
       const fill = () => Object.entries(p.slots).forEach(([k, list]) => { if (!(force && k in force)) f[k] = rand(list.filter(known)); });
       if (force) Object.assign(f, force);
       fill();
-      for (let k = 0; k < 20 && p.valid && !p.valid(f); k++) fill();
+      for (let k = 0; k < 300 && p.valid && !p.valid(f); k++) fill();
       f.neg = !plain && canNeg(p) && Math.random() < .3;
       const subj = f.S || f.X;
       // "Do I want coffee?" sounds odd, so questions never have wǒ as the subject.
@@ -257,7 +275,7 @@
     // Not enough variety (tiny pattern): borrow sentences from other open patterns.
     let guard = 0;
     while (res.length < n && guard++ < 30) {
-      const others = ITEMS.filter(it => it.kind === "pattern" && it.id !== p.id && status(it).open);
+      const others = items().filter(it => it.kind === "pattern" && it.id !== p.id && status(it).open);
       const same = others.filter(it => it.section === inst.item.section);
       const other = rand(same.length ? same : others);
       if (!other) break;
@@ -271,7 +289,7 @@
   function fixedTranslations(inst, n) {
     const mine = new Set(inst.tokens);
     const shared = it => it.def.t.filter(t => mine.has(t)).length;
-    const pool = ITEMS.filter(it => it.kind === "fixed" && it.id !== inst.item.id && it.def.en !== inst.en);
+    const pool = items().filter(it => it.kind === "fixed" && it.id !== inst.item.id && it.def.en !== inst.en);
     const ranked = Session.shuffle(pool).sort((a, b) =>
       (status(b).open - status(a).open) * 10 + (shared(b) - shared(a)) + (b.section === inst.item.section) - (a.section === inst.item.section));
     const res = [];
@@ -304,7 +322,7 @@
     if (words.includes(MEI) && known(BU)) add(BU);
     // A question word already makes it a question, so ma is a trap.
     if (words.some(w => QUESTION_WORDS.includes(w)) && known(MA)) add(MA);
-    const pool = Memory.WORDS.filter(w => known(w.id) && !accepted.has(w.id) && !alikeAny(w.id, words));
+    const pool = Banks.ALL.filter(w => known(w.id) && !accepted.has(w.id) && !alikeAny(w.id, words));
     shuffle(pool.filter(w => roles.has(role(w.id)) && role(w.id) !== "greet")).forEach(w => add(w.id));
     shuffle(pool.filter(w => role(w.id) !== "greet")).forEach(w => add(w.id));
     return out;
@@ -321,7 +339,7 @@
     const okHere = new Set();
     inst.seqs.forEach(seq => { if (seq[wordPos]) seq[wordPos].forEach(id => okHere.add(id)); });
     const r = role(answer);
-    const pool = Memory.WORDS.filter(w => known(w.id) && !okHere.has(w.id) && !alikeAny(w.id, [answer]));
+    const pool = Banks.ALL.filter(w => known(w.id) && !okHere.has(w.id) && !alikeAny(w.id, [answer]));
     const same = shuffle(pool.filter(w => role(w.id) === r)).map(w => w.id);
     const other = shuffle(pool.filter(w => role(w.id) !== r && role(w.id) !== "greet")).map(w => w.id);
     const wrong = same.concat(other).slice(0, 3);
@@ -331,7 +349,7 @@
   // A sensible sentence containing this word, with the word blanked out (for Vocab's Fill the gap).
   // Returns null if no unlocked sensible pattern can use the word.
   function gapFor(wordId) {
-    const pats = shuffle(ITEMS.filter(it => it.kind === "pattern" && it.section !== "surreal" && status(it).open));
+    const pats = shuffle(items().filter(it => it.kind === "pattern" && it.section !== "surreal" && status(it).open));
     for (const it of pats) {
       const p = it.def;
       let force = null;
@@ -351,7 +369,7 @@
   }
 
   function canGap(wordId) {
-    return ITEMS.some(it => it.kind === "pattern" && it.section !== "surreal" && status(it).open &&
+    return items().some(it => it.kind === "pattern" && it.section !== "surreal" && status(it).open &&
       (it.def.core.includes(wordId) || Object.values(it.def.slots).some(list => list.includes(wordId))));
   }
 
@@ -369,7 +387,7 @@
   function buildSession(onlyIds, size, maxNew) {
     size = size || 8;
     maxNew = maxNew === undefined ? 2 : maxNew;
-    const pool = ITEMS.filter(it => status(it).open && (!onlyIds || onlyIds.includes(it.id)));
+    const pool = items().filter(it => status(it).open && (!onlyIds || onlyIds.includes(it.id)));
     if (!pool.length) return null;
     const due = shuffle(pool.filter(it => isDue(it.id)));
     const fresh = pool.filter(it => !(rec(it.id) && rec(it.id).intro));
@@ -397,9 +415,30 @@
     });
   }
 
+  // ---------------------------------------------------------------- literal meanings and rules
+
+  function lit(id) {
+    if (D.LITERAL[id]) return D.LITERAL[id];
+    const w = BY_ID[id];
+    if (D.NUMBERS[id]) return String(D.NUMBERS[id][0]);
+    return w ? w.en.split(" (")[0].split(" / ")[0] : "";
+  }
+
+  // The grammar rules this sentence uses. Rules about the words in `focus` come first.
+  function explain(tokens, focus) {
+    focus = focus || [];
+    const t = tokens.filter(x => x !== ",");
+    const hits = D.RULES.filter(r => r.words.some(w => t.includes(w)) && (!r.when || r.when(t)));
+    hits.sort((a, b) => (b.words.some(w => focus.includes(w)) - a.words.some(w => focus.includes(w))));
+    const out = hits.slice(0, 3);
+    if (out.length < 2) out.push(D.RULES.find(r => r.id === "order"));
+    return out;
+  }
+
   window.Sentences = {
-    ITEMS, ITEM_BY_ID, BY_ID, ROLES: D.ROLES, SECTIONS, sectionItems,
+    get ITEMS() { return items(); }, get SECTIONS() { return sections(); },
+    ITEM_BY_ID, BY_ID, ROLES: D.ROLES, sectionItems,
     role, known, status, stage, isDue, answer, summary,
-    instance, replyEnglish, translations, decoys, gap, gapFor, canGap, pickActivity, buildSession, creditWords, spoken
+    instance, replyEnglish, translations, decoys, gap, gapFor, canGap, pickActivity, buildSession, creditWords, spoken, lit, explain
   };
 }());

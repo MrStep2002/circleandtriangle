@@ -14,7 +14,8 @@
       body: `
         <section class="card result">
           <p class="eyebrow">${A.esc(r.eyebrow)}</p>
-          <h2>${r.right} of ${r.total} right first time</h2>
+          <div class="bigpct">${pct}%</div>
+          <p class="muted">${r.right} of ${r.total} right first time</p>
           <div class="meter"><span style="width:${pct}%"></span></div>
         </section>
         ${r.rows ? `<h3 class="section-label small">${r.label}</h3><ul class="bank">${r.rows}</ul>` : ""}

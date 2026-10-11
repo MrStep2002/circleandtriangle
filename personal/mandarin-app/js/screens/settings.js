@@ -2,8 +2,8 @@
 (function () {
   const A = App;
   const { esc } = A;
-  const GROUPS = window.ESSENTIALS.GROUPS;
-  const WORDS = Memory.WORDS;
+  const G = () => Banks.groups();
+  const W = () => Memory.WORDS;
 
   // ------------------------------------------------------------------ Word Bank
 
@@ -13,14 +13,14 @@
     const c = Memory.counts();
     const filters = ["all", "new", "learning", "familiar", "known"];
     return {
-      title: "Word Bank", back: "/essentials",
+      title: "Word Bank", back: `/${Banks.current}`,
       body: `
         <div class="filters" role="tablist">
           ${filters.map(f => `<button class="chip ${bankFilter === f ? "on" : ""}" data-act="bank-filter" data-f="${f}" role="tab" aria-selected="${bankFilter === f}">
-            ${f === "all" ? "All " + WORDS.length : A.STAGE_LABEL[f] + " " + c[f]}</button>`).join("")}
+            ${f === "all" ? "All " + W().length : A.STAGE_LABEL[f] + " " + c[f]}</button>`).join("")}
         </div>
-        ${GROUPS.map(g => {
-          const ws = WORDS.filter(w => w.group === g.id && (bankFilter === "all" || Memory.stage(w.id) === bankFilter));
+        ${G().map(g => {
+          const ws = W().filter(w => w.group === g.id && (bankFilter === "all" || Memory.stage(w.id) === bankFilter));
           if (!ws.length) return "";
           return `<h3 class="section-label small">${g.parent ? g.parent + " · " : ""}${g.name}</h3>
             <ul class="bank">
@@ -139,7 +139,7 @@
     }
   }
 
-  A.route("/essentials/words", wordBank);
+  A.route("/:bank/words", wordBank);
   A.route("/settings", settings);
   A.on("bank-filter", el => { bankFilter = el.dataset.f; A.render(); });
   A.on("backup", doBackup);

@@ -6,7 +6,7 @@
   };
 
   function toneOf(syllable) {
-    for (const ch of syllable.normalize("NFC")) if (MARKS[ch]) return MARKS[ch];
+    for (const ch of syllable.normalize("NFC").toLowerCase()) if (MARKS[ch]) return MARKS[ch];
     return 5; // neutral tone
   }
 

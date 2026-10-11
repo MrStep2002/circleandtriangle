@@ -10,8 +10,9 @@
   const GAP = [0, 10 * MIN, 1 * DAY, 3 * DAY, 7 * DAY, 21 * DAY];
   const MAX_BOX = GAP.length - 1;
 
-  const WORDS = window.ESSENTIALS.WORDS;
-  const BY_ID = Object.fromEntries(WORDS.map(w => [w.id, w]));
+  // The words of the bank you're in (Essentials or a topic). Records cover every word.
+  const W = () => Banks.words();
+  const BY_ID = Banks.BY_ID;
 
   function rec(id) { return Store.state.words[id] || null; }
 
@@ -88,13 +89,13 @@
 
   function dueWords(now) {
     now = now || Date.now();
-    return WORDS.filter(w => dueSkill(w.id, now))
+    return W().filter(w => dueSkill(w.id, now))
       .sort((a, b) => strength(a.id) - strength(b.id));
   }
 
   function nextDue() {
     let soonest = Infinity;
-    WORDS.forEach(w => {
+    W().forEach(w => {
       const r = rec(w.id);
       if (r && r.intro) soonest = Math.min(soonest, r.m.due, r.c.due);
     });
@@ -114,11 +115,11 @@
     return r.m.b <= r.c.b ? "m" : "c";
   }
 
-  function newWords() { return WORDS.filter(w => !isIntro(w.id)); }
+  function newWords() { return W().filter(w => !isIntro(w.id)); }
 
   function counts(words) {
     const out = { new: 0, learning: 0, familiar: 0, known: 0 };
-    (words || WORDS).forEach(w => out[stage(w.id)]++);
+    (words || W()).forEach(w => out[stage(w.id)]++);
     return out;
   }
 
@@ -134,7 +135,7 @@
   }
 
   window.Memory = {
-    WORDS, BY_ID, rec, isIntro, introduce, stage, answer, dueSkill, dueWords,
+    get WORDS() { return W(); }, BY_ID, rec, isIntro, introduce, stage, answer, dueSkill, dueWords,
     nextDue, strength, weakerSkill, newWords, counts, streak, today, bump, countToday
   };
 }());

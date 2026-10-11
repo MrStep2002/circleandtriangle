@@ -69,7 +69,7 @@
   // The landing page: the five sections.
   function page() {
     return {
-      title: "Sentences", back: "/essentials",
+      title: "Sentences", back: `/${Banks.current}`,
       body: `
         <p class="muted intro-line">Sentences unlock as you learn the words in them.</p>
         ${(() => {
@@ -77,7 +77,7 @@
           return `<section class="card allcard">
             <div class="ess-head"><div>
               <h2>All sentences</h2>
-              <p class="muted">A random mix from every section below, Surreal included</p>
+              <p class="muted">A random mix from every section below${S.SECTIONS.some(x => x.surreal) ? ", Surreal included" : ""}</p>
             </div></div>
             ${A.stageBar(all.stages)}
             <span class="sec-meta">${all.unlocked} of ${all.total} unlocked${all.due ? ` · <b>${all.due} due</b>` : ""}</span>
@@ -89,7 +89,7 @@
         <nav class="sections">
           ${S.SECTIONS.map(sec => {
             const sum = S.summary(sec.id);
-            return `<button class="secard ${sec.surreal ? "surreal" : ""}" data-act="go" data-to="/essentials/sentences/${sec.id}">
+            return `<button class="secard ${sec.surreal ? "surreal" : ""}" data-act="go" data-to="/${Banks.current}/sentences/${sec.id}">
               <span class="sec-name">${esc(sec.name)}</span>
               <span class="sec-sub">${esc(sec.sub)}</span>
               ${A.stageBar(sum.stages)}
@@ -138,7 +138,7 @@
         <div class="patlist">${patterns.filter(it => it.group === g).map(patRow).join("")}</div>`).join("")
       + (replies.length ? `<h3 class="section-label small">Replies</h3><ul class="bank">${replies.map(replyRow).join("")}</ul>` : "");
     return {
-      title: sec.name, back: "/essentials/sentences",
+      title: sec.name, back: `/${Banks.current}/sentences`,
       body: `
         <section class="card">
           <div class="ess-head">
@@ -163,11 +163,12 @@
     const all = sectionId === "all";
     const sec = all ? { name: "All sentences" } : S.SECTIONS.find(x => x.id === sectionId);
     const onlyIds = patternId ? [patternId] : all ? S.ITEMS.map(it => it.id) : S.sectionItems(sectionId).map(it => it.id);
-    const ids = patternId ? S.buildSession(onlyIds, 6, 6) : S.buildSession(onlyIds, all ? 10 : 8, 3);
+    const batch = patternId ? [6, 6] : [all ? 10 : 8, 3];
+    const ids = S.buildSession(onlyIds, batch[0], batch[1]);
     if (!ids) return;
     const title = patternId ? S.ITEM_BY_ID[patternId].name : sec.name;
-    run = { ids, i: 0, base: ids.length, sectionId, patternId, title, results: [], retried: new Set(), startStage: {} };
-    ids.forEach(id => { if (!(id in run.startStage)) run.startStage[id] = S.stage(id); });
+    // The queue keeps growing: when it runs out, another batch is dealt. Play goes on until you stop.
+    run = { q: ids.map(id => ({ id })), i: 0, scope: onlyIds, batch, sectionId, patternId, title, results: [], right: 0 };
     Store.requestPersist();
     setUp();
     A.go("/sentence");
@@ -175,7 +176,7 @@
 
   // Prepare the current item: choose the activity and make the sentence.
   function setUp() {
-    const it = S.ITEM_BY_ID[run.ids[run.i]];
+    const it = S.ITEM_BY_ID[run.q[run.i].id];
     let act = S.pickActivity(it);
     const isNew = S.stage(it.id) === "new";
     // Re-roll if this exact sentence has already come up in the session.
@@ -201,8 +202,6 @@
   function view() {
     if (!run) return null;
     const c = run.cur, inst = c.inst, it = c.it;
-    const total = run.ids.length;
-    const tip = it.kind === "pattern" ? it.def.tip : "";
     let body = "";
 
     if (c.act === "translate") {
@@ -211,7 +210,6 @@
         <div class="sentcard">
           <div class="sline">${sentenceHtml(inst.tokens, inst.py, inst.end)}</div>
           <div class="ssay">${esc(saysLine(inst.tokens))}</div>
-          ${c.isNew && tip ? `<p class="note">${esc(tip)}</p>` : ""}
         </div>
         <div class="options">${c.opts.map((en, n) => `<button class="opt" data-act="spick" data-n="${n}"><kbd>${n + 1}</kbd>${esc(en)}</button>`).join("")}</div>`;
     } else if (c.act === "gap") {
@@ -233,7 +231,7 @@
            </div>
            <p class="ask small">Build a reply</p>`
         : `<p class="ask">${c.isNew ? `New pattern · ${esc(it.name)}` : "Build this in pinyin"}</p>
-           <div class="sentcard"><div class="big-en">${esc(inst.en)}</div>${c.isNew && tip ? `<p class="note">${esc(tip)}</p>` : ""}</div>`;
+           <div class="sentcard"><div class="big-en">${esc(inst.en)}</div></div>`;
       body = `
         ${head}
         <div class="answer" id="answer">${placedHtml(c)}</div>
@@ -243,11 +241,7 @@
     return {
       bar: "session", cls: "play splay",
       body: `
-        <header class="sessionbar">
-          <button class="iconbtn" data-act="squit" aria-label="End session">${A.ICON.close}</button>
-          <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="${total}" aria-valuenow="${run.i}"><span style="width:${Math.round(run.i / total * 100)}%"></span></div>
-          <span class="count">${run.i + 1}/${total}</span>
-        </header>
+        ${A.scoreBar("squit", run.right, run.results.length)}
         ${body}
         <div class="feedback" id="feedback" hidden></div>`
     };
@@ -347,57 +341,78 @@
     finishItem(correct);
   }
 
+  // The sentence with each word's literal meaning underneath.
+  function interlinear(tokens, py) {
+    const cols = [];
+    tokens.forEach((t, i) => {
+      if (t === ",") { if (cols.length) cols[cols.length - 1].py += ","; return; }
+      cols.push({ py: py[i], lit: S.lit(t), role: S.role(t) });
+    });
+    return `<div class="interlinear">${cols.map(c =>
+      `<span class="il"><span class="il-py r-${c.role}">${esc(c.py)}</span><span class="il-en">${esc(c.lit)}</span></span>`).join("")}</div>`;
+  }
+
+  function rulesHtml(tokens, focus) {
+    return S.explain(tokens, focus).map(r => `<div class="rule"><b>${esc(r.title)}</b><p>${esc(r.text)}</p></div>`).join("");
+  }
+
   function finishItem(correct) {
     const c = run.cur;
     c.done = true;
     S.answer(c.it.id, correct);
     if (correct && c.act !== "translate") S.creditWords(c.inst.tokens);
-    // Only first attempts count towards the score; retries at the end are extra practice.
-    if (run.i < run.base) {
+    const tokens = c.act === "reply" ? c.input : c.inst.tokens;
+    const py = c.act === "reply" ? S.spoken(c.input) : c.inst.py;
+    const english = c.act === "reply" ? S.replyEnglish(c.inst, c.input) : c.inst.en;
+    // Second goes at a missed sentence don't count towards the score.
+    if (!run.q[run.i].retry) {
       run.results.push({
-        id: c.it.id, correct, act: c.act, end: c.inst.end,
-        tokens: c.act === "reply" ? c.input : c.inst.tokens,
-        en: c.act === "reply" ? S.replyEnglish(c.inst, c.input) : c.inst.en,
+        id: c.it.id, correct, act: c.act, end: c.inst.end, tokens, en: english,
         prompt: c.act === "reply" ? c.inst.prompt : null,
         promptEn: c.act === "reply" ? c.inst.promptEn : null,
         promptEnd: c.act === "reply" ? c.inst.promptEnd : null
       });
+      if (correct) run.right++;
+      A.updateScore(run.right, run.results.length);
+      // A missed item comes back a few turns later, with a fresh sentence.
+      if (!correct) run.q.splice(Math.min(run.i + 4, run.q.length), 0, { id: c.it.id, retry: true });
     }
-    // Missed items come back once at the end, with a fresh sentence.
-    if (!correct && !run.retried.has(c.it.id)) { run.retried.add(c.it.id); run.ids.push(c.it.id); }
 
     const fb = document.getElementById("feedback");
     fb.hidden = false;
-    const inst = c.inst;
-    let sentence, english;
-    if (c.act === "reply") {
-      const py = S.spoken(c.input);
-      sentence = sentenceHtml(c.input, py, "");
-      english = S.replyEnglish(inst, c.input);
-    } else {
-      sentence = sentenceHtml(inst.tokens, inst.py, inst.end);
-      english = inst.en;
-    }
-    const tip = c.it.kind === "pattern" && !correct ? `<span class="fb-note">${esc(c.it.def.tip)}</span>` : "";
-    const head = correct ? (c.slips === 0 ? "Right." : "Done.") : (c.act === "build" || c.act === "reply" ? `Done, with ${A.plural(c.slips, "slip")}.` : "Not quite.");
-    fb.className = "feedback " + (correct ? "ok" : "bad");
-    fb.innerHTML = `<span><b>${head}</b> <span class="fb-sent">${sentence}</span><span class="fb-en">${esc(english)}</span>${tip}</span>
-      <button class="btn ${correct ? "small" : "primary"}" data-act="snext">${correct ? "Next" : "Continue"}</button>`;
-    if (correct) A.vibrate(15);
+    const clean = correct && c.slips === 0;
+    const head = clean ? "Right." : correct ? `Done, with ${A.plural(c.slips, "slip")}.` : (c.act === "build" || c.act === "reply" ? `Done, with ${A.plural(c.slips, "slip")}.` : "Not quite.");
+    const focus = [...c.slipWords, ...(c.gap ? [c.gap.answer] : [])];
+    fb.className = "feedback sfb " + (clean ? "ok" : "bad");
+    fb.innerHTML = `
+      <div class="fb-head"><b>${head}</b>${c.act === "reply" ? `<span class="fb-en">${esc(c.inst.promptEn)} → ${esc(english)}</span>` : `<span class="fb-en">${esc(english)}</span>`}</div>
+      ${interlinear(tokens, py)}
+      <div class="fb-actions">
+        ${clean ? "" : `<button class="btn small" data-act="sexplain">Explain</button>`}
+        <button class="btn ${clean ? "small" : "primary"}" data-act="snext">Next</button>
+      </div>
+      <div class="explain" id="explain" hidden>${rulesHtml(tokens, focus)}</div>`;
+    if (clean) A.vibrate(15);
     fb.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }
 
   function next() {
     if (!run) return;
     run.i++;
-    if (run.i >= run.ids.length) return finish();
+    // Out of sentences: deal another batch from the same section.
+    if (run.i >= run.q.length) {
+      const more = S.buildSession(run.scope, run.batch[0], run.batch[1]);
+      if (!more) return finish();
+      more.forEach(id => run.q.push({ id }));
+    }
     setUp();
     A.render();
   }
 
   function finish() {
-    const right = run.results.filter(r => r.correct).length;
-    const back = run.sectionId === "all" ? "/essentials/sentences" : "/essentials/sentences/" + run.sectionId;
+    const right = run.right;
+    const shown = run.results.slice(-30);
+    const back = run.sectionId === "all" ? `/${Banks.current}/sentences` : `/${Banks.current}/sentences/` + run.sectionId;
     const again = run.patternId
       ? `data-act="spattern" data-id="${run.patternId}" data-sec="${run.sectionId}"`
       : `data-act="ssection" data-sec="${run.sectionId}"`;
@@ -405,8 +420,8 @@
     A.result = {
       eyebrow: run.title, back,
       right, total: run.results.length,
-      label: "Sentences in this session",
-      rows: run.results.map(r => `<li class="srow">
+      label: run.results.length > 30 ? "Your last 30 sentences" : "Sentences in this session",
+      rows: shown.map(r => `<li class="srow">
           <span class="srow-main">
             <span class="srow-py">${r.prompt ? sentenceHtml(r.prompt, S.spoken(r.prompt), r.promptEnd) + ` <span class="arrow">→</span> ` : ""}${sentenceHtml(r.tokens, S.spoken(r.tokens), r.act === "reply" ? "" : r.end)}</span>
             <span class="srow-en">${r.prompt ? esc(r.promptEn) + " → " : ""}${esc(r.en)}</span>
@@ -427,8 +442,8 @@
 
   // ---------------------------------------------------------------- wiring
 
-  A.route("/essentials/sentences", page);
-  A.route("/essentials/sentences/*", section);
+  A.route("/:bank/sentences", page);
+  A.route("/:bank/sentences/*", section);
   A.route("/sentence", view);
   A.on("ssection", el => start(el.dataset.sec));
   A.on("spattern", el => start(el.dataset.sec || S.ITEM_BY_ID[el.dataset.id].section, el.dataset.id));
@@ -437,9 +452,10 @@
   A.on("spick", pickTranslation);
   A.on("sgap", pickGap);
   A.on("snext", next);
+  A.on("sexplain", el => { const box = document.getElementById("explain"); if (box) { box.hidden = !box.hidden; el.textContent = box.hidden ? "Explain" : "Hide"; } });
   A.on("squit", () => {
     if (run && run.results.length) finish();
-    else { const sec = run && run.sectionId !== "all" ? run.sectionId : ""; run = null; A.back(sec ? "/essentials/sentences/" + sec : "/essentials/sentences"); }
+    else { const sec = run && run.sectionId !== "all" ? run.sectionId : ""; run = null; A.back(sec ? `/${Banks.current}/sentences/` + sec : `/${Banks.current}/sentences`); }
   });
 
   A.onKey((e, r) => {

@@ -7,7 +7,7 @@
      flash    pinyin shown -> reveal -> "knew it?"   (skill m, self-marked)
      gap      a sentence with the word missing -> pick it (skill c) */
 (function () {
-  const WORDS = Memory.WORDS;
+  const W = () => Memory.WORDS; // the current bank's words
   const BATCH = 4;
 
   function shuffle(a) {
@@ -42,7 +42,7 @@
     shuffle(batch).forEach(w => steps.push({ type: "recall", id: w.id }));
     // Mix in a few older words so new ones are tested alongside them.
     const batchIds = new Set(batch.map(w => w.id));
-    const older = WORDS.filter(w => Memory.isIntro(w.id) && !batchIds.has(w.id));
+    const older = W().filter(w => Memory.isIntro(w.id) && !batchIds.has(w.id));
     const due = Memory.dueWords().filter(w => !batchIds.has(w.id));
     const extra = (due.length ? due : older.sort((a, b) => Memory.strength(a.id) - Memory.strength(b.id))).slice(0, 4);
     shuffle(extra).forEach(w => steps.push(practiceStep(w, Memory.dueSkill(w.id))));
@@ -76,11 +76,24 @@
     return { kind: "pool", title, steps };
   }
 
-  function random() { return fromPool(WORDS, "Random words", 10); }
+  function random() { return Object.assign(fromPool(W(), "Random words", 10), { kind: "random" }); }
 
   function groups(groupIds, title) {
     const set = new Set(groupIds);
-    return fromPool(WORDS.filter(w => set.has(w.group)), title || "Chosen groups", 12);
+    const def = fromPool(W().filter(w => set.has(w.group)), title || "Chosen groups", 12);
+    return def && Object.assign(def, { kind: "groups", groupIds });
+  }
+
+  // The next batch for an endless session of the same kind. Falls back to random practice
+  // when there's nothing new to learn or nothing due.
+  function more(def) {
+    let next = null;
+    if (def.kind === "new") next = newWords();
+    else if (def.kind === "review") next = review();
+    else if (def.kind === "groups") next = groups(def.groupIds, def.title);
+    else if (def.kind === "smart") next = smart();
+    if (!next || !next.steps.length) next = random();
+    return next ? next.steps : [];
   }
 
   // "Continue": due reviews first, then new words if there's room.
@@ -101,7 +114,7 @@
   // or same English would make two answers correct).
   // Overlapping meanings (yào / xiǎng, bú kèqi / méi guānxi…) also count as a clash.
   const ALIKE = {};
-  (window.ESSENTIALS.ALIKE || []).forEach(set => set.forEach(a => set.forEach(b => {
+  Banks.alikeSets.forEach(set => set.forEach(a => set.forEach(b => {
     if (a !== b) (ALIKE[a] = ALIKE[a] || new Set()).add(b);
   })));
   function alike(a, b) { return !!(ALIKE[a.id] && ALIKE[a.id].has(b.id)); }
@@ -133,21 +146,21 @@
     if (kind === "review") {
       const due = Memory.dueWords();
       const dueIds = new Set(due.map(w => w.id));
-      const rest = WORDS.filter(w => Memory.isIntro(w.id) && !dueIds.has(w.id))
+      const rest = W().filter(w => Memory.isIntro(w.id) && !dueIds.has(w.id))
         .sort((a, b) => Memory.strength(a.id) - Memory.strength(b.id));
       return due.concat(rest);
     }
     if (kind === "groups") {
       const set = new Set(groupIds);
-      return metFirst(WORDS.filter(w => set.has(w.group)));
+      return metFirst(W().filter(w => set.has(w.group)));
     }
-    return metFirst(WORDS); // random
+    return metFirst(W()); // random
   }
 
   function firstLetter(w) { return Pinyin.plain(w.py).normalize("NFD")[0]; }
 
   function choices(word, type) {
-    const others = WORDS.filter(w => !clash(w, word));
+    const others = W().filter(w => !clash(w, word));
     const r = Memory.rec(word.id);
     const harder = type === "recall" && r && r.c.b >= 2;
     let preferred;
@@ -168,5 +181,5 @@
     return shuffle([word, ...picks]);
   }
 
-  window.Session = { newWords, review, random, groups, smart, choices, shuffle, matchSet, matchPool, BATCH };
+  window.Session = { newWords, review, random, groups, smart, more, choices, shuffle, matchSet, matchPool, BATCH };
 }());
