@@ -28,6 +28,8 @@
           <p class="eyebrow">${streak ? A.plural(streak, "day") + " in a row" : "Start a streak today"}${todayCount ? " · " + A.plural(todayCount, "answer") + " today" : ""}</p>
         </section>
 
+        ${window.Games ? Games.dailyButton() : ""}
+
         <section class="card essentials">
           <div class="ess-head">
             <div>

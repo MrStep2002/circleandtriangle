@@ -235,6 +235,19 @@ window.TOPIC_DATA["eating-out"] = (function () {
           }
         },
         {
+          id: "eo-restaurant", group: "Arriving", name: "We're going to a restaurant",
+          core: ["eo:fanguan", "verb:qu"], slots: { S: people, T: ["money:jintian", "money:mingtian"], O: ["x:0", ...dishes] }, flags: ["q"],
+          make(f, E) {
+            const eat = f.O !== "x:0" ? ["verb:chi", f.O] : [];
+            const what = f.O !== "x:0" ? ` to eat ${THINGS_ALL()[f.O].en}` : "";
+            const when = f.T === "money:jintian" ? "today" : "tomorrow";
+            return {
+              t: [f.S, f.T, "verb:qu", "eo:fanguan", ...eat, f.q && MA], also: [[f.T, f.S, "verb:qu", "eo:fanguan", ...eat, f.q && MA]], end: f.q ? "?" : ".",
+              en: f.q ? `${E.Be(f.S)} ${E.s(f.S)} going to a restaurant${what} ${when}?` : `${E.beSubj(f.S)} going to a restaurant${what} ${when}.`
+            };
+          }
+        },
+        {
           id: "eo-havetable", group: "Arriving", name: "Do you have a table?",
           core: ["verb:you", "eo:zhuozi"], slots: { N: count },
           make(f) {

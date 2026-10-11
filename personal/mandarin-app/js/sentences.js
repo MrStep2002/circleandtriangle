@@ -194,13 +194,25 @@
     return { tokens, also, end: out.end, en: out.en };
   }
 
+  // Variety: words used in the last few sentences are skipped when there's another choice,
+  // so slots don't keep landing on wǒ and chá.
+  const recent = [];
+  function pickFresh(list) {
+    const fresh = list.filter(id => !recent.includes(id));
+    return rand(fresh.length && Math.random() < .85 ? fresh : list);
+  }
+  function remember(tokens) {
+    tokens.forEach(t => { if (t !== ",") recent.push(t); });
+    while (recent.length > 24) recent.shift();
+  }
+
   // plain: no "not" or question, used the first time you meet a pattern.
   // force: slot values to keep (used to build a sentence around one word).
   function patternInstance(it, fixed, plain, force) {
     const p = it.def;
     const f = fixed ? { ...fixed } : { g: Math.random() < .5 ? 0 : 1 };
     if (!fixed) {
-      const fill = () => Object.entries(p.slots).forEach(([k, list]) => { if (!(force && k in force)) f[k] = rand(list.filter(known)); });
+      const fill = () => Object.entries(p.slots).forEach(([k, list]) => { if (!(force && k in force)) f[k] = pickFresh(list.filter(known)); });
       if (force) Object.assign(f, force);
       fill();
       for (let k = 0; k < 300 && p.valid && !p.valid(f); k++) fill();
@@ -210,6 +222,7 @@
       f.q = !plain && !f.neg && canQ(p) && Math.random() < .35 && (p.qMe || subj !== "build:wo") && !(p.noQ || []).includes(subj);
     }
     const m = makeFrom(p, f);
+    if (!fixed) remember(m.tokens);
     return {
       item: it, f, tokens: m.tokens, end: m.end, en: m.en,
       seqs: sequences([m.tokens, ...m.also], p.alts),

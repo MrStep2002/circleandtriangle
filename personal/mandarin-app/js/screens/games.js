@@ -318,6 +318,118 @@
 
   let run = null;
 
+  // ---------------------------------------------------------------- Daily 5 minutes
+  // A mix of the games, using words you've met in every topic, weaker words more often.
+  // Rounds of a few questions each, cycling until five minutes are up.
+  const DAILY_SECONDS = 5 * 60;
+  const DAILY_ROUNDS = [["speed", 6], ["blitz", 6], ["type", 4], ["odd", 3], ["numbers", 3], ["speed", 5], ["type", 4]];
+  const ROUND_NAME = { speed: "Pick the meaning", blitz: "True or false", type: "Type it", odd: "Odd one out", numbers: "Numbers" };
+  const metAll = () => Banks.ALL.filter(w => Memory.isIntro(w.id));
+  const dailyReady = () => metAll().length >= 8;
+
+  // Weaker words come up more: pick from the weakest half most of the time.
+  function dailyWord(filter) {
+    const pool = metAll().filter(filter || (() => true));
+    if (!pool.length) return null;
+    const sorted = pool.slice().sort((a, b) => Memory.strength(a.id) - Memory.strength(b.id));
+    const weak = sorted.slice(0, Math.max(4, Math.ceil(sorted.length / 2)));
+    let w;
+    for (let k = 0; k < 6; k++) { w = rand(Math.random() < .7 ? weak : sorted); if (!run.cur || !run.cur.w || run.cur.w.id !== w.id) break; }
+    Banks.set(w.bank);   // answer choices come from the word's own topic
+    return w;
+  }
+  function dailyRanges() {
+    const r = ["r10", "r99"];
+    if (Memory.isIntro("li:bai100")) r.push("r999");
+    if (Memory.isIntro("li:qian")) r.push("r9k");
+    if (Memory.isIntro("li:wan")) r.push("rwan");
+    return r;
+  }
+  function dailyOddBank() {
+    const banks = Banks.list.filter(b => Banks.unlocked(b.id)).filter(b => { Banks.set(b.id); return oddMains(b.groups.map(g => g.id)).length; });
+    return banks.length ? rand(banks) : null;
+  }
+
+  function startDaily() {
+    run = { daily: true, game: null, bank: "daily", ids: [], pool: [], right: 0, total: 0, missed: [], queue: [], cur: null,
+      answered: false, lives: 3, order: [], endAt: Date.now() + DAILY_SECONDS * 1000, round: -1, left: 0 };
+    nextItem();
+    A.go("/daily");
+  }
+
+  // The next daily question: carry on with this round, or move to the next game in the cycle.
+  function nextDaily() {
+    for (let tries = 0; tries < DAILY_ROUNDS.length * 2; tries++) {
+      if (run.left <= 0) {
+        run.round = (run.round + 1) % DAILY_ROUNDS.length;
+        [run.game, run.left] = DAILY_ROUNDS[run.round];
+        run.newRound = true;
+      }
+      const g = run.game;
+      if (g === "speed" || g === "blitz") {
+        const w = dailyWord();
+        if (g === "speed") run.cur = { w, opts: Session.choices(w, "meaning") };
+        else {
+          const truth = Math.random() < .5;
+          const wrong = Session.choices(w, "meaning").filter(o => o.id !== w.id && o.en !== w.en)[0];
+          run.cur = { w, truth: truth || !wrong, shown: truth || !wrong ? w : wrong };
+        }
+      } else if (g === "type") {
+        const w = dailyWord(typeable);
+        if (!w) { run.left = 0; continue; }
+        run.cur = { w };
+      } else if (g === "odd") {
+        const b = dailyOddBank();
+        if (!b) { run.left = 0; continue; }
+        Banks.set(b.id);
+        run.cur = oddRound(b.groups.map(x => x.id), run.cur && run.cur.main && run.cur.main.id);
+      } else {
+        const ranges = dailyRanges();
+        let n;
+        do { n = RANGE[rand(ranges)].gen(); } while (run.cur && n === run.cur.n);
+        run.cur = { n, py: numberPy(n) };
+      }
+      run.left--;
+      return;
+    }
+  }
+
+  function dailyBar() {
+    const left = Math.max(0, run.endAt - Date.now());
+    const pct = run.total ? Math.round(run.right / run.total * 100) : 0;
+    return `<header class="sessionbar">
+      <button class="iconbtn" data-act="gquit" aria-label="Stop">${A.ICON.close}</button>
+      <div class="scoremeter timer daily" aria-hidden="true"><span id="daily-fill" style="width:${left / (DAILY_SECONDS * 10)}%"></span></div>
+      <span class="score" id="score-text">${run.total ? `<b>${pct}%</b><small>${run.right}/${run.total}</small>` : `<b>${clockText(left)}</b><small>to go</small>`}</span>
+    </header>`;
+  }
+  const clockText = ms => { const s = Math.ceil(ms / 1000); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; };
+
+  let dailyTimer = null;
+  function startDailyTimer() {
+    clearInterval(dailyTimer);
+    dailyTimer = setInterval(() => {
+      if (!run || !run.daily || A.currentRoute() !== "/daily") { clearInterval(dailyTimer); return; }
+      const left = Math.max(0, run.endAt - Date.now());
+      const fill = document.getElementById("daily-fill");
+      if (fill) fill.style.width = (left / (DAILY_SECONDS * 10)) + "%";
+      const t = document.getElementById("daily-time");
+      if (t) t.textContent = left ? clockText(left) + " left" : "Last one!";
+    }, 500);
+  }
+
+  // After an answer: next question, or the end once time is up.
+  function advance() {
+    if (run.daily && Date.now() >= run.endAt) { finish(); return; }
+    nextItem();
+    A.render();
+  }
+
+  function dailyView() {
+    if (!run || !run.daily) return null;
+    return playView(true);
+  }
+
   // ---------------------------------------------------------------- Mini-List
 
   const miniSize = () => Store.state.settings.miniSize || 6;
@@ -408,6 +520,7 @@
   function nextItem() {
     run.answered = false;
     run.result = null;
+    if (run.daily) { nextDaily(); return; }
     const due = run.queue.findIndex(q => q.at <= run.total);
     if (due >= 0 && !NO_RETRY.includes(run.game)) { run.cur = Object.assign(run.queue.splice(due, 1)[0].item, { retry: true }); return; }
     run.qStart = Date.now();
@@ -441,9 +554,13 @@
     if (run.cur.retry) return;
     run.total++;
     if (ok) run.right++;
+    if (run.daily) {
+      const el = document.getElementById("score-text");
+      if (el) el.innerHTML = `<b>${Math.round(run.right / run.total * 100)}%</b><small>${run.right}/${run.total}</small>`;
+    }
     else {
       run.missed.push(run.cur);
-      if (!NO_RETRY.includes(run.game)) run.queue.push({ at: run.total + 3, item: Object.assign({}, run.cur, { retry: false }) });
+      if (!NO_RETRY.includes(run.game) && !run.daily) run.queue.push({ at: run.total + 3, item: Object.assign({}, run.cur, { retry: false }) });
     }
   }
 
@@ -467,8 +584,8 @@
     </header>`;
   }
 
-  function playView() {
-    if (!run || run.bank !== Banks.current) return null;
+  function playView(isDaily) {
+    if (!run || (run.daily ? !isDaily : run.bank !== Banks.current)) return null;
     const c = run.cur;
     let body = "";
     if (run.game === "speed") {
@@ -529,10 +646,18 @@
         </form>
         <div class="feedback" id="feedback" hidden></div>`;
     }
+    if (run.daily) {
+      const label = `<p class="daily-round"><span>${ROUND_NAME[run.game]}</span><span id="daily-time">${clockText(Math.max(0, run.endAt - Date.now()))} left</span></p>`;
+      body = body.replace(/<header class="sessionbar">[\s\S]*?<\/header>/, dailyBar() + label);
+    }
     return {
-      bar: "session", cls: "play game-" + run.game, body,
+      bar: "session", cls: "play game-" + run.game + (run.daily ? " daily-play" : ""), body,
       after() {
-        if (run.game === "speed" || LIVES.includes(run.game)) { startTimer(); if (run.game === "blitz") swipe(); return; }
+        if (run.daily) {
+          startDailyTimer();
+          if (run.game === "blitz") swipe();
+          if (run.game === "speed" || run.game === "blitz" || run.game === "odd") return;
+        } else if (run.game === "speed" || LIVES.includes(run.game)) { startTimer(); if (run.game === "blitz") swipe(); return; }
         if (run.game === "odd") return;
         const input = document.getElementById("type-in");
         document.getElementById("type-form").addEventListener("submit", e => {
@@ -552,7 +677,7 @@
   function startTimer() {
     clearInterval(timer);
     timer = setInterval(() => {
-      if (!run || !(run.game === "speed" || LIVES.includes(run.game)) || !A.currentRoute().endsWith("/game-play")) { clearInterval(timer); return; }
+      if (!run || run.daily || !(run.game === "speed" || LIVES.includes(run.game)) || !A.currentRoute().endsWith("/game-play")) { clearInterval(timer); return; }
       const fill = document.getElementById("time-fill");
       if (run.game === "speed") {
         const left = Math.max(0, run.endAt - Date.now());
@@ -571,7 +696,7 @@
 
   // Lives games: lose a life, and stop when they're all gone.
   function afterLife(ok) {
-    if (!ok) {
+    if (!ok && !run.daily) {
       run.lives--;
       const h = document.getElementById("hearts");
       if (h) h.innerHTML = hearts();
@@ -580,10 +705,9 @@
     const s = document.getElementById("speed-score");
     if (s) s.textContent = run.right;
     setTimeout(() => {
-      if (!run || !A.currentRoute().endsWith("/game-play")) return;
-      if (run.lives <= 0) { finish(); return; }
-      nextItem();
-      A.render();
+      if (!run || !(A.currentRoute().endsWith("/game-play") || A.currentRoute() === "/daily")) return;
+      if (run.lives <= 0 && !run.daily) { finish(); return; }
+      advance();
     }, ok ? 260 : 1100);
   }
 
@@ -672,7 +796,7 @@
   }
 
   function speedPick(btn) {
-    if (!run || run.answered || (run.game === "speed" && Date.now() > run.endAt)) return;
+    if (!run || run.answered || (run.game === "speed" && !run.daily && Date.now() > run.endAt)) return;
     run.answered = true;
     const ok = btn.dataset.id === run.cur.w.id;
     document.querySelectorAll(".opt").forEach(b => {
@@ -681,7 +805,7 @@
     });
     if (!ok) btn.classList.add("wrong");
     record(ok);
-    if (run.game === "survival") { afterLife(ok); return; }
+    if (run.game === "survival" || run.daily) { afterLife(ok); return; }
     if (!ok) A.vibrate(60);
     const s = document.getElementById("speed-score");
     if (s) s.textContent = run.right;
@@ -746,16 +870,65 @@
     document.getElementById("feedback").className = "feedback gfb ok";
   }
 
-  function next() {
-    nextItem();
-    A.render();
-  }
+  function next() { advance(); }
 
   // ---------------------------------------------------------------- the end
 
+  // The words (or numbers, or sentences) you missed, once each.
+  function missedRows() {
+    const seen = new Set();
+    return run.missed.filter(m => {
+      const k = m.w ? m.w.id : m.n !== undefined ? "n" + m.n : m.inst.en;
+      if (seen.has(k)) return false;
+      seen.add(k);
+      return true;
+    }).map(m => {
+      if (m.w) return `<li><span class="bank-py">${A.wordLine(m.w)}<span class="say">${esc(m.w.say)}</span></span><span class="bank-en">${esc(m.w.en)}</span><span></span></li>`;
+      if (m.n !== undefined) return `<li><span class="bank-py"><span class="py">${Pinyin.html(m.py.join(" "))}</span></span><span class="bank-en">${fmt(m.n)}</span><span></span></li>`;
+      return `<li class="wide"><span class="bank-py"><span class="py">${esc(m.inst.py.filter(p => p !== ",").join(" "))}</span></span><span class="bank-en">${esc(m.inst.en)}</span><span></span></li>`;
+    }).join("");
+  }
+
+  function finishDaily() {
+    const pct = run.total ? Math.round(run.right / run.total * 100) : 0;
+    const rec = games()["all:daily"] || { plays: 0, days: {} };
+    rec.plays++;
+    rec.last = pct;
+    rec.days = rec.days || {};
+    rec.days[Memory.today()] = Math.max(rec.days[Memory.today()] || 0, pct);
+    games()["all:daily"] = rec;
+    Store.save();
+    const finished = Date.now() >= run.endAt;
+    A.result = {
+      eyebrow: "Daily practice",
+      right: run.right, total: run.total,
+      line: `${run.right} of ${run.total} right${finished ? " in 5 minutes" : ""}${finished ? " · done for today!" : ""}`,
+      label: "To look at again", rows: missedRows(),
+      back: "/",
+      buttons: `<button class="btn primary wide" data-act="go-replace" data-to="/">Home</button>
+        <button class="btn wide" data-act="gdaily">Another 5 minutes</button>`
+    };
+    run = null;
+    Banks.set("essentials");
+    A.replace("/done");
+  }
+
+  // The big button on the home screen.
+  function dailyButton() {
+    const rec = games()["all:daily"];
+    const today = rec && rec.days && rec.days[Memory.today()];
+    if (!dailyReady()) return `<button class="dailybtn off" disabled><span class="daily-name">Daily practice</span><span class="daily-sub">Meet a few words first, then 5 minutes a day of games</span></button>`;
+    return `<button class="dailybtn ${today !== undefined ? "done" : ""}" data-act="gdaily">
+      <span class="daily-name">${today !== undefined ? "Daily practice ✓" : "Daily practice"}</span>
+      <span class="daily-sub">${today !== undefined ? `Done today · ${today}%. Tap for another 5 minutes` : `5 minutes of games with ${A.plural(metAll().length, "word")} you know`}</span>
+    </button>`;
+  }
+
   function finish() {
     clearInterval(timer);
+    clearInterval(dailyTimer);
     if (!run) return;
+    if (run.daily) return finishDaily();
     const g = GAME[run.game];
     const rec = games()[key(run.game)] || { best: 0, plays: 0 };
     const pct = run.total ? Math.round(run.right / run.total * 100) : 0;
@@ -766,18 +939,7 @@
     games()[key(run.game)] = rec;
     Store.save();
 
-    const seen = new Set();
-    const missed = run.missed.filter(m => {
-      const k = m.w ? m.w.id : m.n !== undefined ? "n" + m.n : m.inst.en;
-      if (seen.has(k)) return false;
-      seen.add(k);
-      return true;
-    });
-    const rows = missed.map(m => {
-      if (m.w) return `<li><span class="bank-py">${A.wordLine(m.w)}<span class="say">${esc(m.w.say)}</span></span><span class="bank-en">${esc(m.w.en)}</span><span></span></li>`;
-      if (m.n !== undefined) return `<li><span class="bank-py"><span class="py">${Pinyin.html(m.py.join(" "))}</span></span><span class="bank-en">${fmt(m.n)}</span><span></span></li>`;
-      return `<li class="wide"><span class="bank-py"><span class="py">${esc(m.inst.py.filter(p => p !== ",").join(" "))}</span></span><span class="bank-en">${esc(m.inst.en)}</span><span></span></li>`;
-    }).join("");
+    const rows = missedRows();
 
     A.result = {
       eyebrow: `${g.name} · ${Banks.bank().name}`,
@@ -822,7 +984,9 @@
   }
 
   A.route("/:bank/game/*", picker);
-  A.route("/:bank/game-play", playView);
+  A.route("/:bank/game-play", () => playView(false));
+  A.route("/daily", dailyView);
+  A.on("gdaily", () => { if (dailyReady()) startDaily(); });
   A.route("/:bank/mini", miniView);
   A.on("gsize", setSize);
   A.on("gmini-go", miniMatch);
@@ -842,10 +1006,13 @@
   A.on("godd", oddPick);
   A.on("gnext", () => next());
   A.on("gmine", overrule);
-  A.on("gquit", () => { if (run && run.total) finish(); else { clearInterval(timer); const b = run ? run.bank : Banks.current; run = null; A.replace(`/${b}`); } });
+  A.on("gquit", () => {
+    if (run && run.total) finish();
+    else { clearInterval(timer); clearInterval(dailyTimer); const b = run && !run.daily ? "/" + run.bank : "/"; run = null; A.replace(b); }
+  });
   A.on("gagain", again);
   A.onKey((e, route) => {
-    if (!route.endsWith("/game-play") || !run) return;
+    if (!(route.endsWith("/game-play") || route === "/daily") || !run) return;
     if (run.game === "blitz") {
       if (e.key === "ArrowRight" || e.key === "y") blitzAnswer(true);
       if (e.key === "ArrowLeft" || e.key === "n") blitzAnswer(false);
@@ -861,5 +1028,5 @@
     if (n >= 1 && n <= 4) { const b = document.querySelectorAll(".opt")[n - 1]; if (b) speedPick(b); }
   });
 
-  window.Games = { gridHtml, numberPy, checkWord, checkSentence, typeable, answers, GAMES };
+  window.Games = { dailyButton, gridHtml, numberPy, checkWord, checkSentence, typeable, answers, GAMES };
 }());

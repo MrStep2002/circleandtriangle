@@ -575,3 +575,22 @@ h2 { font: 800 1.35rem/1.2 var(--f-display); margin: 0; text-wrap: balance; }
 .textsize .chip[data-scale="1"] { font-size: 15px; }
 .textsize .chip[data-scale="1.15"] { font-size: 18px; }
 .textsize .chip[data-scale="1.3"] { font-size: 21px; }
+
+/* ---------------------------------------------------------------- daily practice */
+.dailybtn {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px; width: 100%; text-align: left;
+  padding: 20px 20px 18px; border: 0; border-radius: 20px; cursor: pointer; color: #fff;
+  background: linear-gradient(135deg, var(--jade) 0%, var(--jade-deep) 100%); box-shadow: 0 6px 18px rgba(31, 90, 62, .28);
+  position: relative; overflow: hidden;
+}
+.dailybtn::after { content: "▶"; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); width: 48px; height: 48px; border-radius: 50%;
+  background: rgba(255,255,255,.18); display: grid; place-items: center; font-size: 1.1rem; padding-left: 3px; box-sizing: border-box; }
+.dailybtn:active { transform: scale(.985); }
+.daily-name { font: 800 1.45rem/1.15 var(--f-display); padding-right: 60px; }
+.daily-sub { font-size: .92rem; opacity: .9; padding-right: 60px; }
+.dailybtn.done { background: linear-gradient(135deg, #3d7f5c 0%, #2b6347 100%); }
+.dailybtn.off { background: var(--sunk); color: var(--muted); box-shadow: none; cursor: default; }
+.dailybtn.off::after { display: none; }
+.scoremeter.daily span { background: var(--jade); transition: width .5s linear; }
+.daily-round { display: flex; justify-content: space-between; align-items: center; margin: -4px 2px -6px; font-size: .78rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--gold); }
+.daily-round #daily-time { color: var(--muted); letter-spacing: 0; text-transform: none; font-weight: 700; font-variant-numeric: tabular-nums; }

@@ -447,6 +447,12 @@ window.SENTENCES = (function () {
     time: L.time,
     dem: L.dem
   };
+  const pickG = (v, g) => Array.isArray(v) ? v[g] : v;
+  // "me", "him/her", or "the tea": a person or thing as the object of a verb.
+  const objEn = (id, E, g) => PEOPLE[id] ? pickG(PEOPLE[id].o, g) : "the " + E.thing(id);
+  // "I'm" stays capitalised; "You're" → "you're" mid-sentence.
+  const lc = s => /^I['\s]/.test(s) ? s : s.charAt(0).toLowerCase() + s.slice(1);
+  const NUM = id => NUMBERS[id][0];
   // The verb that goes with a food or drink.
   const verbFor = id => S_.drink.includes(id) ? "verb:he" : "verb:chi";
   const verbEn = id => S_.drink.includes(id) ? "drink" : "eat";
@@ -646,6 +652,40 @@ window.SENTENCES = (function () {
             };
           }
         },
+        {
+          id: "eat-hotfood", group: "Hot or cold", name: "We'd like hot dumplings",
+          tip: "Describing word + de + food: rè de jiǎozi = hot dumplings. It's the same de as in wǒ de (my).",
+          core: ["build:de", "verb:xiang"], slots: { S: S_.people, A: S_.temp, O: S_.food }, flags: ["q"],
+          // Cold works for drinks; hot for anything but beer.
+          valid: f => f.A === "adj:leng" ? S_.drink.includes(f.O) : f.O !== "food:pijiu",
+          alts: { "verb:xiang": ["verb:yao"] },
+          make(f, E) {
+            const a = f.A === "adj:re" ? "hot" : "cold", v = verbEn(f.O);
+            return {
+              t: [f.S, "verb:xiang", verbFor(f.O), f.A, "build:de", f.O, f.q && MA], end: f.q ? "?" : ".",
+              en: f.q ? `Would ${E.s(f.S)} like to ${v} ${a} ${E.thing(f.O)}?` : `${E.S(f.S)} would like to ${v} ${a} ${E.thing(f.O)}.`
+            };
+          }
+        },
+        {
+          id: "eat-whatlike", group: "Ordering", name: "What would you like to eat?",
+          tip: "shénme (what) goes where the answer would go, at the end: nǐ xiǎng chī shénme? = you'd like to eat what?",
+          core: ["build:shenme", "verb:xiang"], slots: { S: ["build:ni", "build:ta"], V: ["verb:chi", "verb:he"] },
+          alts: { "verb:xiang": ["verb:yao"] },
+          make(f, E) {
+            const v = f.V === "verb:he" ? "drink" : "eat";
+            return { t: [f.S, "verb:xiang", f.V, "build:shenme"], end: "?", en: `What would ${E.s(f.S)} like to ${v}?` };
+          }
+        },
+        {
+          id: "eat-alot", group: "Likes and dislikes", name: "He drinks a lot of coffee",
+          tip: "hěn duō = a lot of, straight before the thing: hěn duō kāfēi = a lot of coffee.",
+          core: ["adj:duo", "build:hen"], slots: { S: S_.people, O: S_.food },
+          make(f, E) {
+            const v = verbEn(f.O);
+            return { t: [f.S, verbFor(f.O), HEN, "adj:duo", f.O], end: ".", en: `${E.S(f.S)} ${E.v(f.S, v, v + "s")} a lot of ${E.thing(f.O)}.` };
+          }
+        },
         { id: "er-drink", q: ["build:ni", "verb:yao", "verb:he", "build:shenme"], qen: "What do you want to drink?",
           a: [{ t: ["build:wo", "verb:yao", "verb:he", { any: "drink" }], en: "I want to drink {x}." },
               { t: ["build:wo", "verb:xiang", "verb:he", { any: "drink" }], en: "I'd like to drink {x}." }] },
@@ -748,6 +788,28 @@ window.SENTENCES = (function () {
             };
           }
         },
+        {
+          id: "shop-bigone", group: "Choosing", name: "I'd like the big one",
+          tip: "Describing word + de = 'the … one': dà de = the big one. yǒu xiǎo de ma? = is there a small one?",
+          core: ["build:de"], slots: { S: ["build:wo", "build:women"], A: ["adj:da", "adj:xiao"], H: ["verb:yao", "verb:you"] },
+          make(f, E) {
+            const a = f.A === "adj:da" ? "big" : "small";
+            if (f.H === "verb:you") return { t: ["verb:you", f.A, "build:de", MA], end: "?", en: `Do you have a ${a} one?` };
+            return { t: [f.S, "verb:yao", f.A, "build:de"], end: ".", en: `${E.S(f.S)}'d like the ${a} one.` };
+          },
+          alts: { "verb:yao": ["verb:xiang"] }
+        },
+        {
+          id: "shop-teens", group: "Prices", name: "12 yuan, 20 yuan",
+          tip: "Numbers above 10 are built from 1–10: shí'èr = 10-2 = 12, èrshí = 2-10 = 20. Here 2 is èr.",
+          core: ["num:shi", "money:kuai"], slots: { T: ["x:0", "num:er", "num:san", "num:wu", "num:ba"], U: ["x:0", "num:yi", "num:er", "num:san", "num:wu", "num:liu", "num:jiu"] },
+          valid: f => f.T !== "x:0" || f.U !== "x:0" || Math.random() < .3,
+          make(f) {
+            const t = f.T === "x:0" ? 1 : NUM(f.T), u = f.U === "x:0" ? 0 : NUM(f.U);
+            const num = [f.T !== "x:0" && f.T, "num:shi", f.U !== "x:0" && f.U];
+            return { t: [...num, "money:kuai", "money:qian"], also: [[...num, "money:kuai"]], end: ".", en: `${t * 10 + u} yuan.` };
+          }
+        },
         { id: "sr-price", q: ["build:duoshao", "money:qian"], qen: "How much is it?",
           a: [{ t: [{ any: "count" }, "money:kuai", "money:qian"], en: "{x} yuan." }] },
         { id: "sr-money", q: ["build:ni", "verb:you", "money:qian", "build:ma"], qen: "Do you have money?",
@@ -802,14 +864,28 @@ window.SENTENCES = (function () {
           }
         },
         {
-          id: "plans-todo", group: "Today and tomorrow", name: "Going to eat dumplings",
-          tip: "qù + what you'll do: wǒmen qù chī jiǎozi = we're going to eat dumplings.",
+          id: "plans-todo", group: "Today and tomorrow", name: "Going out to eat dumplings",
+          tip: "qù + a verb means really going somewhere to do it: wǒmen qù chī jiǎozi = we're going (out) to eat dumplings. For a plan with no travelling, use yào.",
           core: ["verb:qu"], slots: { S: S_.people, T: S_.time, O: S_.food },
           make(f, E) {
             return {
               t: [f.S, f.T, "verb:qu", verbFor(f.O), f.O],
               also: [[f.T, f.S, "verb:qu", verbFor(f.O), f.O]],
-              end: ".", en: `${E.beSubj(f.S)} going to ${verbEn(f.O)} ${E.thing(f.O)} ${E.time(f.T)}.`
+              end: ".", en: `${E.beSubj(f.S)} going out to ${verbEn(f.O)} ${E.thing(f.O)} ${E.time(f.T)}.`
+            };
+          }
+        },
+        {
+          id: "plans-will", group: "Today and tomorrow", name: "I'm going to eat vegetables today",
+          tip: "For a plan ('going to'), use yào before the verb: wǒ jīntiān yào chī shūcài. No travelling involved.",
+          core: ["verb:yao"], slots: { S: S_.people, T: S_.time, O: S_.food }, flags: ["q"],
+          make(f, E) {
+            const v = verbEn(f.O);
+            return {
+              t: [f.S, f.T, "verb:yao", verbFor(f.O), f.O, f.q && MA],
+              also: [[f.T, f.S, "verb:yao", verbFor(f.O), f.O, f.q && MA]],
+              end: f.q ? "?" : ".",
+              en: f.q ? `${E.Be(f.S)} ${E.s(f.S)} going to ${v} ${E.thing(f.O)} ${E.time(f.T)}?` : `${E.beSubj(f.S)} going to ${v} ${E.thing(f.O)} ${E.time(f.T)}.`
             };
           }
         },
@@ -876,6 +952,126 @@ window.SENTENCES = (function () {
           a: [{ t: ["build:wo", "money:jintian", "verb:lai"], en: "I'm coming today." }, { t: ["build:wo", "money:jintian", "build:bu", "verb:lai"], en: "I'm not coming today." },
               { t: ["build:bu", "verb:lai"], en: "No, I'm not coming." }] }
       ]
+    },
+
+    // ===================================================== Doing things
+    {
+      id: "do", name: "Doing things", sub: "Looking, talking, slowly, lots of, hello and goodbye",
+      items: [
+        {
+          id: "do-now", group: "Right now", name: "I'm looking at you",
+          tip: "zài before a verb means 'in the middle of doing it': wǒ zài hē chá = I'm drinking tea (right now).",
+          core: ["verb:zai"], slots: { S: S_.people, V: ["verb:kan", "verb:he", "verb:chi", "verb:mai"], O: [...L.person, ...S_.food, "money:pengyou"] }, flags: ["q"],
+          valid: f => f.V === "verb:kan" ? f.O !== f.S && !(f.S === "build:women" && f.O === "build:wo") && !(f.S === "build:wo" && f.O === "build:women")
+            : f.V === "verb:he" ? S_.drink.includes(f.O) : f.V === "verb:chi" ? S_.eat.includes(f.O) : S_.food.includes(f.O),
+          make(f, E) {
+            const ing = VERBS[f.V].ing, o = objEn(f.O, E, f.g === 0 ? 1 : 0);
+            return {
+              t: [f.S, "verb:zai", f.V, f.O, f.q && MA], end: f.q ? "?" : ".",
+              en: f.q ? `${E.Be(f.S)} ${E.s(f.S)} ${ing} ${o}?` : `${E.beSubj(f.S)} ${ing} ${o}.`
+            };
+          }
+        },
+        {
+          id: "do-look", group: "Look!", name: "Look, the tea is hot!",
+          tip: "kàn (look) can start a sentence, like 'Look!' in English.",
+          core: ["verb:kan", "build:hen"], slots: { O: S_.food, A: ["adj:re", "adj:leng", "adj:da", "adj:xiao", "adj:gui"] },
+          make(f, E) { return { t: ["verb:kan", ",", f.O, HEN, f.A], end: "!", en: `Look, ${lc(E.isVery(f.O))} ${E.adj(f.A)}!` }; }
+        },
+        {
+          id: "do-lookthis", group: "Look!", name: "I'd like to look at this one",
+          tip: "kàn + zhè gè = look at this one. With xiǎng first: I'd like to have a look.",
+          core: ["verb:kan", "build:ge"], slots: { S: ["x:0", "build:wo", "build:women"], D: S_.dem },
+          make(f, E) {
+            const one = f.D === "build:zhe" ? "this" : "that";
+            if (f.S === "x:0") return { t: ["verb:kan", f.D, "build:ge"], end: "!", en: `Look at ${one} one!` };
+            return { t: [f.S, "verb:xiang", "verb:kan", f.D, "build:ge"], end: ".", en: `${E.S(f.S)} would like to look at ${one} one.` };
+          }
+        },
+        {
+          id: "do-slowly", group: "Slowly or quickly", name: "I'm drinking slowly",
+          tip: "màn màn (slow slow) before a verb = slowly: màn màn hē = drink slowly. kuài before a verb = quickly.",
+          core: ["adj:man"], slots: { S: S_.people, H: ["adj:man", "adj:kuai"], O: S_.food },
+          make(f, E) {
+            const v = verbEn(f.O), how = f.H === "adj:man" ? ["adj:man", "adj:man"] : ["adj:kuai"];
+            return { t: [f.S, ...how, verbFor(f.O), f.O], end: ".", en: `${E.S(f.S)} ${E.v(f.S, v, v + "s")} ${E.thing(f.O)} ${f.H === "adj:man" ? "slowly" : "quickly"}.` };
+          }
+        },
+        {
+          id: "do-takeyourtime", group: "Slowly or quickly", name: "Take your time / come quickly",
+          tip: "màn màn chī! (slowly slowly eat) is a polite 'enjoy your meal'. kuài lái! = come quickly!",
+          core: ["adj:man", "adj:kuai"], slots: { H: ["verb:chi", "verb:he", "verb:lai", "verb:qu"] },
+          make(f) {
+            if (f.H === "verb:chi") return { t: ["adj:man", "adj:man", "verb:chi"], end: "!", en: "Enjoy your meal! (Eat slowly.)" };
+            if (f.H === "verb:he") return { t: ["adj:man", "adj:man", "verb:he"], end: "!", en: "Drink slowly!" };
+            if (f.H === "verb:lai") return { t: ["adj:kuai", "verb:lai"], end: "!", en: "Come quickly!" };
+            return { t: ["build:ni", "adj:kuai", "verb:qu"], end: "!", en: "Go quickly!" };
+          }
+        },
+        {
+          id: "do-lots", group: "Lots of", name: "I have lots of friends",
+          tip: "hěn duō = a lot of: wǒ yǒu hěn duō péngyou = I have lots of friends.",
+          core: ["adj:duo", "verb:you"], slots: { S: S_.people, O: ["money:pengyou", "money:qian"] }, flags: ["neg", "q"], needsNeg: ["build:mei"],
+          make(f, E) {
+            const o = f.O === "money:pengyou" ? "friends" : "money";
+            return {
+              t: [f.S, f.neg && "build:mei", "verb:you", HEN, "adj:duo", f.O, f.q && MA], end: f.q ? "?" : ".",
+              en: f.q ? `${E.Do(f.S)} ${E.s(f.S)} have a lot of ${o}?` : f.neg ? `${E.S(f.S)} ${E.dont(f.S)} have a lot of ${o}.` : `${E.S(f.S)} ${E.v(f.S, "have", "has")} a lot of ${o}.`
+            };
+          }
+        },
+        {
+          id: "do-saywhat", group: "Talking", name: "What are you saying?",
+          tip: "shuō = say / speak. nǐ shuō shénme? = you say what?",
+          core: ["verb:shuo", "build:shenme"], slots: { S: ["build:ni", "build:ta"] },
+          make(f, E) { return { t: [f.S, "verb:shuo", "build:shenme"], end: "?", en: `What ${E.be(f.S)} ${E.s(f.S)} saying?` }; }
+        },
+        {
+          id: "do-slowspeak", group: "Talking", name: "Please speak slowly",
+          tip: "qǐng (please) + màn màn (slowly) + shuō (speak). A very useful sentence!",
+          core: ["verb:shuo", "adj:man", "greet:qing"], slots: { S: ["x:0", "build:ni"] },
+          make(f) { return { t: ["greet:qing", f.S !== "x:0" && f.S, "adj:man", "adj:man", "verb:shuo"], also: [["greet:qing", "adj:man", "adj:man", "verb:shuo"], ["greet:qing", "build:ni", "adj:man", "adj:man", "verb:shuo"]], end: ".", en: "Please speak slowly." }; }
+        },
+        {
+          id: "do-says", group: "Talking", name: "She says she's tired",
+          tip: "No word for 'that': tā shuō tā hěn lèi = she says she (is) very tired.",
+          core: ["verb:shuo", "build:hen"], slots: { S: ["build:ni", "build:ta"], A: ["adj:lei", "adj:re", "adj:leng", "adj:hao"] },
+          make(f, E) {
+            const a = f.A === "adj:hao" ? "well" : E.adj(f.A);
+            return { t: [f.S, "verb:shuo", f.S, HEN, f.A], end: ".", en: `${E.S(f.S)} ${E.v(f.S, "say", "says")} ${lc(E.beSubj(f.S))} very ${a}.` };
+          }
+        },
+        {
+          id: "do-hello", group: "Hello and goodbye", name: "Hi! Where are you going?",
+          tip: "A greeting, a comma, then the question: nǐ hǎo, nǐ qù nǎr?",
+          core: ["verb:qu", "build:nar"], slots: { G: ["greet:nihao", "greet:hai", "greet:zao"], S: ["build:ni", "build:ta"] },
+          make(f, E) {
+            const g = { "greet:nihao": "Hello", "greet:hai": "Hi", "greet:zao": "Morning" }[f.G];
+            return { t: [f.G, ",", f.S, "verb:qu", "build:nar"], end: "?", en: `${g}! Where ${E.be(f.S)} ${E.s(f.S)} going?` };
+          }
+        },
+        {
+          id: "do-bye", group: "Hello and goodbye", name: "Goodbye! I'm coming tomorrow",
+          tip: "zàijiàn (goodbye), then your plan.",
+          core: ["greet:zaijian", "verb:lai"], slots: { S: ["build:wo", "build:women"], T: S_.time },
+          make(f, E) { return { t: ["greet:zaijian", ",", f.S, f.T, "verb:lai"], end: ".", en: `Goodbye! ${E.beSubj(f.S)} coming ${E.time(f.T)}.` }; }
+        },
+        {
+          id: "do-okay", group: "Hello and goodbye", name: "OK, I'll go tomorrow",
+          tip: "hǎo de = OK / sure, to agree to something.",
+          core: ["greet:haode", "verb:qu"], slots: { S: ["build:wo", "build:women"], T: S_.time },
+          make(f, E) { return { t: ["greet:haode", ",", f.S, f.T, "verb:qu"], end: ".", en: `OK, ${lc(E.beSubj(f.S))} going ${E.time(f.T)}.` }; }
+        },
+        { id: "dr-sorry", q: ["greet:duibuqi"], qen: "Sorry!",
+          a: [{ t: ["greet:meiguanxi", ",", "build:wo", HEN, "adj:hao"], en: "It's okay, I'm fine." }] },
+        { id: "dr-thanks", q: ["greet:xiexie", "build:ni"], qen: "Thank you!",
+          a: [{ t: ["greet:bukeqi", ",", "greet:zaijian"], en: "You're welcome. Goodbye!" }] },
+        { id: "dr-saywhat", q: ["build:ni", "verb:shuo", "build:shenme"], qen: "What are you saying?",
+          a: [{ t: ["build:wo", "verb:shuo", "greet:nihao"], en: "I'm saying hello." }, { t: ["build:wo", "build:bu", "verb:zhidao"], en: "I don't know." }] },
+        { id: "dr-comingtomorrow", q: ["build:ni", "money:mingtian", "verb:lai", "build:ma"], qen: "Are you coming tomorrow?",
+          a: [{ t: ["greet:haode", ",", "build:wo", "money:mingtian", "verb:lai"], en: "OK, I'll come tomorrow." },
+              { t: ["build:wo", "money:mingtian", "build:bu", "verb:lai"], en: "I'm not coming tomorrow." }] }
+      ]
     }
   ];
 
@@ -917,7 +1113,7 @@ window.SENTENCES = (function () {
       text: "tài goes before the describing word and le at the end: tài guì le! = too expensive!" },
     { id: "time", title: "Time words come early", words: L.time,
       text: "jīntiān (today) and míngtiān (tomorrow) go before the verb: straight after who, or at the very start. wǒ míngtiān qù / míngtiān wǒ qù = I tomorrow go." },
-    { id: "de", title: "de = 's", words: ["build:de"],
+    { id: "de", title: "de = 's", words: ["build:de"], when: t => !t.some((x, i) => t[i + 1] === "build:de" && L.adj.includes(x)),
       text: "de after a person shows whose it is: wǒ de chá = my tea · tā de péngyou = his friend." },
     { id: "ge", title: "Numbers need gè", words: ["build:ge"],
       text: "Between a number (or zhè / nà) and a thing goes a measure word. gè is the all-purpose one: sān gè jiǎozi = three dumplings · zhè gè = this one. Before gè, 2 is liǎng, not èr." },
@@ -937,6 +1133,18 @@ window.SENTENCES = (function () {
       text: "zài means “to be (at)”: nǐ zài nǎr? = you be-at where?" },
     { id: "qing", title: "qǐng = please", words: ["greet:qing"],
       text: "qǐng comes first, before the verb: qǐng hē chá = please drink tea." },
+    { id: "adjde", title: "describing word + de", words: ["build:de"], when: t => t.some((x, i) => t[i + 1] === "build:de" && L.adj.includes(x)),
+      text: "Put de between a describing word and a thing: rè de jiǎozi = hot dumplings. On its own, dà de = the big one." },
+    { id: "zaidoing", title: "zài + verb = doing it now", words: ["verb:zai"], when: t => t.some((x, i) => x === "verb:zai" && VERBS[t[i + 1]]),
+      text: "zài (be at) before a verb means you're in the middle of it: wǒ zài kàn nǐ = I'm looking at you (right now)." },
+    { id: "qudo", title: "qù + verb = go and do", words: ["verb:qu"], when: t => t.some((x, i) => x === "verb:qu" && VERBS[t[i + 1]]),
+      text: "qù before another verb means really going somewhere to do it: wǒ qù chī jiǎozi = I'm going (out) to eat dumplings. For a plan with no travelling ('I'm going to…'), use yào: wǒ jīntiān yào chī shūcài." },
+    { id: "yaoplan", title: "yào = going to (a plan)", words: ["verb:yao"], when: t => t.some(x => L.time.includes(x)),
+      text: "With a time word, yào + verb is a plan: wǒ míngtiān yào chī jiǎozi = I'm going to eat dumplings tomorrow." },
+    { id: "manman", title: "màn màn = slowly", words: ["adj:man", "adj:kuai"], when: t => t.some((x, i) => (x === "adj:man" || x === "adj:kuai") && (VERBS[t[i + 1]] || t[i + 1] === "adj:man" || ["verb:lai", "verb:qu", "verb:shuo"].includes(t[i + 1]))),
+      text: "Doubling màn (slow) and putting it before a verb gives 'slowly': màn màn hē = drink slowly. kuài (fast) before a verb = quickly: kuài lái! = come quickly!" },
+    { id: "henduo", title: "hěn duō = a lot of", words: ["adj:duo"],
+      text: "hěn duō goes straight before the thing, with no extra word: hěn duō péngyou = lots of friends · hěn duō kāfēi = a lot of coffee." },
     { id: "order", title: "The basic order", words: [],
       text: "who → when → not / also → verb → what. Much like English, except that time words come early and question words stay where the answer would go." }
   ];
