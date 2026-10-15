@@ -2,7 +2,7 @@
 
    IMPORTANT: change VERSION every time you edit any file (words, code or styles).
    That's what tells installed copies to fetch the new files. */
-const VERSION = "my-mandarin-v0.17.0";
+const VERSION = "my-mandarin-v0.17.1";
 
 const FILES = [
   "./",
@@ -40,7 +40,8 @@ self.addEventListener("install", event => {
 self.addEventListener("activate", event => {
   event.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys.filter(k => k !== VERSION).map(k => caches.delete(k))))
+      // Only clear this app's own old caches (the Portuguese copy shares the same site).
+      .then(keys => Promise.all(keys.filter(k => k.startsWith("my-mandarin-v") && k !== VERSION).map(k => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });

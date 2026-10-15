@@ -10,7 +10,7 @@
    A view function returns { title, back, body, cls, bar, after }. */
 (function () {
   const { html: py, esc } = Pinyin;
-  const VERSION = "0.17.0";
+  const VERSION = "0.17.1";
 
   const ICON = {
     back: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',

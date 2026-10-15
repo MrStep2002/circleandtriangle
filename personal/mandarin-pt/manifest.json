@@ -1,0 +1,16 @@
+{
+  "name": "Meu Mandarim",
+  "short_name": "Mandarim",
+  "description": "Aprenda vocabulário de mandarim em pinyin, com um app que lembra o que você já sabe.", "lang": "pt-BR", "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#EDF2EE",
+  "theme_color": "#2E7553",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Meu Mandarim</title>
+  <meta name="description" content="Aprenda vocabulário de mandarim em pinyin, com um app que lembra o que você já sabe.">
+  <meta name="theme-color" content="#EDF2EE" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#101713" media="(prefers-color-scheme: dark)">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Meu Mandarim">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <div id="app"><p style="padding:40px 0;text-align:center">Loading…</p></div>
+
+  <!-- Content -->
+  <script src="data/essentials.js"></script>
+  <!-- Engine -->
+  <script src="js/banks.js"></script>
+  <script src="js/pinyin.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/memory.js"></script>
+  <script src="js/session.js"></script>
+  <!-- Screens -->
+  <script src="js/app.js"></script>
+  <script src="js/screens/home.js"></script>
+  <script src="js/screens/vocab.js"></script>
+  <script src="js/screens/match.js"></script>
+  <script src="js/screens/settings.js"></script>
+  <script src="js/screens/results.js"></script>
+  <script>
+    App.start();
+
+    // Offline support. Only works on https (GitHub Pages) or localhost.
+    if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+      navigator.serviceWorker.register("sw.js").catch(function () {});
+    }
+  </script>
+</body>
+</html>
